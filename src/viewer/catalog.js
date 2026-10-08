@@ -1,0 +1,78 @@
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import Button from "../components/Button";
+import Card from "../components/Card";
+import { colors, spacing, fontSize } from "../theme";
+
+function ButtonDemo() {
+  return (
+    <View style={styles.stack}>
+      <Button
+        label="Iniciar sesión recomendada"
+        icon="▶"
+        variant="primary"
+        onPress={() => {}}
+      />
+      <Button label="Completar" icon="✔" variant="success" onPress={() => {}} />
+      <Button
+        label="Posponer"
+        variant="outlined"
+        size="sm"
+        onPress={() => {}}
+      />
+    </View>
+  );
+}
+
+function CardDemo() {
+  return (
+    <View style={styles.stack}>
+      <Card label="RESUMEN">
+        <Text style={{ fontSize: fontSize.sm, color: colors.text }}>
+          Contenedor de tarjeta estándar.
+        </Text>
+      </Card>
+
+      <Card
+        label="META DIARIA"
+        headerRight={
+          <Text style={{ color: colors.primary, fontWeight: "700" }}>85%</Text>
+        }
+      >
+        <Text
+          style={{
+            fontSize: fontSize.md,
+            fontWeight: "700",
+            color: colors.text,
+          }}
+        >
+          1h 45m
+        </Text>
+        <Text style={{ fontSize: fontSize.xs, color: colors.textSecondary }}>
+          de 2h objetivo
+        </Text>
+      </Card>
+    </View>
+  );
+}
+
+export const CATALOG = [
+  {
+    name: "Button",
+    category: "Acciones",
+    description: "Botón con variantes (primary, success, outlined) e iconos",
+    Demo: ButtonDemo,
+  },
+  {
+    name: "Card",
+    category: "Contenedores",
+    description: "Tarjeta con encabezado superior opcional y soporte de hijos",
+    Demo: CardDemo,
+  },
+];
+
+const styles = StyleSheet.create({
+  stack: {
+    gap: spacing.sm ?? 12,
+  },
+});
