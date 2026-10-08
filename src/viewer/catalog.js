@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Button from "../components/Button";
 import Card from "../components/Card";
+import BottomNavBar from "../components/BottomNavBar";
 import { colors, spacing, fontSize } from "../theme";
 
 function ButtonDemo() {
@@ -56,6 +57,19 @@ function CardDemo() {
   );
 }
 
+function BottomNavBarDemo() {
+  const [activeRoute, setActiveRoute] = useState("inicio");
+
+  return (
+    <View style={styles.navContainer}>
+      <BottomNavBar
+        activeRoute={activeRoute}
+        onNavigate={(routeKey) => setActiveRoute(routeKey)}
+      />
+    </View>
+  );
+}
+
 export const CATALOG = [
   {
     name: "Button",
@@ -69,10 +83,23 @@ export const CATALOG = [
     description: "Tarjeta con encabezado superior opcional y soporte de hijos",
     Demo: CardDemo,
   },
+  {
+    name: "BottomNavBar",
+    category: "Navegación",
+    description: "Barra de navegación inferior con indicador activo y soporte para pestañas personalizadas",
+    Demo: BottomNavBarDemo,
+  }
 ];
 
 const styles = StyleSheet.create({
   stack: {
     gap: spacing.sm ?? 12,
+  },
+  navContainer: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    overflow: "hidden",
+    backgroundColor: colors.surface,
   },
 });
