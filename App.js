@@ -17,6 +17,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { CATALOG } from "./src/viewer/catalog";
 import { colors, fontSize, radius, spacing } from "./src/theme";
 
+import HomeScreen from "./src/screens/HomeScreen";
+
 const Stack = createNativeStackNavigator();
 
 function groupByCategory(items) {
@@ -127,24 +129,44 @@ export default function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <StatusBar style="dark" />
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: { backgroundColor: colors.background },
-            headerShadowVisible: false,
-            headerTintColor: colors.text,
-          }}
-        >
-          <Stack.Screen
-            name="Components"
-            component={ComponentListScreen}
-            options={{ title: "Componentes UI" }}
-          />
-          <Stack.Screen
-            name="Preview"
-            component={ComponentPreviewScreen}
-            options={({ route }) => ({ title: route.params.name })}
-          />
-        </Stack.Navigator>
+          <Stack.Navigator
+            initialRouteName="Home"
+            screenOptions={{
+              headerStyle: { backgroundColor: colors.background },
+              headerShadowVisible: false,
+              headerTintColor: colors.text,
+            }}
+          >
+            {/* Pantalla principal del borrador */}
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={({ navigation }) => ({
+                title: "Stuhbit",
+                headerRight: () => (
+                  <TouchableOpacity onPress={() => navigation.navigate("Components")}>
+                    <Text style={{ color: colors.primary, fontWeight: "600", fontSize: 13 }}>
+                      Ver Catálogo
+                    </Text>
+                  </TouchableOpacity>
+                ),
+              })}
+            />
+
+            {/* Catálogo de componentes */}
+            <Stack.Screen
+              name="Components"
+              component={ComponentListScreen}
+              options={{ title: "Catálogo UI" }}
+            />
+
+            {/* Previsualización individual */}
+            <Stack.Screen
+              name="Preview"
+              component={ComponentPreviewScreen}
+              options={({ route }) => ({ title: route.params.name })}
+            />
+          </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
   );

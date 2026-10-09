@@ -4,6 +4,10 @@ import Button from "../components/Button";
 import Card from "../components/Card";
 import AppHeader from "../components/AppHeader";
 import BottomNavBar from "../components/BottomNavBar";
+import Badge from "../components/Badge";
+import ProgressBar from "../components/ProgressBar";
+import SearchInput from "../components/SearchInput";
+import Chips from "../components/Chips";
 import { colors, spacing, fontSize } from "../theme";
 
 function ButtonDemo() {
@@ -22,6 +26,62 @@ function ButtonDemo() {
         size="sm"
         onPress={() => {}}
       />
+    </View>
+  );
+}
+
+function SearchInputDemo() {
+  const [searchText, setSearchText] = useState("");
+
+  return (
+    <SearchInput
+      value={searchText}                        
+      onChangeText={(nuevoTexto) => setSearchText(nuevoTexto)} 
+      placeholder="Buscar apuntes de estudio"
+    />
+  );
+}
+
+function ChipsDemo() {
+  const [activeChip, setActiveChip] = useState("Todos");
+
+  const chipsData = ["Todos", "Pendientes", "Completados", "Favoritos"];
+
+  return (
+    <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+      {chipsData.map((chipLabel) => (
+        <Chips
+          key={chipLabel}
+          label={chipLabel}
+          active={activeChip === chipLabel}
+          onPress={() => setActiveChip(chipLabel)}
+        />
+      ))}
+    </View>
+  );
+} 
+
+
+function BadgeDemo() {
+  return (
+    <View style={{ gap: spacing.sm }}>
+      <View style={{ flexDirection: "row", gap: spacing.sm, flexWrap: "wrap" }}>
+        <Badge label="En curso" variant="primary" dot />
+        <Badge label="Finalizado" variant="success" dot />
+        <Badge label="Entrega Urgente" variant="danger" dot />
+        <Badge label="Aviso de Examen" variant="warning" />
+        <Badge label="1h 30m" variant="neutral" />
+      </View>
+    </View>
+  );
+}
+
+function ProgressBarDemo() {
+  return (
+    <View style={{ gap: spacing.md }}>
+      <ProgressBar progress={0.85} color={colors.primary} />
+      <ProgressBar progress={0.6} color={colors.success} />
+      <ProgressBar progress={35} color={colors.warning} />
     </View>
   );
 }
@@ -123,7 +183,31 @@ export const CATALOG = [
     category: "Navegación",
     description: "Barra de navegación inferior con indicador activo y soporte para pestañas personalizadas",
     Demo: BottomNavBarDemo,
-  }
+  },
+  {
+    name: "Badge",
+    category: "Datos",
+    description: "Etiquetas de estado y categorías con variantes de color",
+    Demo: BadgeDemo,
+  },
+  {
+    name: "ProgressBar",
+    category: "Datos",
+    description: "Barra lineal de progreso configurable por valor y color",
+    Demo: ProgressBarDemo,
+  },
+  {
+    name: "SearchInput",
+    category: "Datos",
+    description: "Campo de búsqueda con valor controlado y evento de cambio",
+    Demo: SearchInputDemo,
+  },
+  {
+    name: "Chips",
+    category: "Datos",
+    description: "Etiquetas interactivas con estado activo y soporte de eventos",
+    Demo: ChipsDemo,
+  },
 ];
 
 const styles = StyleSheet.create({
