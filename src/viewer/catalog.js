@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Button from "../components/Button";
 import Card from "../components/Card";
+import AppHeader from "../components/AppHeader";
 import BottomNavBar from "../components/BottomNavBar";
 import { colors, spacing, fontSize } from "../theme";
 
@@ -57,6 +58,34 @@ function CardDemo() {
   );
 }
 
+function AppHeaderDemo() {
+  return (
+    <View style={styles.stack}>
+      {/* Modo saludo */}
+      <View style={styles.headerContainer}>
+        <AppHeader
+          greeting="¡Hola, Sofía!"
+          subtitle="Octubre 2025"
+          hasNotification
+          onNotificationPress={() => {}}
+          onAvatarPress={() => {}}
+        />
+      </View>
+ 
+      {/* Modo título con botón de volver */}
+      <View style={styles.headerContainer}>
+        <AppHeader
+          title="Sprint de Estudio"
+          showBack
+          onBackPress={() => {}}
+          rightIcon="ellipsis-horizontal"
+          onRightPress={() => {}}
+        />
+      </View>
+    </View>
+  );
+}
+
 function BottomNavBarDemo() {
   const [activeRoute, setActiveRoute] = useState("inicio");
 
@@ -82,6 +111,12 @@ export const CATALOG = [
     category: "Contenedores",
     description: "Tarjeta con encabezado superior opcional y soporte de hijos",
     Demo: CardDemo,
+  },
+  {
+    name: "AppHeader",
+    category: "Navegación",
+    description: "Encabezado con modo saludo (avatar + notificaciones) y modo título (volver + acción)",
+    Demo: AppHeaderDemo,
   },
   {
     name: "BottomNavBar",
