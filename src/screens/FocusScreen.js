@@ -5,7 +5,6 @@ import { colors, palette, spacing, fontSize, radius } from "../theme";
 import { ScreenLayout } from "../components/templates/ScreenLayout";
 import { AppHeader } from "../components/templates/AppHeader";
 import { SegmentedControl } from "../components/molecules/SegmentedControl";
-import { Card } from "../components/molecules/Card";
 import { Button } from "../components/atoms/Button";
 import { Switch } from "../components/atoms/Switch";
 import { ProgressBar } from "../components/atoms/ProgressBar";
@@ -26,6 +25,7 @@ export default function FocusScreen() {
         />
       }
     >
+      {/* Header contextual */}
       <View style={styles.focusHeader}>
         <Badge label="⚡ Ventana libre detectada" variant="primary" size="sm" />
         <Badge label="⏱ Hasta 16:30" variant="neutral" size="sm" />
@@ -39,15 +39,17 @@ export default function FocusScreen() {
         interrupciones.
       </Text>
 
+      {/* Selector de bloques de duración */}
       <Text style={styles.fieldLabel}>DURACIÓN SELECCIONADA</Text>
       <SegmentedControl
         options={["45 min (Rápido)", "60 min (Estándar)", "90 min (Óptimo)"]}
         selectedIndex={durationIndex}
         onChange={setDurationIndex}
-        style={{ marginBottom: spacing.md }}
+        style={{ marginBottom: 16 }}
       />
 
-      <Card variant="elevated" style={styles.timerCard}>
+      {/* Card 1: Temporizador Circular Centrado en caja blanca */}
+      <View style={styles.timerCardBox}>
         <Badge
           label="• Concentración máxima activa"
           variant="success"
@@ -73,33 +75,35 @@ export default function FocusScreen() {
           label="• Cálculo II · Derivadas Parciales"
           variant="primary"
           size="sm"
-          style={{ marginTop: 12 }}
+          style={{ marginTop: 14 }}
         />
         <Text style={styles.timerNote}>
           Bloque de práctica guiada y problemas pares
         </Text>
-      </Card>
+      </View>
 
-      <Card variant="outlined" style={styles.linkedNotesCard}>
+      {/* Card 2: Ver Apuntes vinculados */}
+      <View style={styles.linkedNotesCardBox}>
         <View style={styles.linkedLeft}>
-          <Ionicons
-            name="document-text-outline"
-            size={20}
-            color={colors.primary}
-          />
-          <View>
+          <View style={styles.iconDocBox}>
+            <Ionicons
+              name="document-text-outline"
+              size={20}
+              color={colors.primary}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.linkedTitle}>Ver Apuntes vinculados</Text>
-            <Text style={styles.linkedSub}>
-              PDF 4 págs · Teorema de Schwarz & Regla de la cadena
+            <Text numberOfLines={1} style={styles.linkedSub}>
+              PDF 4 págs · Teorema de Schwarz & Regla...
             </Text>
           </View>
         </View>
         <Ionicons name="eye-outline" size={20} color={colors.textSecondary} />
-      </Card>
+      </View>
 
-      <Text style={[styles.fieldLabel, { marginTop: spacing.md }]}>
-        FONDO SONORO
-      </Text>
+      {/* Fondo sonoro ambiental */}
+      <Text style={[styles.fieldLabel, { marginTop: 10 }]}>FONDO SONORO</Text>
       <View style={styles.soundGroupRow}>
         {[
           { id: "silent", label: "Silencio", icon: "volume-mute-outline" },
@@ -116,7 +120,7 @@ export default function FocusScreen() {
               <Ionicons
                 name={snd.icon}
                 size={22}
-                color={isSelected ? palette.white : colors.text}
+                color={isSelected ? "#FFFFFF" : colors.text}
               />
               <Text
                 style={[
@@ -131,7 +135,8 @@ export default function FocusScreen() {
         })}
       </View>
 
-      <Card variant="flat" style={styles.switchRow}>
+      {/* Card 3: Modo no molestar (Row con Switch en caja blanca) */}
+      <View style={styles.switchRowBox}>
         <View style={styles.switchTextCol}>
           <Text style={styles.switchTitle}>Modo no molestar</Text>
           <Text style={styles.switchSub}>
@@ -139,8 +144,9 @@ export default function FocusScreen() {
           </Text>
         </View>
         <Switch value={dndEnabled} onValueChange={setDndEnabled} />
-      </Card>
+      </View>
 
+      {/* Botonera de control (Pausar y Completar) */}
       <View style={styles.controlsRow}>
         <Button
           title="Pausar"
@@ -164,7 +170,7 @@ export default function FocusScreen() {
             <Ionicons
               name="checkmark-circle-outline"
               size={20}
-              color={palette.white}
+              color="#FFFFFF"
             />
           }
           onPress={() => {}}
@@ -172,7 +178,8 @@ export default function FocusScreen() {
         />
       </View>
 
-      <Card variant="elevated" style={styles.metaCard}>
+      {/* Card 4: Meta de Estudio de hoy con recuadro blanco y barra */}
+      <View style={styles.metaCardBox}>
         <View style={styles.metaCardTop}>
           <Text style={styles.metaTitle}>Meta de estudio de hoy</Text>
           <Badge label="+120 Pts" variant="success" size="sm" />
@@ -193,7 +200,7 @@ export default function FocusScreen() {
           y extenderás tu racha a{" "}
           <Text style={styles.boldText}>6 días consecutivos</Text>.
         </Text>
-      </Card>
+      </View>
     </ScreenLayout>
   );
 }
@@ -205,16 +212,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   mainTitle: {
-    fontSize: fontSize.lg ?? 18,
+    fontSize: 18,
     fontWeight: "800",
     color: colors.text,
     lineHeight: 24,
   },
   mainSubtitle: {
-    fontSize: fontSize.xs ?? 13,
+    fontSize: 13,
     color: colors.textSecondary,
     marginTop: 4,
-    marginBottom: spacing.md ?? 16,
+    marginBottom: 16,
     lineHeight: 18,
   },
   fieldLabel: {
@@ -224,27 +231,39 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginBottom: 6,
   },
-  timerCard: {
+  timerCardBox: {
+    backgroundColor: palette.white,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: palette.neutral[200],
     alignItems: "center",
-    padding: spacing.lg ?? 20,
-    marginBottom: spacing.md ?? 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
+    width: "100%",
   },
   activePill: {
-    marginBottom: spacing.md ?? 16,
+    marginBottom: 14,
   },
   circleOuter: {
     width: 200,
     height: 200,
     borderRadius: 100,
-    borderWidth: 8,
-    borderColor: palette.primary[100],
+    borderWidth: 10,
+    borderColor: palette.primary,
     borderTopColor: colors.primary,
     borderRightColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "center",
   },
   circleInner: {
     alignItems: "center",
+    justifyContent: "center",
   },
   timerCountdown: {
     fontSize: 32,
@@ -266,13 +285,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.textSecondary,
     marginTop: 4,
+    textAlign: "center",
   },
-  linkedNotesCard: {
+  linkedNotesCardBox: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: spacing.sm ?? 12,
-    marginBottom: spacing.md ?? 16,
+    backgroundColor: palette.white,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: palette.neutral[200],
+    padding: 12,
+    marginBottom: 16,
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
   },
   linkedLeft: {
     flexDirection: "row",
@@ -280,8 +309,16 @@ const styles = StyleSheet.create({
     gap: 10,
     flex: 1,
   },
+  iconDocBox: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
+    backgroundColor: palette.primary[50],
+    alignItems: "center",
+    justifyContent: "center",
+  },
   linkedTitle: {
-    fontSize: fontSize.sm ?? 13,
+    fontSize: 13,
     fontWeight: "700",
     color: colors.text,
   },
@@ -293,15 +330,15 @@ const styles = StyleSheet.create({
   soundGroupRow: {
     flexDirection: "row",
     gap: 8,
-    marginBottom: spacing.md ?? 16,
+    marginBottom: 16,
   },
   soundTile: {
     flex: 1,
     paddingVertical: 14,
-    borderRadius: radius.lg ?? 12,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    borderColor: palette.neutral[200],
+    backgroundColor: palette.white,
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
@@ -318,18 +355,22 @@ const styles = StyleSheet.create({
   soundTileLabelActive: {
     color: palette.white,
   },
-  switchRow: {
+  switchRowBox: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: spacing.md ?? 14,
-    marginBottom: spacing.md ?? 16,
+    backgroundColor: palette.white,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: palette.neutral[200],
+    padding: 14,
+    marginBottom: 16,
   },
   switchTextCol: {
     flex: 1,
   },
   switchTitle: {
-    fontSize: fontSize.sm ?? 14,
+    fontSize: 14,
     fontWeight: "700",
     color: colors.text,
   },
@@ -340,12 +381,21 @@ const styles = StyleSheet.create({
   },
   controlsRow: {
     flexDirection: "row",
-    gap: spacing.sm ?? 10,
-    marginBottom: spacing.md ?? 16,
+    gap: 10,
+    marginBottom: 16,
   },
-  metaCard: {
-    padding: spacing.md ?? 16,
-    marginBottom: spacing.xl ?? 28,
+  metaCardBox: {
+    backgroundColor: palette.white,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: palette.neutral[200],
+    padding: 16,
+    marginBottom: 32,
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   metaCardTop: {
     flexDirection: "row",
@@ -353,7 +403,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   metaTitle: {
-    fontSize: fontSize.sm ?? 14,
+    fontSize: 14,
     fontWeight: "700",
     color: colors.text,
   },

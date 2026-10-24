@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, palette, spacing, fontSize, radius } from "../theme";
-import { ScreenLayout } from "../components/templates/ScreenLayout.js";
-import { AppHeader } from "../components/templates/AppHeader.js";
-import { SegmentedControl } from "../components/molecules/SegmentedControl.js";
-import { Card } from "../components/molecules/Card.js";
-import { Banner } from "../components/organisms/Banner.js";
-import { Button } from "../components/atoms/Button.js";
-import { Badge } from "../components/atoms/Badge.js";
+import { ScreenLayout } from "../components/templates/ScreenLayout";
+import { AppHeader } from "../components/templates/AppHeader";
+import { SegmentedControl } from "../components/molecules/SegmentedControl";
+import { Banner } from "../components/organisms/Banner";
+import { Button } from "../components/atoms/Button";
+import { Badge } from "../components/atoms/Badge";
 
 const WEEK_DAYS = [
   { day: "L", date: "14", dots: ["#10B981"] },
@@ -53,11 +52,7 @@ export default function CalendarScreen({ navigation }) {
           variant="primary"
           size="sm"
           icon={
-            <Ionicons
-              name="cloud-upload-outline"
-              size={16}
-              color={palette.white}
-            />
+            <Ionicons name="cloud-upload-outline" size={16} color="#FFFFFF" />
           }
           onPress={() => {}}
           fullWidth={false}
@@ -73,8 +68,8 @@ export default function CalendarScreen({ navigation }) {
         style={styles.segmentedSpacing}
       />
 
-      {/* Tira semanal de días */}
-      <Card variant="flat" style={styles.weekStripContainer}>
+      {/* Card 1: Tira semanal de días */}
+      <View style={styles.whiteCard}>
         <View style={styles.weekStripHeader}>
           <Text style={styles.weekStripText}>Semana 8 • 14 al 20 Octubre</Text>
           <Text style={styles.todayHighlight}>Hoy: Mié 16</Text>
@@ -106,10 +101,10 @@ export default function CalendarScreen({ navigation }) {
             </View>
           ))}
         </View>
-      </Card>
+      </View>
 
-      {/* Balance Semanal de horas */}
-      <Card variant="elevated" style={styles.balanceCard}>
+      {/* Card 2: Balance Semanal de horas */}
+      <View style={[styles.whiteCard, { marginVertical: 12 }]}>
         <View style={styles.balanceHeader}>
           <Text style={styles.balanceTitle}>BALANCE SEMANAL</Text>
           <Text style={styles.balanceStatus}>📈 Óptimo</Text>
@@ -168,23 +163,23 @@ export default function CalendarScreen({ navigation }) {
             </Text>
           </View>
         </View>
-      </Card>
+      </View>
 
-      {/* Patrón Inteligente */}
+      {/* Banner Patrón Inteligente */}
       <Banner
         title="Patrón Inteligente"
         description="Los martes y jueves entre 2:00 PM y 4:00 PM tienes tu mayor ventana de productividad y retención."
         badgeText="IA Estudy"
-        style={styles.bannerSpacing}
+        style={{ marginBottom: 16 }}
       />
 
-      {/* Lista del día Miércoles 16 */}
+      {/* Encabezado del día Miércoles 16 */}
       <View style={styles.dayAgendaHeader}>
         <Text style={styles.agendaTitle}>Miércoles, 16 de Octubre</Text>
         <Badge label="5 eventos" variant="primary" size="sm" />
       </View>
 
-      <Card variant="outlined" style={styles.eventCard}>
+      <View style={styles.cardBox}>
         <View style={styles.eventTop}>
           <Badge label="Clase Regular" variant="primary" size="sm" />
           <Text style={styles.durationText}>⏱ 2h</Text>
@@ -193,9 +188,10 @@ export default function CalendarScreen({ navigation }) {
         <Text style={styles.eventSubtitle}>
           👤 Dr. Ricardo Mendez · 🏛 Edificio B · Aula 304
         </Text>
-      </Card>
+      </View>
 
-      <Card variant="tinted" style={styles.eventCardDetected}>
+      {/* 7. CARD: Ventana Libre Detectada */}
+      <View style={[styles.cardBox, styles.detectedCard]}>
         <View style={styles.eventTop}>
           <Badge label="Ventana Libre Detectada" variant="success" size="sm" />
           <Text style={styles.durationText}>1h 30m</Text>
@@ -209,20 +205,20 @@ export default function CalendarScreen({ navigation }) {
           title="Iniciar Pomodoro"
           variant="success"
           size="sm"
-          icon={<Ionicons name="play" size={14} color={palette.white} />}
+          icon={<Ionicons name="play" size={14} color="#FFFFFF" />}
           onPress={() => navigation.navigate("Enfoque")}
           fullWidth={false}
           style={styles.pomodoroBtn}
         />
-      </Card>
+      </View>
 
       <Button
         title="Agendar Bloque de Estudio Personalizado"
         variant="primary"
         size="md"
-        icon={<Ionicons name="alarm-outline" size={18} color={palette.white} />}
+        icon={<Ionicons name="alarm-outline" size={18} color="#FFFFFF" />}
         onPress={() => {}}
-        style={styles.agendaBtn}
+        style={{ marginVertical: 20 }}
       />
     </ScreenLayout>
   );
@@ -233,7 +229,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: spacing.sm ?? 10,
+    marginBottom: 10,
   },
   semesterLabel: {
     fontSize: 10,
@@ -246,25 +242,55 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   monthTitle: {
-    fontSize: fontSize.lg ?? 18,
+    fontSize: 18,
     fontWeight: "800",
     color: colors.text,
   },
   importBtn: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
   },
   segmentedSpacing: {
-    marginVertical: spacing.sm ?? 10,
+    marginVertical: 12,
   },
-  weekStripContainer: {
-    padding: spacing.sm ?? 12,
+  whiteCard: {
     backgroundColor: palette.white,
-    borderRadius: radius.xl ?? 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: palette.neutral[200],
+    padding: 14,
+    marginBottom: 10,
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+    width: "100%",
+  },
+  cardBox: {
+    backgroundColor: palette.white,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: palette.primary[100],
+    borderStyle: "solid",
+    padding: 16,
+    marginBottom: 14,
+    width: "100%",
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  detectedCard: {
+    backgroundColor: palette.success[50],
+    borderColor: colors.success,
+    borderWidth: 1.5,
+    borderStyle: "solid",
   },
   weekStripHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 8,
+    marginBottom: 10,
   },
   weekStripText: {
     fontSize: 11,
@@ -280,10 +306,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   dayCell: {
-    width: 40,
+    width: 42,
     paddingVertical: 8,
     alignItems: "center",
-    borderRadius: radius.md ?? 10,
+    borderRadius: 10,
   },
   dayCellActive: {
     backgroundColor: colors.primary,
@@ -300,7 +326,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   dayTextActive: {
-    color: palette.white,
+    color: calors.white,
   },
   dotsContainer: {
     flexDirection: "row",
@@ -312,10 +338,6 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: 2,
-  },
-  balanceCard: {
-    padding: spacing.sm ?? 12,
-    marginVertical: spacing.sm ?? 10,
   },
   balanceHeader: {
     flexDirection: "row",
@@ -337,7 +359,7 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     overflow: "hidden",
-    backgroundColor: palette.neutral[200],
+    backgroundColor: calors.neutral[200],
   },
   progressSection: {
     height: "100%",
@@ -365,29 +387,16 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: colors.text,
   },
-  bannerSpacing: {
-    marginVertical: spacing.sm ?? 10,
-  },
   dayAgendaHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginVertical: spacing.sm ?? 10,
+    marginVertical: 12,
   },
   agendaTitle: {
-    fontSize: fontSize.md ?? 15,
+    fontSize: 15,
     fontWeight: "700",
     color: colors.text,
-  },
-  eventCard: {
-    padding: spacing.sm ?? 12,
-    marginBottom: 8,
-  },
-  eventCardDetected: {
-    padding: spacing.sm ?? 12,
-    marginBottom: 8,
-    backgroundColor: palette.secondary[50],
-    borderColor: palette.secondary[200],
   },
   eventTop: {
     flexDirection: "row",
@@ -401,21 +410,18 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   eventTitle: {
-    fontSize: fontSize.sm ?? 14,
+    fontSize: 14,
     fontWeight: "700",
     color: colors.text,
   },
   eventSubtitle: {
-    fontSize: fontSize.xs ?? 12,
+    fontSize: 12,
     color: colors.textSecondary,
     marginTop: 4,
     lineHeight: 16,
   },
   pomodoroBtn: {
     alignSelf: "flex-start",
-    marginTop: 8,
-  },
-  agendaBtn: {
-    marginVertical: spacing.lg ?? 20,
+    marginTop: 10,
   },
 });

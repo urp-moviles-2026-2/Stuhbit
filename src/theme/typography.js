@@ -23,7 +23,7 @@ export const fontSize = {
   xl: 20,
   xxl: 24,
   display: 32,
-  timer: 48, // Para los números grandes del cronómetro (01:15:00)
+  timer: 48,
 };
 
 export const lineHeight = {
@@ -48,7 +48,7 @@ export const typography = {
     letterSpacing: -0.5,
   },
 
-  // Headline especificado en Stitch (Títulos de pantalla como "¡Hola, Sofía!", "Octubre 2025")
+  // Headline especificado en Stitch
   headline: {
     fontFamily: fontFamily.extraBold,
     fontWeight: fontWeight.extraBold,
@@ -57,7 +57,7 @@ export const typography = {
     letterSpacing: -0.3,
   },
 
-  // Título de sección ("Cronograma de Hoy", "Subir o Digitalizar", "Sprint de Estudio")
+  // Título de sección
   title: {
     fontFamily: fontFamily.bold,
     fontWeight: fontWeight.bold,
@@ -65,7 +65,7 @@ export const typography = {
     lineHeight: lineHeight.xxl,
   },
 
-  // Título de cards ("Derivadas Parciales...", "Cálculo Multivariable", "1h 45m")
+  // Título de cards
   subtitle: {
     fontFamily: fontFamily.bold,
     fontWeight: fontWeight.bold,
@@ -73,7 +73,7 @@ export const typography = {
     lineHeight: lineHeight.lg,
   },
 
-  // Texto base (Body en Stitch: párrafos explicativos, descripciones de clases)
+  // Texto base
   body: {
     fontFamily: fontFamily.regular,
     fontWeight: fontWeight.regular,
@@ -81,7 +81,7 @@ export const typography = {
     lineHeight: lineHeight.md,
   },
 
-  // Texto secundario (Ubicaciones como "Aula B-204", fechas relativas)
+  // Texto secundario
   bodySmall: {
     fontFamily: fontFamily.regular,
     fontWeight: fontWeight.regular,
@@ -89,7 +89,7 @@ export const typography = {
     lineHeight: lineHeight.sm,
   },
 
-  // Headers de tarjeta ("META DIARIA", "RACHA ACTIVA", "BALANCE SEMANAL")
+  // Headers de tarjeta
   cardLabel: {
     fontFamily: fontFamily.bold,
     fontWeight: fontWeight.bold,
@@ -98,7 +98,7 @@ export const typography = {
     letterSpacing: 0.5,
   },
 
-  // Badges y botones (Label en Stitch: chips de filtros, estados "En curso", "Finalizado")
+  // Badges y botones
   label: {
     fontFamily: fontFamily.semiBold,
     fontWeight: fontWeight.semiBold,
@@ -106,7 +106,7 @@ export const typography = {
     lineHeight: lineHeight.sm,
   },
 
-  // Fechas y metadatos pequeños (letras de días "L M X...", páginas de PDF)
+  // Fechas y metadatos pequeños
   caption: {
     fontFamily: fontFamily.medium,
     fontWeight: fontWeight.medium,
@@ -114,7 +114,7 @@ export const typography = {
     lineHeight: lineHeight.xs,
   },
 
-  // Micro-etiquetas (insignias diminutas o tags compactos)
+  // Micro-etiquetas
   micro: {
     fontFamily: fontFamily.semiBold,
     fontWeight: fontWeight.semiBold,

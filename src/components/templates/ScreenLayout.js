@@ -34,7 +34,6 @@ export const ScreenLayout = ({
           paddingTop: insets.top,
           paddingLeft: insets.left,
           paddingRight: insets.right,
-          // No aplicamos paddingBottom aquí si tienes un BottomNavBar que ya maneja su propio inset
         },
         style,
       ]}

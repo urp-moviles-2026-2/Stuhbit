@@ -2,13 +2,11 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, palette, spacing, fontSize, radius } from "../theme";
-import { ScreenLayout } from "../components/templates/ScreenLayout.js";
-import { AppHeader } from "../components/templates/AppHeader.js";
-import { Banner } from "../components/organisms/Banner.js";
-import { Card } from "../components/molecules/Card.js";
-import { ProgressBar } from "../components/atoms/ProgressBar.js";
-import { TimelineItem } from "../components/organisms/TimelineItem.js";
-import { Button } from "../components/atoms/Button.js";
+import { ScreenLayout } from "../components/templates/ScreenLayout";
+import { AppHeader } from "../components/templates/AppHeader";
+import { Banner } from "../components/organisms/Banner";
+import { ProgressBar } from "../components/atoms/ProgressBar";
+import { TimelineItem } from "../components/organisms/TimelineItem";
 
 export default function ScheduleScreen({ navigation }) {
   return (
@@ -47,7 +45,7 @@ export default function ScheduleScreen({ navigation }) {
 
       {/* Métricas: Meta diaria y Racha activa */}
       <View style={styles.metricsRow}>
-        <Card variant="elevated" style={styles.metricCard}>
+        <View style={styles.whiteCardBox}>
           <View style={styles.metricCardTop}>
             <Text style={styles.metricLabel}>META DIARIA</Text>
             <Text style={styles.metricPercent}>85%</Text>
@@ -55,7 +53,7 @@ export default function ScheduleScreen({ navigation }) {
           <View style={styles.metricValueRow}>
             <Ionicons
               name="checkmark-circle-outline"
-              size={24}
+              size={22}
               color={palette.secondary[600]}
             />
             <View>
@@ -69,9 +67,9 @@ export default function ScheduleScreen({ navigation }) {
             height={6}
             style={{ marginTop: 8 }}
           />
-        </Card>
+        </View>
 
-        <Card variant="elevated" style={styles.metricCard}>
+        <View style={styles.whiteCardBox}>
           <View style={styles.metricCardTop}>
             <Text style={styles.metricLabel}>RACHA ACTIVA</Text>
             <Ionicons name="flame" size={16} color={palette.tertiary[600]} />
@@ -98,7 +96,7 @@ export default function ScheduleScreen({ navigation }) {
               </View>
             ))}
           </View>
-        </Card>
+        </View>
       </View>
 
       {/* Encabezado del Cronograma */}
@@ -161,21 +159,30 @@ export default function ScheduleScreen({ navigation }) {
         />
       </View>
 
-      {/* Acciones Rápidas */}
-      <Text style={[styles.sectionTitle, { marginTop: spacing.md }]}>
+      {/* Acciones Rápidas con tarjetas delimitadas */}
+      <Text style={[styles.sectionTitle, { marginTop: 16 }]}>
         Acciones Rápidas
       </Text>
       <View style={styles.quickActionsRow}>
-        <Card variant="outlined" style={styles.quickActionCard}>
-          <Ionicons name="calendar-outline" size={20} color={colors.primary} />
+        <View style={styles.quickActionBox}>
+          <View style={styles.iconSquare}>
+            <Ionicons
+              name="calendar-outline"
+              size={20}
+              color={colors.primary}
+            />
+          </View>
           <Text style={styles.quickActionTitle}>Subir horario</Text>
           <Text style={styles.quickActionSub}>PDF o foto de matrícula</Text>
-        </Card>
-        <Card variant="outlined" style={styles.quickActionCard}>
-          <Ionicons name="create-outline" size={20} color={colors.primary} />
+        </View>
+
+        <View style={styles.quickActionBox}>
+          <View style={styles.iconSquare}>
+            <Ionicons name="create-outline" size={20} color={colors.primary} />
+          </View>
           <Text style={styles.quickActionTitle}>Apunte rápido</Text>
           <Text style={styles.quickActionSub}>Nota o audio a texto</Text>
-        </Card>
+        </View>
       </View>
     </ScreenLayout>
   );
@@ -186,7 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: spacing.sm ?? 10,
+    marginBottom: 8,
   },
   greetingTitle: {
     fontSize: fontSize.xl ?? 20,
@@ -194,7 +201,7 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   greetingSubtitle: {
-    fontSize: fontSize.xs ?? 13,
+    fontSize: 13,
     color: colors.textSecondary,
     marginTop: 4,
     maxWidth: 240,
@@ -206,9 +213,9 @@ const styles = StyleSheet.create({
   },
   weekTag: {
     backgroundColor: palette.primary[50],
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: radius.full || 9999,
+    borderRadius: 9999,
   },
   weekTagText: {
     fontSize: 11,
@@ -216,16 +223,25 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   bannerSpacing: {
-    marginVertical: spacing.sm ?? 12,
+    marginVertical: 12,
   },
   metricsRow: {
     flexDirection: "row",
-    gap: spacing.sm ?? 12,
-    marginBottom: spacing.md ?? 16,
+    gap: 12,
+    marginBottom: 16,
   },
-  metricCard: {
+  whiteCardBox: {
     flex: 1,
-    padding: spacing.sm ?? 12,
+    backgroundColor: palette.white,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: palette.neutral[200],
+    padding: 12,
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   metricCardTop: {
     flexDirection: "row",
@@ -250,7 +266,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   metricMainValue: {
-    fontSize: fontSize.sm ?? 14,
+    fontSize: 14,
     fontWeight: "700",
     color: colors.text,
   },
@@ -264,9 +280,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   streakDot: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -288,15 +304,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginVertical: spacing.sm ?? 10,
+    marginVertical: 10,
   },
   sectionTitle: {
-    fontSize: fontSize.md ?? 16,
+    fontSize: 16,
     fontWeight: "700",
     color: colors.text,
   },
   weekLink: {
-    fontSize: fontSize.xs ?? 12,
+    fontSize: 12,
     fontWeight: "600",
     color: colors.primary,
   },
@@ -305,23 +321,41 @@ const styles = StyleSheet.create({
   },
   quickActionsRow: {
     flexDirection: "row",
-    gap: spacing.sm ?? 10,
-    marginTop: spacing.xs ?? 8,
-    marginBottom: spacing.xl ?? 24,
+    gap: 12,
+    marginTop: 10,
+    marginBottom: 32,
   },
-  quickActionCard: {
+  quickActionBox: {
     flex: 1,
-    padding: spacing.sm ?? 12,
+    backgroundColor: palette.white,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: palette.neutral[200],
+    padding: 14,
     gap: 4,
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  iconSquare: {
+    width: 34,
+    height: 34,
+    borderRadius: 8,
+    backgroundColor: palette.primary[50],
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 4,
   },
   quickActionTitle: {
-    fontSize: fontSize.sm ?? 13,
+    fontSize: 14,
     fontWeight: "700",
     color: colors.text,
-    marginTop: 2,
   },
   quickActionSub: {
     fontSize: 11,
     color: colors.textSecondary,
+    lineHeight: 15,
   },
 });
