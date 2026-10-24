@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   detectedCard: {
-    backgroundColor: palette.success[50],
+    backgroundColor: palette.success,
     borderColor: colors.success,
     borderWidth: 1.5,
     borderStyle: "solid",
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   dayTextActive: {
-    color: calors.white,
+    color: colors.white,
   },
   dotsContainer: {
     flexDirection: "row",
@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     overflow: "hidden",
-    backgroundColor: calors.neutral[200],
+    backgroundColor: colors.neutral[200],
   },
   progressSection: {
     height: "100%",
