@@ -34,13 +34,13 @@ export const Card = ({
     },
     outlined: {
       backgroundColor: colors.surface,
-      borderColor: colors.border,
+      borderColor: colors.neutral[200],
       borderWidth: 1,
     },
     flat: {
-      backgroundColor: palette.neutral[50],
-      borderColor: "transparent",
-      borderWidth: 0,
+      backgroundColor: colors.surface,
+      borderColor: palette.neutral[200],
+      borderWidth: 1,
     },
     tinted: {
       backgroundColor: palette.primary[50],
@@ -56,19 +56,8 @@ export const Card = ({
       onPress={onPress}
       style={({ pressed } = {}) => [
         styles.base,
-        {
-          padding: paddingValues[padding],
-          backgroundColor: currentVariant.backgroundColor,
-          borderColor: currentVariant.borderColor,
-          borderWidth: currentVariant.borderWidth,
-        },
-        currentVariant.shadowColor && {
-          shadowColor: currentVariant.shadowColor,
-          shadowOffset: currentVariant.shadowOffset,
-          shadowOpacity: currentVariant.shadowOpacity,
-          shadowRadius: currentVariant.shadowRadius,
-          elevation: currentVariant.elevation,
-        },
+        currentVariant,
+        { padding: paddingValues[padding] },
         pressed && styles.pressed,
         style,
       ]}
