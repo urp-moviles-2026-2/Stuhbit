@@ -20,8 +20,11 @@ import FocusScreen from "./src/screens/FocusScreen.js"; // Enfoque
 import BlockDetailScreen from "./src/screens/BlockDetailScreen.js"; // Detalle de Bloque
 import UploadNoteModal from "./src/screens/UploadNoteModal.js"; // Modal de Subida de Apunte
 import ScheduleBlockModal from "./src/screens/ScheduleBlockModal.js"; // Modal de Agendar Bloque
+import ProfileMenuModal from "./src/screens/ProfileMenuModal.js"; // Modal de Perfil
 
 import { colors } from "./src/theme/colors.js";
+
+import { Avatar } from "./src/components/atoms/Avatar.js";
 
 const primaryColor = colors.primary; // color principal
 
@@ -69,15 +72,25 @@ const CronogramaStack = createNativeStackNavigator({
   screens: {
     Cronograma: {
       screen: ScheduleScreen,
-      options: { title: "Cronograma" },
+      options: ({ navigation }) => ({
+        title: "Cronograma",
+        headerRight: () => (
+          <Avatar
+            name="Sofía M." // O la variable de usuario de tu app
+            size={32}
+            onPress={() => navigation.navigate("ProfileMenu")}
+            style={{ marginRight: 16 }}
+          />
+        ),
+      }),
     },
   },
 });
 
 const MainTabs = createBottomTabNavigator({
   screenOptions: {
-    headerShown: false, // Evita headers dobles con los stacks internos
-    tabBarActiveTintColor: primaryColor,
+    headerShown: false,
+    tabBarActiveTintColor: "#4F46E5",
     tabBarInactiveTintColor: "#94A3B8",
   },
   screens: {
@@ -92,33 +105,57 @@ const MainTabs = createBottomTabNavigator({
     },
     CalendarioTab: {
       screen: CalendarScreen,
-      options: {
+      options: ({ navigation }) => ({
         title: "Calendario",
-        headerShown: true, // Se muestra header ya que no está envuelto en un stack propio
+        headerShown: true,
+        headerRight: () => (
+          <Avatar
+            name="Sofía M."
+            size={32}
+            onPress={() => navigation.navigate("ProfileMenu")}
+            style={{ marginRight: 16 }}
+          />
+        ),
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="calendar-outline" color={color} size={size} />
         ),
-      },
+      }),
     },
     ApuntesTab: {
       screen: NotesScreen,
-      options: {
+      options: ({ navigation }) => ({
         title: "Apuntes",
         headerShown: true,
+        headerRight: () => (
+          <Avatar
+            name="Sofía M."
+            size={32}
+            onPress={() => navigation.navigate("ProfileMenu")}
+            style={{ marginRight: 16 }}
+          />
+        ),
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="folder-outline" color={color} size={size} />
         ),
-      },
+      }),
     },
     EnfoqueTab: {
       screen: FocusScreen,
-      options: {
+      options: ({ navigation }) => ({
         title: "Enfoque",
         headerShown: true,
+        headerRight: () => (
+          <Avatar
+            name="Sofía M."
+            size={32}
+            onPress={() => navigation.navigate("ProfileMenu")}
+            style={{ marginRight: 16 }}
+          />
+        ),
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="timer-outline" color={color} size={size} />
         ),
-      },
+      }),
     },
   },
 });
@@ -150,6 +187,13 @@ const RootStack = createNativeStackNavigator({
       options: ({ route }) => ({
         title: `Detalle del Bloque #${route.params?.id ?? ""}`,
       }),
+    },
+    ProfileMenu: {
+      screen: ProfileMenuModal,
+      options: {
+        presentation: "modal",
+        title: "Mi Cuenta",
+      },
     },
   },
 });
