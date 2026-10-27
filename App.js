@@ -17,7 +17,7 @@ import ScheduleScreen from "./src/screens/ScheduleScreen.js"; // Cronograma
 import CalendarScreen from "./src/screens/CalendarScreen.js"; // Calendario
 import NotesScreen from "./src/screens/NotesScreen.js"; // Apuntes
 import FocusScreen from "./src/screens/FocusScreen.js"; // Enfoque
-import SettingsScreen from "./src/screens/SettingsScreen.js" // Ajustes
+import SettingsScreen from "./src/screens/SettingsScreen.js"; // Ajustes
 import BlockDetailScreen from "./src/screens/BlockDetailScreen.js"; // Detalle de Bloque
 import UploadNoteModal from "./src/screens/UploadNoteModal.js"; // Modal de Subida de Apunte
 import ScheduleBlockModal from "./src/screens/ScheduleBlockModal.js"; // Modal de Agendar Bloque
@@ -200,6 +200,13 @@ const RootStack = createNativeStackNavigator({
       screen: SettingsScreen,
       options: {
         title: "Configuración y Ajustes",
+      },
+    },
+    Perfil: {
+      screen: ProfileScreen,
+      options: {
+        headerShown: false,
+        title: "Perfil",
       },
     },
   },
