@@ -22,6 +22,7 @@ import BlockDetailScreen from "./src/screens/BlockDetailScreen.js"; // Detalle d
 import UploadNoteModal from "./src/screens/UploadNoteModal.js"; // Modal de Subida de Apunte
 import ScheduleBlockModal from "./src/screens/ScheduleBlockModal.js"; // Modal de Agendar Bloque
 import ProfileMenuModal from "./src/screens/ProfileMenuModal.js"; // Modal de Perfil
+import ProfileScreen from "./src/screens/ProfileScreen.js"; // Pantalla de Perfil
 
 import { colors } from "./src/theme/colors.js";
 
