@@ -362,21 +362,73 @@
 
 //codigo de prueba para el paso 4 del lab3
 import React from "react";
-import Placeholder from "./Placeholder";
+import {
+  View,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { useSelector } from "react-redux";
+import { selectAllBlocks } from "../store/scheduleSlice.js";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ScheduleScreen() {
+  const blocks = useSelector(selectAllBlocks);
+  const navigation = useNavigation();
+
   return (
-    <Placeholder
-      title="Cronograma de Hoy"
-      description="Línea de tiempo diaria con clases y detección de huecos libres para estudiar."
-      links={[
-        {
-          label: "Ver Detalle del Bloque #101",
-          to: "DetalleBloque",
-          params: { id: 101 },
-        },
-        { label: "Agendar Bloque de Estudio (Modal)", to: "AgendarBloque" },
-      ]}
-    />
+    <View style={styles.container}>
+      <FlatList
+        data={blocks}
+        keyExtractor={(item) => item.id}
+        ListEmptyComponent={
+          <Text style={styles.empty}>No hay bloques agendados</Text>
+        }
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() =>
+              navigation.navigate("DetalleBloque", { id: item.id })
+            }
+          >
+            <Text style={styles.title}>{item.title}</Text>
+            <Text>
+              {item.course} | {item.startTime} - {item.endTime}
+            </Text>
+            <Text>Estado: {item.status}</Text>
+          </TouchableOpacity>
+        )}
+      />
+
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate("AgendarBloque")}
+      >
+        <Text style={styles.fabText}>+ Agregar</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16 },
+  card: {
+    backgroundColor: "#fff",
+    padding: 16,
+    marginBottom: 12,
+    borderRadius: 8,
+    elevation: 2,
+  },
+  title: { fontSize: 16, fontWeight: "bold", marginBottom: 4 },
+  empty: { textAlign: "center", marginTop: 24, fontSize: 16, color: "#666" },
+  fab: {
+    position: "absolute",
+    bottom: 24,
+    right: 24,
+    backgroundColor: "#4F46E5",
+    padding: 16,
+    borderRadius: 50,
+  },
+  fabText: { color: "#fff", fontWeight: "bold" },
+});

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors, palette, spacing, typography } from "../theme";
 import { ScreenLayout } from "../components/templates/ScreenLayout.js";
@@ -9,32 +9,14 @@ import { Badge } from "../components/atoms/Badge.js";
 import { Button } from "../components/atoms/Button.js";
 import { ProgressBar } from "../components/atoms/ProgressBar.js";
 import { useNavigation } from "@react-navigation/native";
-import { Placeholder } from "./Placeholder";
 
-// Datos de ejemplo (después se reemplazan por los datos reales del usuario)
-const STATS = [
-  {
-    id: "streak",
-    label: "Racha",
-    value: "5 días",
-    icon: "flame",
-    color: palette.tertiary[600],
-  },
-  {
-    id: "goal",
-    label: "Meta diaria",
-    value: "85%",
-    icon: "checkmark-circle-outline",
-    color: palette.secondary[600],
-  },
-  {
-    id: "notes",
-    label: "Apuntes",
-    value: "14",
-    icon: "document-text-outline",
-    color: colors.primary,
-  },
-];
+// --- IMPORTACIONES LAB-04 (Redux y Sesión) ---
+import { useSelector } from "react-redux";
+import {
+  selectPendingBlocksCount,
+  selectCompletedBlocksCount,
+} from "../store/scheduleSlice.js";
+import { useSesion } from "../context/SesionContext.js";
 
 const SUBJECTS = [
   { id: "calc", name: "Cálculo II", notes: 5, color: colors.primary },
@@ -47,29 +29,61 @@ const SUBJECTS = [
   },
 ];
 
-const ACCOUNT_INFO = [
-  {
-    id: "mail",
-    icon: "mail-outline",
-    label: "Correo",
-    value: "sofia.mendoza@correo.edu.pe",
-  },
-  {
-    id: "code",
-    icon: "id-card-outline",
-    label: "Código de estudiante",
-    value: "20220000",
-  },
-  {
-    id: "sync",
-    icon: "sync-outline",
-    label: "Último horario importado",
-    value: "Hoy, 8:00 AM",
-  },
-];
-
 export default function ProfileScreen({}) {
   const navigation = useNavigation();
+
+  // --- LÓGICA LAB-04 ---
+  const pendientes = useSelector(selectPendingBlocksCount);
+  const completados = useSelector(selectCompletedBlocksCount);
+  const { usuario, cerrarSesion } = useSesion();
+
+  // Reemplazamos los STATS fijos por los datos dinámicos derivados de Redux
+  const STATS = [
+    {
+      id: "pending",
+      label: "Pendientes",
+      value: pendientes.toString(),
+      icon: "time-outline",
+      color: palette.tertiary[600],
+    },
+    {
+      id: "completed",
+      label: "Completados",
+      value: completados.toString(),
+      icon: "checkmark-circle-outline",
+      color: palette.secondary[600],
+    },
+    {
+      id: "total",
+      label: "Total Bloques",
+      value: (pendientes + completados).toString(),
+      icon: "document-text-outline",
+      color: colors.primary,
+    },
+  ];
+
+  // Actualizamos el correo dinámicamente con el usuario del Login
+  const ACCOUNT_INFO = [
+    {
+      id: "mail",
+      icon: "mail-outline",
+      label: "Correo",
+      value: usuario?.correo || "sofia.mendoza@correo.edu.pe",
+    },
+    {
+      id: "code",
+      icon: "id-card-outline",
+      label: "Código de estudiante",
+      value: "20220000",
+    },
+    {
+      id: "sync",
+      icon: "sync-outline",
+      label: "Último horario importado",
+      value: "Hoy, 8:00 AM",
+    },
+  ];
+
   return (
     <ScreenLayout
       header={
@@ -83,9 +97,14 @@ export default function ProfileScreen({}) {
       {/* Tarjeta principal del estudiante */}
       <Card variant="elevated" style={styles.profileCard}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>SM</Text>
+          {/* Mostramos las iniciales basadas en el nombre del usuario o 'SM' por defecto */}
+          <Text style={styles.avatarText}>
+            {usuario?.nombre
+              ? usuario.nombre.substring(0, 2).toUpperCase()
+              : "SM"}
+          </Text>
         </View>
-        <Text style={styles.name}>Sofía Mendoza</Text>
+        <Text style={styles.name}>{usuario?.nombre || "Sofía Mendoza"}</Text>
         <Text style={styles.career}>Ingeniería de Software · Ciclo 6</Text>
         <View style={styles.profileBadges}>
           <Badge label="Semestre 2025-1" variant="primary" size="sm" />
@@ -93,7 +112,7 @@ export default function ProfileScreen({}) {
         </View>
       </Card>
 
-      {/* Estadísticas rápidas */}
+      {/* Estadísticas rápidas (Ahora usan selectores de Redux) */}
       <View style={styles.statsRow}>
         {STATS.map((stat) => (
           <Card key={stat.id} variant="elevated" style={styles.statCard}>
@@ -166,17 +185,28 @@ export default function ProfileScreen({}) {
       </Card>
 
       {/* Acciones */}
-      <Button
-        title="Volver"
-        variant="primary"
-        size="md"
-        icon={
-          <Ionicons name="create-outline" size={18} color={palette.white} />
-        }
-        onPress={() => {
-          navigation.navigate("ProfileMenu");
-        }}
-      />
+      <View style={{ gap: spacing.sm, marginBottom: spacing.xl }}>
+        <Button
+          title="Menú de Ajustes"
+          variant="primary"
+          size="md"
+          icon={
+            <Ionicons name="settings-outline" size={18} color={palette.white} />
+          }
+          onPress={() => navigation.navigate("ProfileMenu")}
+        />
+
+        {/* Botón de Cerrar Sesión requerido por el LAB-04 */}
+        <Button
+          title="Cerrar sesión"
+          variant="outlined"
+          size="md"
+          icon={
+            <Ionicons name="log-out-outline" size={18} color={colors.primary} />
+          }
+          onPress={cerrarSesion}
+        />
+      </View>
     </ScreenLayout>
   );
 }
