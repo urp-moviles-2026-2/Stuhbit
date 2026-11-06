@@ -18,8 +18,14 @@ export function suscribirPersistencia(store) {
     const estadoActual = store.getState().schedule.items;
     if (estadoActual !== ultimoEstado) {
       ultimoEstado = estadoActual;
-      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(estadoActual)).catch((e) =>
-        console.warn("Error al guardar en AsyncStorage", e)
+
+      console.log(
+        "ESTADO ACTUAL DEL STORE:",
+        JSON.stringify(store.getState(), null, 2),
+      );
+
+      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(estadoActual)).catch(
+        (e) => console.warn("Error al guardar en AsyncStorage", e),
       );
     }
   });

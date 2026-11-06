@@ -5,7 +5,11 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 // Redux
 import { useDispatch, useSelector } from "react-redux";
-import { selectBlockById, updateBlock, deleteBlock } from "../store/scheduleSlice.js";
+import {
+  selectBlockById,
+  updateBlock,
+  deleteBlock,
+} from "../store/scheduleSlice.js";
 
 export default function BlockDetailScreen() {
   const route = useRoute();
@@ -22,10 +26,10 @@ export default function BlockDetailScreen() {
       headerRight: () => (
         <Pressable
           onPress={() => {
-            console.log([Header Action] Compartiendo datos del bloque #${id});
+            console.log("[Header Action] Compartiendo datos del bloque #${id}");
             Alert.alert(
               "Acción de Header",
-              Se ha compartido el reporte del bloque #${id},
+              "Se ha compartido el reporte del bloque #${id}",
             );
           }}
           hitSlop={12}
@@ -41,7 +45,9 @@ export default function BlockDetailScreen() {
   if (!block) {
     return (
       <View style={styles.container}>
-        <Text style={styles.emptyText}>Este bloque ya no existe o fue eliminado.</Text>
+        <Text style={styles.emptyText}>
+          Este bloque ya no existe o fue eliminado.
+        </Text>
       </View>
     );
   }
@@ -51,16 +57,22 @@ export default function BlockDetailScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>{block.title}</Text>
       <Text style={styles.text}>Curso: {block.course}</Text>
-      <Text style={styles.text}>Horario: {block.startTime} - {block.endTime} ({block.day})</Text>
-      <Text style={styles.text}>Estado: <Text style={{ fontWeight: 'bold' }}>{block.status}</Text></Text>
+      <Text style={styles.text}>
+        Horario: {block.startTime} - {block.endTime} ({block.day})
+      </Text>
+      <Text style={styles.text}>
+        Estado: <Text style={{ fontWeight: "bold" }}>{block.status}</Text>
+      </Text>
 
-      {block.notes ? <Text style={styles.notes}>Notas: {block.notes}</Text> : null}
+      {block.notes ? (
+        <Text style={styles.notes}>Notas: {block.notes}</Text>
+      ) : null}
 
       <View style={styles.actions}>
-        <Button 
-          title="Marcar como Completado" 
+        <Button
+          title="Marcar como Completado"
           color="#10B981" // Color verde
-          onPress={() => dispatch(updateBlock({ id, status: "completado" }))} 
+          onPress={() => dispatch(updateBlock({ id, status: "completado" }))}
         />
         <View style={{ height: 16 }} />
         <Button
@@ -78,9 +90,26 @@ export default function BlockDetailScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 24, backgroundColor: "#fff" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 16, color: "#0F172A" },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 16,
+    color: "#0F172A",
+  },
   text: { fontSize: 16, marginBottom: 8, color: "#333" },
-  notes: { marginTop: 12, padding: 12, backgroundColor: "#F1F5F9", fontStyle: "italic", color: "#475569", borderRadius: 8 },
+  notes: {
+    marginTop: 12,
+    padding: 12,
+    backgroundColor: "#F1F5F9",
+    fontStyle: "italic",
+    color: "#475569",
+    borderRadius: 8,
+  },
   actions: { marginTop: 32 },
-  emptyText: { fontSize: 16, color: "#64748B", textAlign: "center", marginTop: 40 }
+  emptyText: {
+    fontSize: 16,
+    color: "#64748B",
+    textAlign: "center",
+    marginTop: 40,
+  },
 });

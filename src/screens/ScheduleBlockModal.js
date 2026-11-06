@@ -1,15 +1,53 @@
-import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet, Text } from "react-native";
+import React, { useState, useRef } from "react";
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
 import { useDispatch } from "react-redux";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigation } from "@react-navigation/native";
 import { addBlock } from "../store/scheduleSlice.js";
+import {
+  blockSchema,
+  blockVacio,
+  TIPOS_BLOQUE,
+  DIAS_SEMANA,
+} from "../schemas/blockSchema.js";
+import FormField from "../components/FormField.js";
+import { colors, spacing, typography, radius } from "../theme.js";
 
-export default function ScheduleBlockModal() {
+export default function ScheduleBlockModal({ navigation }) {
   const [title, setTitle] = useState("");
   const [course, setCourse] = useState("");
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm({
+    resolver: zodResolver(blockSchema),
+    defaultValues: blockVacio,
+    mode: "onBlur",
+    reValidateMode: "onChange",
+  });
+
+  const onSubmit = (datos) => {
+    dispatch(scheduleSlice(datos)); // datos ya viene validado y con trim()
+    reset();
+    navigation.goBack();
+  };
 
   const handleSave = () => {
     // Validación básica: no guardar si el título está vacío
