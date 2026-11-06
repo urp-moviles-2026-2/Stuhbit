@@ -10,7 +10,10 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Provider } from "react-redux";
 import { store } from "./src/store/index.js";
 import { hydrateBlocks } from "./src/store/scheduleSlice.js";
-import { cargarBloques, suscribirPersistencia } from "./src/store/persistencia.js";
+import {
+  cargarBloques,
+  suscribirPersistencia,
+} from "./src/store/persistencia.js";
 
 // Context de Sesión
 import { SesionProvider, useSesion } from "./src/context/SesionContext.js";
@@ -30,6 +33,8 @@ import LoginScreen from "./src/screens/LoginScreen.js"; // Pantalla de Login (Ag
 
 import { colors } from "./src/theme/colors.js";
 import { Avatar } from "./src/components/atoms/Avatar.js";
+
+import ContactoScreen from "./src/screens/ContactoScreen.js";
 
 const primaryColor = colors.primary;
 
@@ -188,6 +193,13 @@ const RootStack = createNativeStackNavigator({
       options: {
         headerShown: false,
         title: "Perfil",
+      },
+    },
+    Contacto: {
+      if: useEstaLogueado,
+      screen: ContactoScreen,
+      options: {
+        title: "Contacto y Feedback",
       },
     },
   },

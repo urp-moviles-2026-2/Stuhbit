@@ -377,6 +377,8 @@ export default function ScheduleScreen() {
   const blocks = useSelector(selectAllBlocks);
   const navigation = useNavigation();
 
+  console.log("📦 Bloques en ScheduleScreen:", blocks);
+
   return (
     <View style={styles.container}>
       <FlatList

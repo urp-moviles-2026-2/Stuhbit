@@ -20,7 +20,7 @@ export const blockSchema = z
       .trim()
       .min(1, "El título es obligatorio")
       .max(50, "El título no puede superar los 50 caracteres"),
-    courso: z
+    curso: z
       .string()
       .trim()
       .min(1, "El curso es obligatorio")
@@ -43,7 +43,7 @@ export const blockSchema = z
   .refine(
     (datos) => {
       if (!timeRegex.test(datos.horaInicio) || !timeRegex.test(datos.horaFin)) {
-        return false;
+        return true;
       }
       return datos.horaInicio < datos.horaFin;
     },

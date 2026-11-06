@@ -1,4 +1,5 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { title } from "node:process";
 
 // 3 datos iniciales requeridos (reemplazan los datos fijos del LAB-03)
 const initialState = {
@@ -44,21 +45,23 @@ const scheduleSlice = createSlice({
   initialState,
   reducers: {
     // 1. Reducer CREAR con prepare (genera id único y timestamp serializable)
+    // src/store/scheduleSlice.js
     addBlock: {
       reducer(state, action) {
         state.items.unshift(action.payload);
       },
-      prepare({ title, course, startTime, endTime, day, notes = "" }) {
+      prepare(datos = {}) {
         return {
           payload: {
             id: nanoid(),
-            title,
-            course: course || "General",
-            startTime: startTime || "09:00",
-            endTime: endTime || "10:00",
-            day: day || "Hoy",
+            title: datos.titulo || datos.title,
+            course: datos.curso || datos.course,
+            type: datos.tipo || datos.type || "clase",
+            day: datos.dia || datos.day || "Lunes",
+            startTime: datos.horaInicio || datos.startTime || "08:00",
+            endTime: datos.horaFin || datos.endTime || "10:00",
             status: "pendiente",
-            notes,
+            notes: datos.notes || "",
             createdAt: new Date().toISOString(),
           },
         };
@@ -89,7 +92,8 @@ const scheduleSlice = createSlice({
 });
 
 // Exportación de acciones
-export const { addBlock, updateBlock, deleteBlock, hydrateBlocks } = scheduleSlice.actions;
+export const { addBlock, updateBlock, deleteBlock, hydrateBlocks } =
+  scheduleSlice.actions;
 
 // --- SELECTORES ---
 
