@@ -1,4 +1,4 @@
-// src/screens/ContactoScreen.js
+/// src/screens/ContactoScreen.js
 import React, { useRef } from "react";
 import {
   View,
@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigation } from "@react-navigation/native";
 import {
   contactoSchema,
   contactoVacio,
@@ -20,9 +21,10 @@ import {
 } from "../schemas/contactoSchema.js";
 import { useSesion } from "../context/SesionContext.js";
 import FormField from "../components/FormField.js";
-import { colors, spacing, typography, radius } from "../theme/index.js";
+import { colors, spacing, typography, radius } from "../theme";
 
-export default function ContactoScreen({ navigation }) {
+export default function ContactoScreen() {
+  const navigation = useNavigation();
   const { usuario } = useSesion();
 
   const correoRef = useRef(null);
@@ -39,28 +41,31 @@ export default function ContactoScreen({ navigation }) {
     defaultValues: {
       ...contactoVacio,
       nombre: usuario?.nombre || "",
-      correo: usuario?.email || usuario?.correo || "",
+      correo: usuario?.correo || "",
     },
     mode: "onBlur",
     reValidateMode: "onChange",
   });
 
   const onSubmit = async (datos) => {
-    // Simulación de envío asíncrono
     await new Promise((resolve) => setTimeout(resolve, 800));
     Alert.alert(
       "¡Mensaje enviado!",
-      `Gracias ${datos.nombre}. Nos pondremos en contacto contigo al correo ${datos.correo}.`,
+      `Gracias ${datos.nombre}. Nos pondremos en contacto al correo ${datos.correo}.`,
       [
         {
           text: "Aceptar",
           onPress: () => {
             reset();
-            navigation?.goBack();
+            navigation.goBack();
           },
         },
       ],
     );
+  };
+
+  const onError = (errores) => {
+    console.log("❌ Errores en Contacto:", errores);
   };
 
   return (
@@ -74,7 +79,7 @@ export default function ContactoScreen({ navigation }) {
       >
         <Text style={styles.titulo}>Contacto y Feedback</Text>
         <Text style={styles.subtitulo}>
-          Envíanos tus dudas, reportes de fallas o sugerencias para Stuhbit.
+          Envíanos tus reportes, consultas o sugerencias sobre la app.
         </Text>
 
         <FormField
@@ -82,6 +87,7 @@ export default function ContactoScreen({ navigation }) {
           name="nombre"
           label="Nombre completo"
           placeholder="Ej. Francisco Requena"
+          placeholderTextColor="rgba(148, 163, 184, 0.45)"
           autoCapitalize="words"
           returnKeyType="next"
           onSubmitEditing={() => correoRef.current?.focus()}
@@ -93,6 +99,7 @@ export default function ContactoScreen({ navigation }) {
           name="correo"
           label="Correo electrónico"
           placeholder="tu_correo@urp.edu.pe"
+          placeholderTextColor="rgba(148, 163, 184, 0.45)"
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
@@ -106,6 +113,7 @@ export default function ContactoScreen({ navigation }) {
           name="celular"
           label="Número celular"
           placeholder="987654321"
+          placeholderTextColor="rgba(148, 163, 184, 0.45)"
           keyboardType="number-pad"
           maxLength={9}
           returnKeyType="next"
@@ -145,7 +153,7 @@ export default function ContactoScreen({ navigation }) {
           )}
         />
 
-        {/* Calificación (Number) */}
+        {/* Calificación (Number 1-5) */}
         <Controller
           control={control}
           name="calificacion"
@@ -174,16 +182,17 @@ export default function ContactoScreen({ navigation }) {
           ref={mensajeRef}
           control={control}
           name="mensaje"
-          label="Mensaje o sugerencia"
-          placeholder="Escribe aquí los detalles..."
+          label="Mensaje o detalle"
+          placeholder="Escribe tu mensaje aquí..."
+          placeholderTextColor="rgba(148, 163, 184, 0.45)"
           multiline
           numberOfLines={4}
           maxLength={500}
           returnKeyType="send"
-          onSubmitEditing={handleSubmit(onSubmit)}
+          onSubmitEditing={handleSubmit(onSubmit, onError)}
         />
 
-        {/* Términos (Boolean + Refine) */}
+        {/* Switch Términos */}
         <Controller
           control={control}
           name="aceptaTerminos"
@@ -193,10 +202,10 @@ export default function ContactoScreen({ navigation }) {
                 <Switch
                   value={value}
                   onValueChange={onChange}
-                  trackColor={{ true: colors?.primary || "#4F46E5" }}
+                  trackColor={{ true: colors.primary }}
                 />
                 <Text style={styles.switchText}>
-                  Acepto el tratamiento de datos para responder a mi solicitud
+                  Acepto el uso de mis datos para recibir una respuesta
                 </Text>
               </View>
               {error ? <Text style={styles.error}>{error.message}</Text> : null}
@@ -206,7 +215,7 @@ export default function ContactoScreen({ navigation }) {
 
         <TouchableOpacity
           style={[styles.boton, isSubmitting && styles.botonDisabled]}
-          onPress={handleSubmit(onSubmit)}
+          onPress={handleSubmit(onSubmit, onError)}
           disabled={isSubmitting}
         >
           <Text style={styles.botonTexto}>
@@ -221,31 +230,30 @@ export default function ContactoScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors?.background || "#F8FAFC",
+    backgroundColor: colors.background,
   },
   scrollContent: {
-    padding: spacing?.md || 16,
-    gap: spacing?.sm || 12,
+    padding: spacing.md,
+    gap: spacing.sm,
   },
   titulo: {
-    ...typography?.h2,
+    ...typography.h2,
     fontSize: 22,
     fontWeight: "700",
-    color: colors?.textPrimary || "#0F172A",
+    color: colors.textPrimary,
   },
   subtitulo: {
-    ...typography?.caption,
-    color: colors?.textSecondary || "#64748B",
-    marginBottom: 8,
+    ...typography.caption,
+    color: colors.textSecondary,
+    marginBottom: 6,
   },
   section: {
     gap: 4,
   },
   label: {
-    ...typography?.caption,
+    ...typography.caption,
     fontWeight: "600",
-    color: colors?.textSecondary || "#475569",
-    marginBottom: 2,
+    color: colors.textSecondary,
   },
   rowChips: {
     flexDirection: "row",
@@ -254,18 +262,18 @@ const styles = StyleSheet.create({
   chip: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    borderRadius: radius?.full || 20,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors?.border || "#CBD5E1",
-    backgroundColor: colors?.surface || "#FFFFFF",
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
   },
   chipActivo: {
-    backgroundColor: colors?.primary || "#4F46E5",
-    borderColor: colors?.primary || "#4F46E5",
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   chipTexto: {
     fontSize: 13,
-    color: colors?.textSecondary || "#64748B",
+    color: colors.textSecondary,
   },
   chipTextoActivo: {
     color: "#FFFFFF",
@@ -291,20 +299,19 @@ const styles = StyleSheet.create({
   switchText: {
     flex: 1,
     fontSize: 13,
-    color: colors?.textSecondary || "#475569",
+    color: colors.textSecondary,
   },
   error: {
-    color: colors?.danger || "#EF4444",
+    color: colors.danger,
     fontSize: 12,
-    marginTop: 2,
   },
   boton: {
-    backgroundColor: colors?.primary || "#4F46E5",
+    backgroundColor: colors.primary,
     paddingVertical: 14,
-    borderRadius: radius?.md || 8,
+    borderRadius: radius.md || 8,
     alignItems: "center",
-    marginTop: 12,
-    marginBottom: 24,
+    marginTop: 10,
+    marginBottom: 20,
   },
   botonDisabled: {
     opacity: 0.6,
