@@ -7,7 +7,6 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
@@ -48,7 +47,10 @@ export default function ContactoScreen() {
   });
 
   const onSubmit = async (datos) => {
+    // Simulación de envío requerida por la rúbrica
     await new Promise((resolve) => setTimeout(resolve, 800));
+    console.log("Feedback enviado de forma exitosa:", datos);
+
     Alert.alert(
       "¡Mensaje enviado!",
       `Gracias ${datos.nombre}. Nos pondremos en contacto al correo ${datos.correo}.`,
@@ -148,7 +150,11 @@ export default function ContactoScreen() {
                   );
                 })}
               </View>
-              {error ? <Text style={styles.error}>{error.message}</Text> : null}
+              {error ? (
+                <Text style={styles.error} accessibilityRole="alert">
+                  {error.message}
+                </Text>
+              ) : null}
             </View>
           )}
         />
@@ -173,7 +179,11 @@ export default function ContactoScreen() {
                   </TouchableOpacity>
                 ))}
               </View>
-              {error ? <Text style={styles.error}>{error.message}</Text> : null}
+              {error ? (
+                <Text style={styles.error} accessibilityRole="alert">
+                  {error.message}
+                </Text>
+              ) : null}
             </View>
           )}
         />
@@ -188,8 +198,8 @@ export default function ContactoScreen() {
           multiline
           numberOfLines={4}
           maxLength={500}
-          returnKeyType="send"
-          onSubmitEditing={handleSubmit(onSubmit, onError)}
+          returnKeyType="done"
+          blurOnSubmit={true} // Crucial para cerrar el teclado correctamente en inputs multilinea
         />
 
         {/* Switch Términos */}
@@ -202,13 +212,18 @@ export default function ContactoScreen() {
                 <Switch
                   value={value}
                   onValueChange={onChange}
-                  trackColor={{ true: colors.primary }}
+                  trackColor={{ true: colors.primary, false: colors.border }}
+                  thumbColor={value ? colors.surface : "#f4f3f4"}
                 />
                 <Text style={styles.switchText}>
                   Acepto el uso de mis datos para recibir una respuesta
                 </Text>
               </View>
-              {error ? <Text style={styles.error}>{error.message}</Text> : null}
+              {error ? (
+                <Text style={styles.error} accessibilityRole="alert">
+                  {error.message}
+                </Text>
+              ) : null}
             </View>
           )}
         />
@@ -234,7 +249,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: spacing.md,
-    gap: spacing.sm,
+    gap: spacing.md, // Se amplió el gap para una mejor experiencia visual en móviles
   },
   titulo: {
     ...typography.h2,
@@ -248,7 +263,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   section: {
-    gap: 4,
+    gap: spacing.xs || 6,
   },
   label: {
     ...typography.caption,
@@ -302,8 +317,10 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   error: {
+    ...typography.caption,
     color: colors.danger,
     fontSize: 12,
+    marginTop: 2,
   },
   boton: {
     backgroundColor: colors.primary,
