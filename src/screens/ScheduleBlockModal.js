@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
+  // ScrollView,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
