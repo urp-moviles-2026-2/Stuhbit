@@ -1,0 +1,6490 @@
+This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching these patterns are excluded: node_module/**, .expo/**, package-lock.json
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+assets/
+  android-icon-background.png
+  android-icon-foreground.png
+  android-icon-monochrome.png
+  favicon.png
+  icon.png
+  splash-icon.png
+docs/
+  estado.md
+  formularios.md
+  navegacion.md
+src/
+  components/
+    atoms/
+      Avatar.js
+      Badge.js
+      Button.js
+      Checkbox.js
+      IconButton.js
+      ProgressBar.js
+      Switch.js
+    molecules/
+      Card.js
+      Chips.js
+      ListItem.js
+      SearchInput.js
+      SegmentedControl.js
+    organisms/
+      Banner.js
+      SprintStudySection.js
+      StudyNoteCard.js
+      TimelineItem.js
+    templates/
+      AppHeader.js
+      ScreenLayout.js
+    FormField.js
+  context/
+    SesionContext.js
+  navigation/
+    BottomNavBar.js
+  schemas/
+    blockSchema.js
+    contactoSchema.js
+    loginSchema.js
+  screens/
+    BlockDetailScreen.js
+    CalendarScreen.js
+    ContactoScreen.js
+    FocusScreen.js
+    LoginScreen.js
+    NotesScreen.js
+    Placeholder.js
+    ProfileMenuModal.js
+    ProfileScreen.js
+    ScheduleBlockModal.js
+    ScheduleScreen.js
+    SettingsScreen.js
+    UploadNoteModal.js
+  store/
+    index.js
+    persistencia.js
+    scheduleSlice.js
+  theme/
+    colors.js
+    index.js
+    radius.js
+    spacing.js
+    typography.js
+  utils/
+    breakpoints.js
+.gitignore
+AGENTS.md
+App.js
+app.json
+index.js
+LICENSE
+package.json
+README.md
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="docs/estado.md">
+# Mapa de estado - Stuhbit
+
+## Clasificación
+
+| Dato                           | Tipo    | Dónde vive                | Quién lo lee                                              | Quién lo modifica                          |
+| ------------------------------ | ------- | ------------------------- | --------------------------------------------------------- | ------------------------------------------ |
+| Textos de inputs (Formularios) | Local   | `useState` en componentes | ScheduleBlockModal, LoginScreen                           | ScheduleBlockModal, LoginScreen            |
+| Usuario logueado               | Context | `SesionContext`           | App.js, ProfileScreen                                     | LoginScreen, ProfileScreen (cerrar sesión) |
+| Bloques de Horario             | Store   | slice `schedule`          | ScheduleScreen, BlockDetailScreen, ProfileScreen (conteo) | ScheduleBlockModal, BlockDetailScreen      |
+
+## Forma del store
+
+```json
+{
+  "schedule": {
+    "items": [
+      {
+        "id": "string",
+        "title": "string",
+        "course": "string",
+        "startTime": "string",
+        "endTime": "string",
+        "day": "string",
+        "status": "string",
+        "notes": "string",
+        "createdAt": "string"
+      }
+    ]
+  }
+}
+```
+</file>
+
+<file path="docs/formularios.md">
+# Inventario de formularios - Stuhbit
+
+| Formulario          | Pantalla           | Campo                                                                | Regla                                       | Mensaje de error                                   | Destino                      |
+| ------------------- | ------------------ | -------------------------------------------------------------------- | ------------------------------------------- | -------------------------------------------------- | ---------------------------- |
+| Crear Bloque        | ScheduleBlockModal | titulo                                                               | Texto, entre 3 y 50 caracteres              | "Ingresa el nombre del curso"                      | `scheduleSlice`              |
+| Crear Bloque        | ScheduleBlockModal | curso                                                                | Texto, min 3, max 40 caracteres             | "Ingresa el nombre del curso"                      | `scheduleSlice`              |
+| Crear Bloque        | ScheduleBlockModal | tipo                                                                 | uno de: clase, estudio, repaso, examen      | "Seleccione tipo de bloque"                        | `scheduleSlice`              |
+| Crear Bloque        | ScheduleBlockModal | dia                                                                  | numero ( 1 a 7 / lunes a domingo)           | "Selecciona un dia valido"                         | `scheduleSlice`              |
+| Crear Bloque        | ScheduleBlockModal | horainicio / horafin                                                 | Formato HH:mm                               | "La hora de fin debe ser posterior a la de inicio" | `scheduleSlice`              |
+| Login               | LoginScreen        | correo                                                               | email valido, no vacio                      | "Ingresa un correo valido"                         | `SesionContext`              |
+| Login               | LoginScreen        | clave                                                                | texto, miinimo 6, maximo 50 caracteres      | "La contraseña debe tener al menos 6 caracteres"   | `SesionContext` (API en S12) |
+| Contacto y feedback | ContactoScreen     | nombre, correo, celular, tipo, calificacion, mensaje, aceptaTerminos | ver esquema                                 | ver esquema                                        | `Alert`                      |
+| Contacto y feedback | ContactoScreen     | nombre                                                               | Texto, mínimo 3 caracteres                  | "Escribe tu nombre completo"                       | `Alert`                      |
+| Contacto y feedback | ContactoScreen     | correo                                                               | Formato email institucional o estándar      | "Ingresa un correo válido"                         | `Alert`                      |
+| Contacto y feedback | ContactoScreen     | celular                                                              | Regex `^9\d{8}$` (9 dígitos empezando en 9) | "El celular debe tener 9 dígitos y empezar con 9"  | `Alert`                      |
+| Contacto y feedback | ContactoScreen     | tipo                                                                 | Uno de: `sugerencia`, `error`, `consulta`   | "Elige el tipo de mensaje"                         | `Alert`                      |
+| Contacto y feedback | ContactoScreen     | calificacion                                                         | Número entero de 1 a 5                      | "Selecciona una calificación"                      | `Alert`                      |
+| Contacto y feedback | ContactoScreen     | mensaje                                                              | Texto, entre 10 y 500 caracteres            | "El mensaje debe tener entre 10 y 500 caracteres"  | `Alert`                      |
+| Contacto y feedback | ContactoScreen     | aceptaTerminos                                                       | Booleano `true`                             | "Debes aceptar los términos"                       | `Alert`                      |
+
+## Formularios de este lab
+
+1. Crear Bloque (requisito 5)
+2. Login
+3. Contacto y feedback (requisito 6)
+</file>
+
+<file path="src/components/atoms/Avatar.js">
+import React, { useState } from "react";
+import { View, Text, Image, Pressable, StyleSheet } from "react-native";
+import { colors, palette } from "../../theme";
+
+export const Avatar = ({ source, name = "", size = 40, onPress, style }) => {
+  const [imageError, setImageError] = useState(false);
+
+  const getInitials = (text) => {
+    if (!text) return "";
+    const parts = text.trim().split(" ");
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (
+      parts[0].charAt(0) + parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
+  };
+
+  const containerSizeStyle = {
+    width: size,
+    height: size,
+    borderRadius: size / 2,
+  };
+
+  const hasValidImage = source && !imageError;
+
+  const content = hasValidImage ? (
+    <Image
+      source={typeof source === "string" ? { uri: source } : source}
+      style={[styles.image, containerSizeStyle]}
+      onError={() => setImageError(true)}
+      resizeMode="cover"
+    />
+  ) : (
+    <View style={[styles.fallbackContainer, containerSizeStyle]}>
+      <Text style={[styles.fallbackText, { fontSize: size * 0.4 }]}>
+        {getInitials(name)}
+      </Text>
+    </View>
+  );
+
+  if (onPress) {
+    return (
+      <Pressable
+        onPress={onPress}
+        hitSlop={8}
+        style={({ pressed }) => [
+          styles.pressableWrapper,
+          containerSizeStyle,
+          pressed && styles.pressed,
+          style,
+        ]}
+        accessibilityRole="button"
+        accessibilityLabel={name ? `Perfil de ${name}` : "Perfil de usuario"}
+      >
+        {content}
+      </Pressable>
+    );
+  }
+
+  return (
+    <View style={[styles.wrapper, containerSizeStyle, style]}>{content}</View>
+  );
+};
+
+const styles = StyleSheet.create({
+  wrapper: {
+    overflow: "hidden",
+    backgroundColor: palette.neutral[100],
+  },
+  pressableWrapper: {
+    overflow: "hidden",
+    backgroundColor: palette.neutral[100],
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+  },
+  fallbackContainer: {
+    backgroundColor: palette.primary[50],
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: palette.primary[100],
+  },
+  fallbackText: {
+    fontWeight: "700",
+    color: palette.primary[700],
+  },
+  pressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.96 }],
+  },
+});
+</file>
+
+<file path="src/components/atoms/Badge.js">
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { colors, palette, radius, spacing, fontSize } from "../../theme";
+
+export const Badge = ({
+  label,
+  variant = "neutral",
+  icon,
+  size = "md",
+  style,
+  textStyle,
+}) => {
+  if (!label) return null;
+
+  // Mapa de variantes conectado a tus escalas de palette
+  const variantStyles = {
+    primary: {
+      backgroundColor: palette.primary[50],
+      textColor: palette.primary[700],
+      borderColor: palette.primary[100],
+    },
+    secondary: {
+      backgroundColor: palette.secondary[50],
+      textColor: palette.secondary[700],
+      borderColor: palette.secondary[100],
+    },
+    success: {
+      backgroundColor: palette.secondary[50],
+      textColor: palette.secondary[700],
+      borderColor: palette.secondary[100],
+    },
+    warning: {
+      backgroundColor: palette.tertiary[50],
+      textColor: palette.tertiary[700],
+      borderColor: palette.tertiary[100],
+    },
+    tertiary: {
+      backgroundColor: palette.tertiary[50],
+      textColor: palette.tertiary[700],
+      borderColor: palette.tertiary[100],
+    },
+    danger: {
+      backgroundColor: "#FEF2F2", // Contraste suave para peligro
+      textColor: palette.danger,
+      borderColor: "#FEE2E2",
+    },
+    neutral: {
+      backgroundColor: palette.neutral[100],
+      textColor: palette.neutral[700],
+      borderColor: palette.neutral[200],
+    },
+  };
+
+  const currentVariant = variantStyles[variant] || variantStyles.neutral;
+  const isSmall = size === "sm";
+
+  return (
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: currentVariant.backgroundColor,
+          borderColor: currentVariant.borderColor,
+          borderWidth: 1,
+          paddingHorizontal: isSmall ? (spacing.xs ?? 6) : (spacing.sm ?? 10),
+          paddingVertical: isSmall ? 2 : (spacing.xs ?? 4),
+          borderRadius: radius.full || 9999,
+        },
+        style,
+      ]}
+    >
+      {icon && <View style={styles.iconContainer}>{icon}</View>}
+      <Text
+        numberOfLines={1}
+        style={[
+          styles.text,
+          {
+            color: currentVariant.textColor,
+            fontSize: isSmall ? (fontSize.xs ?? 11) : (fontSize.sm ?? 12),
+          },
+          textStyle,
+        ]}
+      >
+        {label}
+      </Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+  },
+  iconContainer: {
+    marginRight: 4,
+  },
+  text: {
+    fontWeight: "600",
+    letterSpacing: 0.2,
+  },
+});
+</file>
+
+<file path="src/components/atoms/Button.js">
+import React from "react";
+import {
+  Pressable,
+  Text,
+  View,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
+import { colors, palette, radius, spacing, fontSize } from "../../theme";
+
+export const Button = ({
+  title,
+  onPress,
+  variant = "primary", // 'primary' | 'secondary' | 'success' | 'outline' | 'ghost'
+  size = "md", // 'sm' | 'md' | 'lg'
+  icon,
+  iconPosition = "left", // 'left' | 'right'
+  disabled = false,
+  loading = false,
+  fullWidth = true,
+  style,
+  textStyle,
+}) => {
+  // Mapa de variantes utilizando tu paleta y tokens
+  const variantStyles = {
+    primary: {
+      backgroundColor: colors.primary, // palette.primary[500]
+      textColor: palette.white,
+      borderColor: "transparent",
+      loaderColor: palette.white,
+      pressedBg: palette.primary[600],
+    },
+    secondary: {
+      backgroundColor: palette.primary[50],
+      textColor: palette.primary[700],
+      borderColor: "transparent",
+      loaderColor: palette.primary[700],
+      pressedBg: palette.primary[100],
+    },
+    success: {
+      backgroundColor: palette.secondary[700], // Verde oscuro del botón Enfoque
+      textColor: palette.white,
+      borderColor: "transparent",
+      loaderColor: palette.white,
+      pressedBg: palette.secondary[800],
+    },
+    outline: {
+      backgroundColor: "transparent",
+      textColor: colors.primary,
+      borderColor: palette.primary[200],
+      loaderColor: colors.primary,
+      pressedBg: palette.primary[50],
+    },
+    ghost: {
+      backgroundColor: "transparent",
+      textColor: palette.neutral[700],
+      borderColor: "transparent",
+      loaderColor: palette.neutral[700],
+      pressedBg: palette.neutral[100],
+    },
+  };
+
+  const currentVariant = variantStyles[variant] || variantStyles.primary;
+
+  // Tamaños y paddings proporcionales
+  const sizeStyles = {
+    sm: {
+      paddingVertical: spacing.xs ?? 6,
+      paddingHorizontal: spacing.sm ?? 12,
+      fontSize: fontSize.xs ?? 12,
+      iconGap: 6,
+      height: 36,
+    },
+    md: {
+      paddingVertical: spacing.sm ?? 10,
+      paddingHorizontal: spacing.md ?? 16,
+      fontSize: fontSize.sm ?? 14,
+      iconGap: 8,
+      height: 48,
+    },
+    lg: {
+      paddingVertical: spacing.md ?? 14,
+      paddingHorizontal: spacing.lg ?? 20,
+      fontSize: fontSize.md ?? 16,
+      iconGap: 10,
+      height: 54,
+    },
+  };
+
+  const currentSize = sizeStyles[size] || sizeStyles.md;
+  const isActionDisabled = disabled || loading;
+
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={isActionDisabled}
+      style={({ pressed }) => [
+        styles.baseButton,
+        {
+          backgroundColor: currentVariant.backgroundColor,
+          borderColor: currentVariant.borderColor,
+          borderWidth: currentVariant.borderColor !== "transparent" ? 1 : 0,
+          borderRadius: radius.lg || 12,
+          paddingVertical: currentSize.paddingVertical,
+          paddingHorizontal: currentSize.paddingHorizontal,
+          minHeight: currentSize.height,
+          alignSelf: fullWidth ? "stretch" : "flex-start",
+        },
+        pressed &&
+          !isActionDisabled && {
+            backgroundColor: currentVariant.pressedBg,
+            transform: [{ scale: 0.98 }],
+          },
+        disabled && styles.disabled,
+        style,
+      ]}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: isActionDisabled }}
+    >
+      {loading ? (
+        <ActivityIndicator color={currentVariant.loaderColor} size="small" />
+      ) : (
+        <View style={[styles.contentRow, { gap: currentSize.iconGap }]}>
+          {icon && iconPosition === "left" && (
+            <View style={styles.iconContainer}>{icon}</View>
+          )}
+
+          {title && (
+            <Text
+              numberOfLines={1}
+              style={[
+                styles.baseText,
+                {
+                  color: currentVariant.textColor,
+                  fontSize: currentSize.fontSize,
+                },
+                textStyle,
+              ]}
+            >
+              {title}
+            </Text>
+          )}
+
+          {icon && iconPosition === "right" && (
+            <View style={styles.iconContainer}>{icon}</View>
+          )}
+        </View>
+      )}
+    </Pressable>
+  );
+};
+
+const styles = StyleSheet.create({
+  baseButton: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  contentRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  baseText: {
+    fontWeight: "600",
+    letterSpacing: 0.2,
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+});
+</file>
+
+<file path="src/components/atoms/Checkbox.js">
+import React from "react";
+import { Pressable, View, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { colors, palette, radius } from "../../theme";
+
+export const Checkbox = ({
+  checked = false,
+  onValueChange,
+  disabled = false,
+  size = 22,
+  style,
+}) => {
+  const handlePress = () => {
+    if (!disabled && onValueChange) {
+      onValueChange(!checked);
+    }
+  };
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      disabled={disabled}
+      hitSlop={10}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked, disabled }}
+      style={({ pressed }) => [
+        styles.container,
+        {
+          width: size,
+          height: size,
+          borderRadius: radius.xs ?? 6,
+          backgroundColor: checked ? colors.primary : palette.surface,
+          borderColor: checked ? colors.primary : palette.neutral[300],
+        },
+        pressed && !disabled && styles.pressed,
+        disabled && styles.disabled,
+        style,
+      ]}
+    >
+      {checked && (
+        <Ionicons
+          name="checkmark-sharp"
+          size={size * 0.75}
+          color={palette.white}
+        />
+      )}
+    </Pressable>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    borderWidth: 1.5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pressed: {
+    opacity: 0.75,
+    transform: [{ scale: 0.95 }],
+  },
+  disabled: {
+    opacity: 0.4,
+    backgroundColor: palette.neutral[100],
+    borderColor: palette.neutral[200],
+  },
+});
+</file>
+
+<file path="src/components/atoms/IconButton.js">
+import React from "react";
+import { Pressable, StyleSheet } from "react-native";
+import { colors, palette, radius } from "../../theme";
+
+export const IconButton = ({
+  icon,
+  onPress,
+  variant = "ghost", // 'ghost' | 'filled' | 'tinted' | 'outline'
+  size = 40,
+  disabled = false,
+  accessibilityLabel = "Botón de acción",
+  style,
+}) => {
+  // Variantes adaptadas a tu paleta de colores
+  const variantStyles = {
+    ghost: {
+      backgroundColor: "transparent",
+      borderColor: "transparent",
+      pressedBg: palette.neutral[100],
+    },
+    filled: {
+      backgroundColor: palette.primary[50], // Fondo suave como compartir/descargar en Apuntes
+      borderColor: "transparent",
+      pressedBg: palette.primary[100],
+    },
+    tinted: {
+      backgroundColor: palette.neutral[100],
+      borderColor: "transparent",
+      pressedBg: palette.neutral[200],
+    },
+    outline: {
+      backgroundColor: "transparent",
+      borderColor: palette.neutral[200],
+      pressedBg: palette.neutral[50],
+    },
+  };
+
+  const currentVariant = variantStyles[variant] || variantStyles.ghost;
+
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled}
+      hitSlop={size < 44 ? Math.ceil((44 - size) / 2) : 6}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityState={{ disabled }}
+      style={({ pressed }) => [
+        styles.base,
+        {
+          width: size,
+          height: size,
+          borderRadius: radius.md ?? 10,
+          backgroundColor: currentVariant.backgroundColor,
+          borderColor: currentVariant.borderColor,
+          borderWidth: currentVariant.borderColor !== "transparent" ? 1 : 0,
+        },
+        pressed &&
+          !disabled && {
+            backgroundColor: currentVariant.pressedBg,
+            transform: [{ scale: 0.94 }],
+          },
+        disabled && styles.disabled,
+        style,
+      ]}
+    >
+      {icon}
+    </Pressable>
+  );
+};
+
+const styles = StyleSheet.create({
+  base: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  disabled: {
+    opacity: 0.4,
+  },
+});
+</file>
+
+<file path="src/components/atoms/ProgressBar.js">
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { colors, palette, radius } from "../../theme";
+
+export const ProgressBar = ({
+  progress = 0, // Acepta valores normalizados de 0 a 1 (ej. 0.85) o porcentajes de 0 a 100 (ej. 85)
+  color = colors.primary,
+  trackColor = palette.neutral[200],
+  height = 8,
+  style,
+}) => {
+  // Normaliza el valor para que siempre quede entre 0 y 100%
+  const normalizedProgress = progress > 1 ? progress : progress * 100;
+  const clampedProgress = Math.min(100, Math.max(0, normalizedProgress));
+
+  return (
+    <View
+      style={[
+        styles.track,
+        {
+          height,
+          backgroundColor: trackColor,
+          borderRadius: radius.full || 9999,
+        },
+        style,
+      ]}
+      accessibilityRole="progressbar"
+      accessibilityValue={{
+        min: 0,
+        max: 100,
+        now: Math.round(clampedProgress),
+      }}
+    >
+      <View
+        style={[
+          styles.fill,
+          {
+            width: `${clampedProgress}%`,
+            backgroundColor: color,
+            borderRadius: radius.full || 9999,
+          },
+        ]}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  track: {
+    width: "100%",
+    overflow: "hidden",
+    justifyContent: "center",
+  },
+  fill: {
+    height: "100%",
+  },
+});
+</file>
+
+<file path="src/components/atoms/Switch.js">
+import React from "react";
+import { Switch as RNSwitch, Platform, StyleSheet } from "react-native";
+import { colors, palette } from "../../theme";
+
+export const Switch = ({
+  value = false,
+  onValueChange,
+  disabled = false,
+  activeColor = colors.primary, // palette.primary[500] (#4F46E5)
+  inactiveColor = palette.neutral[300],
+  thumbColorActive = palette.white,
+  thumbColorInactive = palette.white,
+  style,
+}) => {
+  return (
+    <RNSwitch
+      value={value}
+      onValueChange={onValueChange}
+      disabled={disabled}
+      trackColor={{
+        false: inactiveColor,
+        true: activeColor,
+      }}
+      thumbColor={
+        Platform.OS === "android"
+          ? value
+            ? thumbColorActive
+            : thumbColorInactive
+          : undefined
+      }
+      ios_backgroundColor={inactiveColor}
+      style={[styles.base, style]}
+    />
+  );
+};
+
+const styles = StyleSheet.create({
+  base: {
+    // Escala sutil en Android para mantener proporciones ópticas con iOS
+    transform:
+      Platform.OS === "android" ? [{ scaleX: 0.95 }, { scaleY: 0.95 }] : [],
+  },
+});
+</file>
+
+<file path="src/components/molecules/Chips.js">
+import React from "react";
+import { Pressable, Text, View, StyleSheet } from "react-native";
+import { colors, palette, radius, spacing, fontSize } from "../../theme";
+
+export const Chips = ({
+  label,
+  selected = false,
+  onPress,
+  icon,
+  style,
+  textStyle,
+}) => {
+  return (
+    <Pressable
+      onPress={onPress}
+      hitSlop={6}
+      style={({ pressed }) => [
+        styles.container,
+        {
+          backgroundColor: selected ? colors.primary : palette.surface,
+          borderColor: selected ? colors.primary : palette.neutral[200],
+        },
+        pressed && styles.pressed,
+        style,
+      ]}
+      accessibilityRole="button"
+      accessibilityState={{ selected }}
+    >
+      {icon && <View style={styles.iconContainer}>{icon}</View>}
+      <Text
+        numberOfLines={1}
+        style={[
+          styles.text,
+          {
+            color: selected ? palette.white : palette.neutral[700],
+            fontSize: fontSize.sm ?? 13,
+          },
+          textStyle,
+        ]}
+      >
+        {label}
+      </Text>
+    </Pressable>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: spacing.md ?? 14,
+    paddingVertical: spacing.xs ?? 8,
+    borderRadius: radius.full || 9999,
+    borderWidth: 1,
+    alignSelf: "flex-start",
+  },
+  iconContainer: {
+    marginRight: 6,
+  },
+  text: {
+    fontWeight: "600",
+    letterSpacing: 0.2,
+  },
+  pressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.96 }],
+  },
+});
+</file>
+
+<file path="src/components/molecules/ListItem.js">
+import React from "react";
+import { View, Text, Pressable, StyleSheet } from "react-native";
+import { colors, palette, spacing, fontSize } from "../../theme";
+
+export const ListItem = ({
+  title,
+  subtitle,
+  leftSlot,
+  rightSlot,
+  onPress,
+  style,
+  titleStyle,
+  subtitleStyle,
+}) => {
+  const isPressable = typeof onPress === "function";
+  const Component = isPressable ? Pressable : View;
+
+  return (
+    <Component
+      onPress={onPress}
+      style={({ pressed } = {}) => [
+        styles.container,
+        pressed && isPressable && styles.pressed,
+        style,
+      ]}
+      accessibilityRole={isPressable ? "button" : undefined}
+    >
+      {leftSlot && <View style={styles.leftSlot}>{leftSlot}</View>}
+
+      <View style={styles.content}>
+        {title && (
+          <Text numberOfLines={1} style={[styles.title, titleStyle]}>
+            {title}
+          </Text>
+        )}
+        {subtitle && (
+          <Text numberOfLines={2} style={[styles.subtitle, subtitleStyle]}>
+            {subtitle}
+          </Text>
+        )}
+      </View>
+
+      {rightSlot && <View style={styles.rightSlot}>{rightSlot}</View>}
+    </Component>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    paddingVertical: spacing.sm ?? 10,
+    gap: spacing.sm ?? 12,
+  },
+  leftSlot: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  content: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  rightSlot: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: fontSize.sm ?? 14,
+    fontWeight: "600",
+    color: colors.text,
+  },
+  subtitle: {
+    fontSize: fontSize.xs ?? 12,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  pressed: {
+    opacity: 0.7,
+  },
+});
+</file>
+
+<file path="src/components/molecules/SearchInput.js">
+import React, { useState } from "react";
+import { View, TextInput, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { colors, palette, radius, spacing, fontSize } from "../../theme";
+import { IconButton } from "../atoms/IconButton";
+
+export const SearchInput = ({
+  value = "",
+  onChangeText,
+  placeholder = "Buscar en apuntes, materias o temas...",
+  onFilterPress,
+  style,
+  inputStyle,
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const showClear = Boolean(value && value.length > 0);
+  const hasFilter = typeof onFilterPress === "function";
+
+  return (
+    <View style={[styles.wrapper, style]}>
+      <View
+        style={[
+          styles.container,
+          {
+            borderColor: isFocused ? colors.primary : colors.border,
+            backgroundColor: colors.surface,
+          },
+        ]}
+      >
+        <Ionicons
+          name="search-outline"
+          size={20}
+          color={isFocused ? colors.primary : colors.textPlaceholder}
+          style={styles.searchIcon}
+        />
+        <TextInput
+          value={value}
+          onChangeText={onChangeText}
+          placeholder={placeholder}
+          placeholderTextColor={colors.textPlaceholder}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          style={[styles.input, inputStyle]}
+          returnKeyType="search"
+        />
+        {showClear ? (
+          <IconButton
+            icon={
+              <Ionicons
+                name="close-circle"
+                size={18}
+                color={palette.neutral[400]}
+              />
+            }
+            onPress={() => onChangeText && onChangeText("")}
+            size={30}
+            variant="ghost"
+          />
+        ) : null}
+      </View>
+      {hasFilter ? (
+        <IconButton
+          icon={
+            <Ionicons name="options-outline" size={20} color={colors.text} />
+          }
+          onPress={onFilterPress}
+          variant="outline"
+          size={46}
+          style={styles.filterButton}
+        />
+      ) : null}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    gap: spacing.xs ?? 8,
+  },
+  container: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: radius.lg ?? 12,
+    paddingHorizontal: spacing.sm ?? 12,
+    height: 46,
+  },
+  searchIcon: {
+    marginRight: spacing.xs ?? 8,
+  },
+  input: {
+    flex: 1,
+    fontSize: fontSize.sm ?? 14,
+    color: colors.text,
+    height: "100%",
+  },
+  filterButton: {
+    borderRadius: radius.lg ?? 12,
+    backgroundColor: colors.surface,
+  },
+});
+</file>
+
+<file path="src/components/molecules/SegmentedControl.js">
+import React from "react";
+import { View, Text, Pressable, StyleSheet } from "react-native";
+import { colors, palette, radius, spacing, fontSize } from "../../theme";
+
+export const SegmentedControl = ({
+  options = [],
+  selectedIndex = 0,
+  onChange,
+  style,
+}) => {
+  return (
+    <View style={[styles.container, style]}>
+      {options.map((option, index) => {
+        const isSelected = selectedIndex === index;
+        const label = typeof option === "string" ? option : option.label;
+
+        return (
+          <Pressable
+            key={index}
+            onPress={() => onChange && onChange(index)}
+            style={({ pressed }) => [
+              styles.segment,
+              isSelected && styles.selectedSegment,
+              pressed && !isSelected && styles.pressed,
+            ]}
+          >
+            <Text
+              numberOfLines={1}
+              style={[
+                styles.segmentText,
+                {
+                  color: isSelected ? colors.primary : colors.textSecondary,
+                  fontWeight: isSelected ? "700" : "500",
+                },
+              ]}
+            >
+              {label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: palette.neutral[100],
+    borderRadius: radius.lg ?? 12,
+    padding: 4,
+    width: "100%",
+  },
+  segment: {
+    flex: 1,
+    paddingVertical: spacing.xs ?? 8,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: (radius.lg ?? 12) - 2,
+  },
+  selectedSegment: {
+    backgroundColor: palette.white,
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  segmentText: {
+    fontSize: fontSize.sm ?? 13,
+  },
+  pressed: {
+    opacity: 0.7,
+  },
+});
+</file>
+
+<file path="src/components/organisms/SprintStudySection.js">
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { colors, palette, radius, spacing, fontSize } from "../../theme";
+import { Card } from "../molecules/Card.js";
+import { Badge } from "../atoms/Badge.js";
+import { Checkbox } from "../atoms/Checkbox.js";
+import { Button } from "../atoms/Button.js";
+
+export const SprintStudySection = ({
+  items = [],
+  onToggleItem,
+  onStartFocus,
+  totalDurationMinutes = 65,
+  style,
+}) => {
+  const selectedCount = items.filter((i) => i.selected).length;
+
+  return (
+    <Card variant="outlined" style={[styles.container, style]}>
+      {/* Cabecera del Sprint */}
+      <View style={styles.header}>
+        <View style={styles.titleRow}>
+          <View style={styles.iconCircle}>
+            <Ionicons
+              name="stopwatch-outline"
+              size={18}
+              color={colors.primary}
+            />
+          </View>
+          <Text style={styles.title}>Sprint de Estudio Hoy</Text>
+        </View>
+        <Badge
+          label={`${selectedCount} seleccionados`}
+          variant="primary"
+          size="sm"
+        />
+      </View>
+
+      <Text style={styles.subtitle}>
+        Marca los materiales que quieres tener anclados en tu temporizador de
+        concentración.
+      </Text>
+
+      {/* Lista de elementos interactivos */}
+      <View style={styles.itemList}>
+        {items.map((item) => (
+          <View
+            key={item.id}
+            style={[styles.itemRow, item.selected && styles.itemRowActive]}
+          >
+            <Checkbox
+              checked={item.selected}
+              onValueChange={() => onToggleItem && onToggleItem(item.id)}
+            />
+            <View style={styles.itemTextContainer}>
+              <Text numberOfLines={1} style={styles.itemTitle}>
+                {item.title}
+              </Text>
+              <Text numberOfLines={1} style={styles.itemMeta}>
+                {item.subject} · {item.recommendedTime} recomendados
+              </Text>
+            </View>
+            <View style={styles.itemRightIndicator}>
+              <Ionicons
+                name={item.iconName || "moon-outline"}
+                size={16}
+                color={item.selected ? colors.primary : palette.neutral[400]}
+              />
+            </View>
+          </View>
+        ))}
+      </View>
+
+      {/* Botón de acción destacado */}
+      <Button
+        title={`Enviar a Modo Enfoque (${totalDurationMinutes} min total)`}
+        onPress={onStartFocus}
+        variant="success"
+        size="md"
+        icon={<Ionicons name="timer-outline" size={20} color={palette.white} />}
+        style={styles.focusButton}
+      />
+    </Card>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.surface,
+    padding: spacing.md ?? 16,
+    borderWidth: 1,
+    borderColor: palette.neutral[200],
+    borderRadius: radius.xl ?? 16,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  iconCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: radius.full || 9999,
+    backgroundColor: palette.primary[50],
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: fontSize.md ?? 16,
+    fontWeight: "700",
+    color: colors.text,
+  },
+  subtitle: {
+    fontSize: fontSize.xs ?? 12,
+    color: colors.textSecondary,
+    marginTop: 6,
+    marginBottom: spacing.md ?? 14,
+    lineHeight: 18,
+  },
+  itemList: {
+    gap: 8,
+    marginBottom: spacing.md ?? 16,
+  },
+  itemRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: spacing.sm ?? 10,
+    backgroundColor: palette.neutral[50],
+    borderRadius: radius.md ?? 10,
+    borderWidth: 1,
+    borderColor: "transparent",
+    gap: spacing.sm ?? 10,
+  },
+  itemRowActive: {
+    backgroundColor: palette.primary[50],
+    borderColor: palette.primary[100],
+  },
+  itemTextContainer: {
+    flex: 1,
+  },
+  itemTitle: {
+    fontSize: fontSize.sm ?? 13,
+    fontWeight: "600",
+    color: colors.text,
+  },
+  itemMeta: {
+    fontSize: 11,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  itemRightIndicator: {
+    paddingLeft: 4,
+  },
+  focusButton: {
+    marginTop: 4,
+  },
+});
+</file>
+
+<file path="src/components/organisms/TimelineItem.js">
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { colors, palette, radius, spacing, fontSize } from "../../theme";
+import { Badge } from "../atoms/Badge.js";
+import { Button } from "../atoms/Button.js";
+
+export const TimelineItem = ({
+  timeRange = "08:00 - 10:00",
+  title,
+  location,
+  status = "programada", // 'finalizado' | 'en_curso' | 'programada' | 'sugerida'
+  badgeLabel,
+  badgeVariant = "neutral",
+  nodeIcon = "checkmark",
+  actionLabel,
+  onActionPress,
+  secondaryActionLabel,
+  onSecondaryActionPress,
+  isLast = false,
+  style,
+}) => {
+  // Configuración del icono y color del nodo izquierdo
+  const nodeConfig = {
+    finalizado: {
+      bg: palette.secondary[500],
+      color: palette.white,
+      icon: "checkmark",
+    },
+    en_curso: {
+      bg: colors.primary,
+      color: palette.white,
+      icon: "school",
+    },
+    sugerida: {
+      bg: palette.tertiary[100],
+      color: palette.tertiary[700],
+      icon: "sparkles",
+    },
+    programada: {
+      bg: palette.secondary[100],
+      color: palette.secondary[700],
+      icon: "alarm",
+    },
+  };
+
+  const currentNode = nodeConfig[status] || nodeConfig.programada;
+
+  return (
+    <View style={[styles.container, style]}>
+      {/* Columna izquierda: Nodo y línea continua */}
+      <View style={styles.timelineTrack}>
+        <View style={[styles.node, { backgroundColor: currentNode.bg }]}>
+          <Ionicons
+            name={nodeIcon || currentNode.icon}
+            size={14}
+            color={currentNode.color}
+          />
+        </View>
+        {!isLast && <View style={styles.line} />}
+      </View>
+
+      {/* Columna derecha: Tarjeta de contenido */}
+      <View style={styles.cardWrapper}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.timeRange}>{timeRange}</Text>
+          {badgeLabel && (
+            <Badge label={badgeLabel} variant={badgeVariant} size="sm" />
+          )}
+        </View>
+
+        <Text numberOfLines={1} style={styles.title}>
+          {title}
+        </Text>
+
+        {location && (
+          <View style={styles.locationRow}>
+            <Ionicons
+              name="location-outline"
+              size={13}
+              color={colors.textSecondary}
+            />
+            <Text numberOfLines={1} style={styles.locationText}>
+              {location}
+            </Text>
+          </View>
+        )}
+
+        {/* Botones de acción opcionales (como Aceptar bloque / Posponer) */}
+        {(actionLabel || secondaryActionLabel) && (
+          <View style={styles.actionRow}>
+            {actionLabel && onActionPress && (
+              <Button
+                title={actionLabel}
+                onPress={onActionPress}
+                variant="primary"
+                size="sm"
+                fullWidth={false}
+                style={styles.primaryActionButton}
+              />
+            )}
+            {secondaryActionLabel && onSecondaryActionPress && (
+              <Button
+                title={secondaryActionLabel}
+                onPress={onSecondaryActionPress}
+                variant="ghost"
+                size="sm"
+                fullWidth={false}
+              />
+            )}
+          </View>
+        )}
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    width: "100%",
+  },
+  timelineTrack: {
+    width: 36,
+    alignItems: "center",
+  },
+  node: {
+    width: 26,
+    height: 26,
+    borderRadius: radius.full || 9999,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1,
+  },
+  line: {
+    flex: 1,
+    width: 2,
+    backgroundColor: palette.neutral[200],
+    marginVertical: 4,
+  },
+  cardWrapper: {
+    flex: 1,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg ?? 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: spacing.sm ?? 12,
+    marginBottom: spacing.md ?? 14,
+    marginLeft: 6,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 4,
+  },
+  timeRange: {
+    fontSize: fontSize.xs ?? 11,
+    fontWeight: "700",
+    color: colors.textSecondary,
+  },
+  title: {
+    fontSize: fontSize.sm ?? 14,
+    fontWeight: "700",
+    color: colors.text,
+  },
+  locationRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop: 4,
+  },
+  locationText: {
+    fontSize: fontSize.xs ?? 12,
+    color: colors.textSecondary,
+  },
+  actionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: spacing.sm ?? 10,
+    gap: 8,
+  },
+  primaryActionButton: {
+    paddingHorizontal: 12,
+  },
+});
+</file>
+
+<file path="src/components/templates/AppHeader.js">
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { colors, palette, radius, spacing, fontSize } from "../../theme";
+import { Avatar } from "../atoms/Avatar.js";
+
+export const AppHeader = ({
+  appName = "Estudy",
+  currentScreenTitle = "Apuntes",
+  streakDays = 5,
+  avatarSource,
+  userName = "Sofía Morales",
+  onAvatarPress,
+  style,
+}) => {
+  return (
+    <View style={[styles.container, style]}>
+      {/* Sección Izquierda: Logo e indicador de pantalla */}
+      <View style={styles.leftSection}>
+        <View style={styles.logoIcon}>
+          <Ionicons name="book" size={18} color={palette.white} />
+        </View>
+        <View style={styles.titleWrapper}>
+          <Text style={styles.appName}>{appName}</Text>
+          <Text style={styles.currentScreen}>{currentScreenTitle}</Text>
+        </View>
+      </View>
+
+      {/* Sección Derecha: Racha activa y Avatar */}
+      <View style={styles.rightSection}>
+        {streakDays > 0 && (
+          <View style={styles.streakBadge}>
+            <Ionicons name="flame" size={16} color={palette.tertiary[600]} />
+            <Text style={styles.streakText}>{streakDays} días</Text>
+          </View>
+        )}
+
+        <Avatar
+          source={avatarSource}
+          name={userName}
+          size={36}
+          onPress={onAvatarPress}
+        />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    height: 58,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: spacing.md ?? 16,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  leftSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs ?? 10,
+  },
+  logoIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: radius.md ?? 10,
+    backgroundColor: colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  titleWrapper: {
+    justifyContent: "center",
+  },
+  appName: {
+    fontSize: fontSize.md ?? 16,
+    fontWeight: "800",
+    color: colors.primary,
+    letterSpacing: -0.3,
+  },
+  currentScreen: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: colors.textSecondary,
+    marginTop: -2,
+  },
+  rightSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs ?? 10,
+  },
+  streakBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: palette.tertiary[50],
+    borderColor: palette.tertiary[200],
+    borderWidth: 1,
+    borderRadius: radius.full || 9999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    gap: 4,
+  },
+  streakText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: palette.tertiary[800],
+  },
+});
+</file>
+
+<file path="src/components/FormField.js">
+// src/components/FormField.js
+import React, { forwardRef } from "react";
+import { Controller } from "react-hook-form";
+import { View, Text, TextInput, StyleSheet } from "react-native";
+import { colors, spacing, typography, radius } from "../theme";
+
+const FormField = forwardRef(function FormField(
+  {
+    control,
+    name,
+    label,
+    style,
+    multiline = false,
+    numberOfLines = 1,
+    ...inputProps
+  },
+  ref,
+) {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      render={({
+        field: { value, onChange, onBlur },
+        fieldState: { error },
+      }) => (
+        <View style={styles.contenedor}>
+          {label ? <Text style={styles.label}>{label}</Text> : null}
+          <TextInput
+            ref={ref}
+            value={value !== undefined && value !== null ? String(value) : ""}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            multiline={multiline}
+            numberOfLines={numberOfLines}
+            placeholderTextColor={colors.textTertiary}
+            style={[
+              styles.input,
+              multiline && styles.inputMultiline,
+              Boolean(error) && styles.inputError,
+              style,
+            ]}
+            accessibilityLabel={label || name}
+            {...inputProps}
+          />
+          {error?.message ? (
+            <Text style={styles.mensajeError} accessibilityRole="alert">
+              {error.message}
+            </Text>
+          ) : null}
+        </View>
+      )}
+    />
+  );
+});
+
+const styles = StyleSheet.create({
+  contenedor: {
+    gap: spacing.xs || 4,
+    marginBottom: spacing.xs || 4,
+  },
+  label: {
+    ...typography.caption,
+    fontWeight: "600",
+    color: colors.textSecondary,
+    marginBottom: 2,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    color: colors.textPrimary,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.sm,
+    fontSize: 15,
+  },
+  inputMultiline: {
+    minHeight: 80,
+    textAlignVertical: "top",
+  },
+  inputError: {
+    borderColor: colors.danger,
+  },
+  mensajeError: {
+    ...typography.caption,
+    color: colors.danger,
+    marginTop: 2,
+  },
+});
+
+export default FormField;
+</file>
+
+<file path="src/context/SesionContext.js">
+import React, { createContext, useState, useContext, useMemo } from "react";
+
+// 1. Crear el Contexto
+const SesionContext = createContext(null);
+
+// 2. Crear el Provider
+export function SesionProvider({ children }) {
+  const [usuario, setUsuario] = useState(null); // null significa que no hay sesión activa
+
+  const iniciarSesion = (datosUsuario) => {
+    setUsuario(datosUsuario);
+  };
+
+  const cerrarSesion = () => {
+    setUsuario(null);
+  };
+
+  // 3. Uso de useMemo para optimizar el valor (Requerimiento 5 del LAB-04)
+  const valorContexto = useMemo(
+    () => ({
+      usuario,
+      estaLogueado: !!usuario, // Convertimos a booleano: true si hay usuario, false si es null
+      iniciarSesion,
+      cerrarSesion,
+    }),
+    [usuario]
+  );
+
+  return (
+    <SesionContext.Provider value={valorContexto}>
+      {children}
+    </SesionContext.Provider>
+  );
+}
+
+// 4. Hook propio useSesion (Requerimiento 5 del LAB-04)
+export function useSesion() {
+  const context = useContext(SesionContext);
+  if (!context) {
+    throw new Error("useSesion debe usarse dentro de un SesionProvider");
+  }
+  return context;
+}
+</file>
+
+<file path="src/navigation/BottomNavBar.js">
+import React from "react";
+import { View, Text, Pressable, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { colors, palette, fontSize } from "../theme";
+
+export const BottomNavBar = ({ state, descriptors, navigation }) => {
+  const insets = useSafeAreaInsets();
+
+  const iconMap = {
+    Cronograma: { active: "time", inactive: "time-outline" },
+    Calendario: { active: "calendar", inactive: "calendar-outline" },
+    Apuntes: { active: "folder", inactive: "folder-outline" },
+    Enfoque: { active: "timer", inactive: "timer-outline" },
+  };
+
+  return (
+    <View
+      style={[
+        styles.container,
+        {
+          paddingBottom: Math.max(insets.bottom, 8),
+          height: 60 + Math.max(insets.bottom, 8),
+        },
+      ]}
+    >
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+              ? options.title
+              : route.name;
+
+        const isFocused = state.index === index;
+        const iconConfig = iconMap[route.name] || {
+          active: "ellipse",
+          inactive: "ellipse-outline",
+        };
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        return (
+          <Pressable
+            key={route.key}
+            onPress={onPress}
+            style={styles.tabItem}
+            accessibilityRole="button"
+            accessibilityState={{ selected: isFocused }}
+            accessibilityLabel={label}
+          >
+            <Ionicons
+              name={isFocused ? iconConfig.active : iconConfig.inactive}
+              size={22}
+              color={isFocused ? colors.primary : palette.neutral[400]}
+            />
+            <Text
+              style={[
+                styles.tabLabel,
+                {
+                  color: isFocused ? colors.primary : palette.neutral[500],
+                  fontWeight: isFocused ? "700" : "500",
+                },
+              ]}
+            >
+              {label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    backgroundColor: palette.white,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 6,
+    gap: 3,
+  },
+  tabLabel: {
+    fontSize: fontSize.xs ?? 11,
+  },
+});
+</file>
+
+<file path="src/schemas/contactoSchema.js">
+import { z } from "zod";
+
+export const TIPOS_MENSAJE = ["sugerencia", "error", "consulta"];
+
+export const contactoSchema = z
+  .object({
+    nombre: z
+      .string()
+      .trim()
+      .min(3, "Escribe tu nombre completo (mínimo 3 caracteres)")
+      .max(60, "El nombre no puede exceder los 60 caracteres"),
+    correo: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .email("Ingresa un correo electrónico válido"),
+    celular: z
+      .string()
+      .trim()
+      .regex(/^9\d{8}$/, "El celular debe tener 9 dígitos y empezar con 9"),
+    tipo: z.enum(TIPOS_MENSAJE, {
+      errorMap: () => ({ message: "Elige el tipo de mensaje" }),
+    }),
+    calificacion: z
+      .number({ invalid_type_error: "Selecciona una calificación" })
+      .int("La calificación debe ser un entero")
+      .min(1, "La calificación mínima es 1")
+      .max(5, "La calificación máxima es 5"),
+    mensaje: z
+      .string()
+      .trim()
+      .min(10, "Cuéntanos un poco más (mínimo 10 caracteres)")
+      .max(500, "El mensaje no puede superar los 500 caracteres"),
+    aceptaTerminos: z.boolean(),
+  })
+  .refine((datos) => datos.aceptaTerminos === true, {
+    message: "Debes aceptar el uso de tus datos para responderte",
+    path: ["aceptaTerminos"],
+  });
+
+export const contactoVacio = {
+  nombre: "",
+  correo: "",
+  celular: "",
+  tipo: "sugerencia",
+  calificacion: 5,
+  mensaje: "",
+  aceptaTerminos: false,
+};
+</file>
+
+<file path="src/schemas/loginSchema.js">
+import { z } from "zod";
+
+export const loginSchema = z.object({
+  correo: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(1, "El correo electrónico es obligatorio")
+    .email("Ingresa un formato de correo válido"),
+  password: z
+    .string()
+    .min(6, "La contraseña debe tener al menos 6 caracteres")
+    .max(50, "La contraseña no puede exceder los 50 caracteres"),
+});
+
+export const loginVacio = {
+  correo: "",
+  password: "",
+};
+</file>
+
+<file path="src/screens/Placeholder.js">
+// src/screens/Placeholder.js
+import React from "react";
+import { View, Text, Pressable, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
+export default function Placeholder({ title, description, links = [] }) {
+  const navigation = useNavigation();
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.description}>{description}</Text>
+
+      <View style={styles.buttonContainer}>
+        {links.map(({ label, to, params }) => (
+          <Pressable
+            key={label}
+            style={({ pressed }) => [styles.btn, pressed && styles.btnPressed]}
+            onPress={() => {
+              if (to) {
+                navigation.navigate(to, params);
+              } else {
+                navigation.goBack();
+              }
+            }}
+          >
+            <Text style={styles.btnLabel}>{label}</Text>
+          </Pressable>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: "center",
+    backgroundColor: "#F8FAFC",
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#0F172A",
+    marginBottom: 8,
+  },
+  description: {
+    fontSize: 15,
+    color: "#64748B",
+    lineHeight: 22,
+    marginBottom: 24,
+  },
+  buttonContainer: {
+    gap: 12,
+  },
+  btn: {
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    backgroundColor: "#4F46E5",
+    alignItems: "center",
+  },
+  btnPressed: {
+    opacity: 0.8,
+  },
+  btnLabel: {
+    color: "#FFFFFF",
+    fontWeight: "600",
+    fontSize: 15,
+  },
+});
+</file>
+
+<file path="src/screens/SettingsScreen.js">
+import React from "react";
+import Placeholder from "./Placeholder";
+
+export default function SettingsScreen() {
+  return <Placeholder title="Configuración y Ajustes"
+  description="Aquí puedes gestionar las preferencias de tu aplicación."
+  links={[{label: "Volver"}]} />;
+}
+</file>
+
+<file path="src/screens/UploadNoteModal.js">
+import React from "react";
+import Placeholder from "./Placeholder";
+
+export default function UploadNoteModal() {
+  return (
+    <Placeholder
+      title="Subir o Digitalizar Apunte"
+      description="Modal para captura por cámara inteligente, carga de PDF o notas de voz con OCR."
+      links={[{ label: "Listo / Volver a Apuntes" }]}
+    />
+  );
+}
+</file>
+
+<file path="src/store/index.js">
+import { configureStore } from "@reduxjs/toolkit";
+import scheduleReducer from "./scheduleSlice";
+
+export const store = configureStore({
+  reducer: {
+    schedule: scheduleReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: true, // Garantiza que no haya avisos de valores no serializables
+    }),
+});
+</file>
+
+<file path="src/theme/colors.js">
+export const palette = {
+  primary: {
+    900: "#1E1B4B",
+    800: "#2E2B88",
+    700: "#3730A3",
+    600: "#4338CA",
+    500: "#4F46E5",
+    400: "#6366F1",
+    300: "#818CF8",
+    200: "#A5B4FC",
+    100: "#C7D2FE",
+    50: "#EEF2FF",
+  },
+
+  secondary: {
+    900: "#064E3B",
+    800: "#065F46",
+    700: "#047857",
+    600: "#059669",
+    500: "#10B981",
+    400: "#34D399",
+    300: "#6EE7B7",
+    200: "#A7F3D0",
+    100: "#D1FAE5",
+    50: "#ECFDF5",
+  },
+
+  tertiary: {
+    900: "#78350F",
+    800: "#92400E",
+    700: "#B45309",
+    600: "#D97706",
+    500: "#F59E0B",
+    400: "#FBBF24",
+    300: "#FCD34D",
+    200: "#FDE68A",
+    100: "#FEF3C7",
+    50: "#FFFBEB",
+  },
+
+  neutral: {
+    900: "#0F172A",
+    800: "#1E293B",
+    700: "#334155",
+    600: "#475569",
+    500: "#64748B",
+    400: "#94A3B8",
+    300: "#CBD5E1",
+    200: "#E2E8F0",
+    100: "#F1F5F9",
+    50: "#F8FAFC",
+  },
+  danger: "#EF4444",
+  background: "#E8EDF5",
+  surface: "#FFFFFF",
+  white: "#FFFFFF",
+  black: "#000000",
+};
+
+export const colors = {
+  primary: palette.primary[500],
+  primaryDark: palette.primary[700],
+  primaryLight: palette.primary[300],
+
+  secondary: palette.secondary[500],
+  secondaryDark: palette.secondary[700],
+  secondaryLight: palette.secondary[300],
+
+  tertiary: palette.tertiary[500],
+  tertiaryDark: palette.tertiary[700],
+  tertiaryLight: palette.tertiary[300],
+
+  neutral: palette.neutral[500],
+  inverted: palette.neutral[800],
+
+  background: palette.background,
+  surface: palette.surface,
+
+  text: palette.neutral[900],
+  textSecondary: palette.neutral[600],
+  textInverted: palette.white,
+  textPlaceholder: palette.neutral[400],
+
+  border: palette.neutral[200],
+  divider: palette.neutral[100],
+
+  success: palette.secondary[500],
+  warning: palette.tertiary[500],
+  danger: palette.danger,
+};
+</file>
+
+<file path="src/theme/index.js">
+import { colors, palette } from "./colors";
+import {
+  typography,
+  fontFamily,
+  fontSize,
+  fontWeight,
+  lineHeight,
+} from "./typography";
+import { spacing } from "./spacing";
+import { radius } from "./radius";
+
+export const theme = {
+  colors,
+  palette,
+  typography,
+  fontFamily,
+  fontSize,
+  fontWeight,
+  lineHeight,
+  spacing,
+  radius,
+};
+
+export {
+  colors,
+  palette,
+  typography,
+  fontFamily,
+  fontSize,
+  fontWeight,
+  lineHeight,
+  spacing,
+  radius,
+};
+</file>
+
+<file path="src/utils/breakpoints.js">
+export const BREAKPOINTS = {
+  PHONE_LANDSCAPE: 600,
+  TABLET_PORTRAIT: 768,
+  TABLET_LANDSCAPE: 1024,
+};
+
+export const getDeviceClass = (width) => {
+  if (width < BREAKPOINTS.PHONE_LANDSCAPE) return "phone-portrait";
+  if (width < BREAKPOINTS.TABLET_PORTRAIT) return "phone-landscape";
+  if (width < BREAKPOINTS.TABLET_LANDSCAPE) return "tablet-portrait";
+  return "tablet-landscape";
+};
+
+export const getColumns = (width) => {
+  if (width < BREAKPOINTS.PHONE_LANDSCAPE) return 1;
+  if (width < BREAKPOINTS.TABLET_PORTRAIT) return 2;
+  if (width < BREAKPOINTS.TABLET_LANDSCAPE) return 3;
+  return 4;
+};
+</file>
+
+<file path=".gitignore">
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# generated native folders
+/ios
+/android
+</file>
+
+<file path="AGENTS.md">
+This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
+
+## Expo has changed — do not trust your training data
+
+Expo ships breaking changes every SDK release. APIs you remember are likely renamed, moved, or removed. Before writing any code that touches an Expo, EAS, or React Native API:
+
+1. Read the major version of the `expo` package in `package.json`.
+2. Fetch the matching versioned docs: `https://docs.expo.dev/versions/v<major>.0.0/`
+3. For anything else, fetch https://docs.expo.dev/llms.txt — an index of all Expo docs with corrections to common LLM misconceptions. Follow its links to the specific page you need; never answer from memory.
+
+## Commands
+
+Use `bunx` instead of `npx` if the project uses bun (`bun.lock` present).
+
+```bash
+npx expo install <package>  # ALWAYS use instead of npm/yarn/pnpm/bun add — resolves SDK-compatible versions
+npx expo start              # start the dev server
+npx expo lint               # lint
+npx tsc --noEmit            # typecheck
+npx expo-doctor             # diagnose dependency and config issues
+npx expo install --fix      # fix incompatible package versions
+```
+
+Run lint and typecheck before declaring any task done.
+
+## Navigation & Routing
+
+- Use **Expo Router** for all navigation. Routes live in `src/app/` — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) outside `src/app/`.
+- Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`.
+- Docs: https://docs.expo.dev/router/introduction.md
+
+## Building with EAS
+
+Use EAS to build, sign, and submit the app in the cloud (`eas build`, `eas submit`) and to ship over-the-air updates (`eas update`) — no local Xcode or Android Studio required. Run EAS CLI as `bunx eas-cli <command>` in Bun projects, or `npx eas-cli@latest <command>` otherwise; substitute that for bare `eas` in docs examples.
+Docs: https://docs.expo.dev/eas/index.md
+
+## Rules
+
+- If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.
+- Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.
+- Prefer recommended Expo modules over third-party libraries, and check your available skills before adding dependencies. Docs: https://docs.expo.dev/versions/latest/index.md
+</file>
+
+<file path="index.js">
+import { registerRootComponent } from 'expo';
+
+import App from './App';
+
+// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
+// It also ensures that whether you load the app in Expo Go or in a native build,
+// the environment is set up appropriately
+registerRootComponent(App);
+</file>
+
+<file path="LICENSE">
+The MIT License (MIT)
+
+Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</file>
+
+<file path="README.md">
+Aplicación móvil diseñada para ayudar a estudiantes universitarios a organizar sus horarios de clases, planificar tiempos dedicados al estudio y gestionar sus apuntes.
+</file>
+
+<file path="docs/navegacion.md">
+# Mapa de navegación - Stuhbit
+
+RootStack
+├── Main (Bottom tabs)
+│ ├── CronogramaTab (Native stack)
+│ │ ├── Cronograma ← lista de bloques del dia actual
+│ │ └── DetalleBloque ← Params: { id }
+│ ├── CalendarioTab (Native Stack)
+│ │ └── Calendario ← Vista semanal y mensual de cursos
+│ └── ApuntesTab (Native Stack)
+│ | └── Apuntes ← Lista de apuntes con filtros por materia
+
+| └── EnfoqueTab (Native Stack)
+
+| | └──Enfoque ← Temporizador Pomodoro activo
+
+├── SubirApunteModal (modal) ← Acceso rapido para digitalizar con camara/PDF
+├── AgendarBloqueModal (modal) ← Programacion rapida de nuevo bloque
+
+├── ProfileMenuModal (modal) ← Menu de opciones relevantes a configuraciones
+
+├── SettingScreen ← Acceso a las configuracion de sistemas
+└── ProfileScreen ← Acceso las configuracion de perfil
+
+| Ruta               | Navigator             | Se llega desde                        | Params            | Qué muestra                                              |
+| ------------------ | --------------------- | ------------------------------------- | ----------------- | -------------------------------------------------------- |
+| Cronograma         | CronogramaTab (stack) | Tab Bar / Inicio                      | -                 | Bloques                                                  |
+| DetalleBloque      | CronogramaTab (stack) | Cronograma, Calendario                | { id }            | Detalles de un Bloque                                    |
+| Calendario         | CalendarioTab (stack) | Tab Bar                               | -                 | Eventos Programados                                      |
+| Apuntes            | ApuntesTab (stack)    | Tab Bar                               | -                 | Lista de apuntes por curso                               |
+| Enfoque            | EnfoqueTab (stack)    | Tab Bar/ Cronograma/ DetalleBloque    | { id } (opcional) | reloj de concentracion                                   |
+| SubirApuntesModa   | RootStack (moda)      | Apuntes, Cronograma                   | -                 | modal para escanear con camara o subir pdf               |
+| AgendarBloqueModal | RootStack (modal)     | Calendario, Cronograma                | -                 | modal para configura fecha, horario y materia de estudio |
+| ProfileMenuModal   | RootStack (modal)     | Cronograma/Calendario/Enfoque/Apuntes | -                 | modal para las configuraciones de usuario                |
+| SettingScreen      | RootStack (Stack)     | ProfileMenuModal                      | -                 | opciuones de configuracion de aplicacion                 |
+| ProfileScreen      | RootStack (Stack)     | ProfileMenuModal                      | -                 | opciones de configuracion de perfil                      |
+</file>
+
+<file path="src/components/molecules/Card.js">
+import React from "react";
+import { View, Pressable, StyleSheet } from "react-native";
+import { colors, palette, radius, spacing } from "../../theme";
+
+export const Card = ({
+  children,
+  onPress,
+  variant = "elevated", // 'elevated' | 'outlined' | 'flat' | 'tinted'
+  padding = "md", // 'none' | 'sm' | 'md' | 'lg'
+  style,
+  ...props
+}) => {
+  const isPressable = typeof onPress === "function";
+  const Component = isPressable ? Pressable : View;
+
+  const paddingValues = {
+    none: 0,
+    sm: spacing.sm ?? 8,
+    md: spacing.md ?? 16,
+    lg: spacing.lg ?? 24,
+  };
+
+  const variantStyles = {
+    elevated: {
+      backgroundColor: colors.surface,
+      borderColor: colors.border,
+      borderWidth: 1,
+      // Sombra sutil multiplataforma
+      shadowColor: palette.black,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.04,
+      shadowRadius: 6,
+      elevation: 2,
+    },
+    outlined: {
+      backgroundColor: colors.surface,
+      borderColor: colors.neutral[200],
+      borderWidth: 1,
+    },
+    flat: {
+      backgroundColor: colors.surface,
+      borderColor: palette.neutral[200],
+      borderWidth: 1,
+    },
+    tinted: {
+      backgroundColor: palette.primary[50],
+      borderColor: palette.primary[100],
+      borderWidth: 1,
+    },
+  };
+
+  const currentVariant = variantStyles[variant] || variantStyles.elevated;
+
+  return (
+    <Component
+      onPress={onPress}
+      style={({ pressed } = {}) => [
+        styles.base,
+        currentVariant,
+        { padding: paddingValues[padding] },
+        pressed && styles.pressed,
+        style,
+      ]}
+      {...props}
+    >
+      {children}
+    </Component>
+  );
+};
+
+const styles = StyleSheet.create({
+  base: {
+    borderRadius: radius.xl ?? 16,
+    width: "100%",
+    overflow: "hidden",
+  },
+  pressed: {
+    opacity: 0.95,
+    transform: [{ scale: 0.99 }],
+  },
+});
+</file>
+
+<file path="src/components/organisms/Banner.js">
+import React from "react";
+import { View, Text, Pressable, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { colors, palette, radius, spacing, fontSize } from "../../theme";
+
+export const Banner = ({
+  title,
+  description,
+  actionLabel,
+  onActionPress,
+  icon = <Ionicons name="sparkles" size={18} color="#FFFFFF" />,
+  badgeText,
+  style,
+}) => {
+  return (
+    <View style={[styles.cardContainer, style]}>
+      <View style={styles.topRow}>
+        <View style={styles.iconCircle}>{icon}</View>
+
+        <View style={styles.headerTextGroup}>
+          <View style={styles.titleLine}>
+            <Text numberOfLines={1} style={styles.title}>
+              {title}
+            </Text>
+            {badgeText && (
+              <View style={styles.dotBadge}>
+                <Text style={styles.dotBadgeText}>{badgeText}</Text>
+              </View>
+            )}
+          </View>
+          {description && <Text style={styles.description}>{description}</Text>}
+        </View>
+      </View>
+
+      {actionLabel && onActionPress && (
+        <Pressable
+          onPress={onActionPress}
+          hitSlop={6}
+          style={({ pressed }) => [
+            styles.actionButton,
+            pressed && styles.actionPressed,
+          ]}
+        >
+          <Text style={styles.actionText}>{actionLabel}</Text>
+          <Ionicons name="arrow-forward" size={16} color={colors.primary} />
+        </Pressable>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    backgroundColor: palette.white,
+    borderColor: palette.primary[100],
+    borderWidth: 1,
+    borderRadius: radius.xl ?? 16,
+    padding: spacing.md ?? 16,
+    width: "100%",
+  },
+  topRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+  },
+  iconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerTextGroup: {
+    flex: 1,
+    gap: 4,
+  },
+  titleLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    flexWrap: "wrap",
+  },
+  title: {
+    fontSize: fontSize.xs ?? 12,
+    fontWeight: "800",
+    letterSpacing: 0.6,
+    color: palette.primary[900],
+    textTransform: "uppercase",
+  },
+  dotBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    backgroundColor: palette.primary[100],
+  },
+  dotBadgeText: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: palette.primary[900],
+  },
+  description: {
+    fontSize: fontSize.sm ?? 13,
+    color: palette.neutral[800],
+    lineHeight: 18,
+  },
+  actionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    marginTop: 12,
+    gap: 6,
+  },
+  actionText: {
+    fontSize: fontSize.sm ?? 14,
+    fontWeight: "700",
+    color: colors.primary,
+  },
+  actionPressed: {
+    opacity: 0.7,
+  },
+});
+</file>
+
+<file path="src/components/organisms/StudyNoteCard.js">
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { colors, palette, radius, spacing, fontSize } from "../../theme";
+import { Badge } from "../atoms/Badge";
+import { Button } from "../atoms/Button";
+import { IconButton } from "../atoms/IconButton";
+
+export const StudyNoteCard = ({
+  category = "Cálculo II",
+  categoryVariant = "primary",
+  fileInfo = "PDF · 4 págs",
+  title,
+  description,
+  summaryBadge = "Resumen AI Generado",
+  lastReviewText = "Último repaso: hace 2 días",
+  subInfo = "12 tarjetas de memoria listas",
+  accentColor = colors.primary,
+  onStudyPress,
+  onSharePress,
+  onDownloadPress,
+  onMenuPress,
+  style,
+}) => {
+  return (
+    <View style={[styles.card, { borderLeftColor: accentColor }, style]}>
+      {/* Fila superior: Badges y menú */}
+      <View style={styles.topHeader}>
+        <View style={styles.badgeRow}>
+          <Badge label={category} variant={categoryVariant} size="sm" />
+          <Badge
+            label={fileInfo}
+            variant="neutral"
+            size="sm"
+            icon={
+              <Ionicons
+                name="document-text-outline"
+                size={12}
+                color={palette.neutral[600]}
+              />
+            }
+          />
+        </View>
+        <IconButton
+          icon={
+            <Ionicons
+              name="ellipsis-vertical"
+              size={18}
+              color={palette.neutral[600]}
+            />
+          }
+          onPress={onMenuPress}
+          size={32}
+          variant="ghost"
+        />
+      </View>
+
+      {/* Título y descripción */}
+      <Text numberOfLines={2} style={styles.title}>
+        {title}
+      </Text>
+      {description && (
+        <Text numberOfLines={2} style={styles.description}>
+          {description}
+        </Text>
+      )}
+
+      {/* Bloque interno de Resumen */}
+      <View style={styles.summaryContainer}>
+        <View style={styles.summaryBadgeLine}>
+          <Ionicons
+            name="checkmark-circle-outline"
+            size={15}
+            color={palette.secondary[600]}
+          />
+          <Text style={styles.summaryBadgeText}>{summaryBadge}</Text>
+        </View>
+        <Text style={styles.lastReviewText}>{lastReviewText}</Text>
+        <View style={styles.subInfoRow}>
+          <Ionicons name="bulb-outline" size={14} color={colors.primary} />
+          <Text style={styles.subInfoText}>{subInfo}</Text>
+        </View>
+      </View>
+
+      {/* Botones inferiores */}
+      <View style={styles.actionRow}>
+        <Button
+          title="Estudiar con este apunte"
+          onPress={onStudyPress}
+          variant="primary"
+          size="sm"
+          icon={
+            <Ionicons name="play-circle-outline" size={18} color="#FFFFFF" />
+          }
+          style={styles.studyButton}
+        />
+        <IconButton
+          icon={
+            <Ionicons
+              name="share-social-outline"
+              size={18}
+              color={colors.primary}
+            />
+          }
+          onPress={onSharePress}
+          variant="filled"
+          size={38}
+        />
+        <IconButton
+          icon={
+            <Ionicons
+              name="download-outline"
+              size={18}
+              color={colors.primary}
+            />
+          }
+          onPress={onDownloadPress}
+          variant="filled"
+          size={38}
+        />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: palette.white,
+    borderRadius: radius.xl ?? 16,
+    borderWidth: 1,
+    borderColor: palette.primary[100],
+    borderLeftWidth: 5,
+    padding: spacing.md ?? 16,
+    width: "100%",
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
+    marginBottom: spacing.md ?? 14,
+  },
+  topHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  badgeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    flexWrap: "wrap",
+  },
+  title: {
+    fontSize: fontSize.md ?? 16,
+    fontWeight: "700",
+    color: colors.text,
+    lineHeight: 22,
+  },
+  description: {
+    fontSize: fontSize.xs ?? 13,
+    color: colors.textSecondary,
+    marginTop: 4,
+    lineHeight: 18,
+  },
+  summaryContainer: {
+    backgroundColor: palette.neutral[50],
+    borderRadius: radius.md ?? 10,
+    borderWidth: 1,
+    borderColor: palette.neutral[200],
+    padding: 10,
+    marginTop: 10,
+    gap: 4,
+  },
+  summaryBadgeLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  summaryBadgeText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: palette.secondary[700],
+  },
+  lastReviewText: {
+    fontSize: 11,
+    color: colors.textSecondary,
+  },
+  subInfoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop: 2,
+  },
+  subInfoText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: colors.primary,
+  },
+  actionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 14,
+    gap: 8,
+  },
+  studyButton: {
+    flex: 1,
+  },
+});
+</file>
+
+<file path="src/components/templates/ScreenLayout.js">
+import React from "react";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { colors, spacing } from "../../theme";
+
+export const ScreenLayout = ({
+  children,
+  header,
+  scrollable = true,
+  contentContainerStyle,
+  style,
+}) => {
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+
+  // Si la pantalla es tableta o apaisada ancha, limitamos el ancho para que no se deforme
+  const isLargeScreen = width >= 768;
+
+  const responsiveContainerStyle = [
+    styles.responsiveWrapper,
+    isLargeScreen && styles.largeScreenConstraint,
+  ];
+
+  return (
+    <View
+      style={[
+        styles.root,
+        {
+          paddingTop: insets.top,
+          paddingLeft: insets.left,
+          paddingRight: insets.right,
+        },
+        style,
+      ]}
+    >
+      {/* Cabecera persistente opcional */}
+      {header && <View style={styles.headerWrapper}>{header}</View>}
+
+      {/* Contenido principal adaptativo */}
+      {scrollable ? (
+        <ScrollView
+          style={styles.flexOne}
+          contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={responsiveContainerStyle}>{children}</View>
+        </ScrollView>
+      ) : (
+        <View style={[styles.flexOne, styles.staticContent]}>
+          <View style={responsiveContainerStyle}>{children}</View>
+        </View>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  flexOne: {
+    flex: 1,
+  },
+  headerWrapper: {
+    width: "100%",
+    zIndex: 10,
+  },
+  scrollContent: {
+    paddingVertical: spacing.md ?? 16,
+    paddingHorizontal: spacing.md ?? 16,
+    flexGrow: 1,
+  },
+  staticContent: {
+    paddingVertical: spacing.md ?? 16,
+    paddingHorizontal: spacing.md ?? 16,
+  },
+  responsiveWrapper: {
+    width: "100%",
+    flex: 1,
+  },
+  largeScreenConstraint: {
+    maxWidth: 680,
+    alignSelf: "center",
+  },
+});
+</file>
+
+<file path="src/schemas/blockSchema.js">
+import { z } from "zod";
+
+export const TIPOS_BLOQUE = ["clase", "estudio", "repaso", "examen"];
+export const DIAS_SEMANA = [
+  "Lunes",
+  "Martes",
+  "Miércoles",
+  "Jueves",
+  "Viernes",
+  "Sábado",
+  "Domingo",
+];
+
+const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+export const blockSchema = z
+  .object({
+    titulo: z
+      .string()
+      .trim()
+      .min(1, "El título es obligatorio")
+      .max(50, "El título no puede superar los 50 caracteres"),
+    curso: z
+      .string()
+      .trim()
+      .min(1, "El curso es obligatorio")
+      .max(40, "El curso no puede superar los 40 caracteres"),
+    tipo: z.enum(TIPOS_BLOQUE, {
+      errorMap: () => ({ message: "Selecciona un tipo de bloque valido" }),
+    }),
+    dia: z.enum(DIAS_SEMANA, {
+      errorMap: () => ({ message: "Selecciona un día de la semana valido" }),
+    }),
+    horaInicio: z
+      .string()
+      .trim()
+      .regex(timeRegex, "Formato de hora inválido (HH:MM)"),
+    horaFin: z
+      .string()
+      .trim()
+      .regex(timeRegex, "Formato de hora inválido (HH:MM)"),
+  })
+  .refine(
+    (datos) => {
+      if (!timeRegex.test(datos.horaInicio) || !timeRegex.test(datos.horaFin)) {
+        return true;
+      }
+      return datos.horaInicio < datos.horaFin;
+    },
+    {
+      message: "La hora de inicio debe ser menor que la hora de fin",
+      path: ["horaFin"],
+    },
+  );
+
+export const blockVacio = {
+  titulo: "",
+  courso: "",
+  tipo: "clase",
+  dia: "Lunes",
+  horaInicio: "08:00",
+  horaFin: "09:00",
+};
+</file>
+
+<file path="src/screens/LoginScreen.js">
+import React, { useState, useRef } from "react";
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
+import { useDispatch } from "react-redux";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigation } from "@react-navigation/native";
+import { addBlock } from "../store/scheduleSlice.js";
+import {
+  blockSchema,
+  blockVacio,
+  TIPOS_BLOQUE,
+  DIAS_SEMANA,
+} from "../schemas/blockSchema.js";
+import FormField from "../components/FormField.js";
+import { colors, spacing, typography, radius, palette } from "../theme";
+import { useSesion } from "../context/SesionContext.js";
+import { loginSchema, loginVacio } from "../schemas/loginSchema.js";
+
+export default function LoginScreen() {
+  const { iniciarSesion } = useSesion();
+
+  const passwordRef = useRef(null);
+
+  const [mostrarPassword, setMostrarPassword] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: loginVacio,
+    mode: "onBlur",
+    reValidateMode: "onChange",
+  });
+
+  const onSubmit = async (datos) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+
+      if (iniciarSesion) {
+        await iniciarSesion({
+          correo: datos.correo,
+          nombre: datos.correo.split("@")[0],
+        });
+      }
+      reset();
+    } catch (error) {
+      Alert.alert("Error de autenticación", "No se pudo iniciar sesión");
+    }
+  };
+
+  const onError = (errores) => {
+    console.log("❌ Errores en Login:", errores);
+  };
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.header}>
+          <Text style={styles.titulo}>Bienvenido a Stuhbit</Text>
+          <Text style={styles.subtitulo}>
+            Inicia sesión para gestionar tus horarios de estudio
+          </Text>
+        </View>
+
+        <View style={styles.formulario}>
+          <FormField
+            control={control}
+            name="correo"
+            label="Correo electrónico"
+            placeholder="usuario@urp.edu.pe"
+            placeholderTextColor="rgba(148, 163, 184, 0.45)"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="next"
+            onSubmitEditing={() => passwordRef.current?.focus()}
+          />
+
+          <View style={styles.passwordWrapper}>
+            <FormField
+              ref={passwordRef}
+              control={control}
+              name="password"
+              label="Contraseña"
+              placeholder="••••••••"
+              placeholderTextColor="rgba(148, 163, 184, 0.45)"
+              secureTextEntry={!mostrarPassword}
+              autoCapitalize="none"
+              autoCorrect={false}
+              returnKeyType="send"
+              onSubmitEditing={handleSubmit(onSubmit, onError)}
+            />
+            <TouchableOpacity
+              style={styles.toggleBtn}
+              onPress={() => setMostrarPassword((prev) => !prev)}
+            >
+              <Text style={styles.toggleTexto}>
+                {mostrarPassword ? "Ocultar" : "Ver"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.boton, isSubmitting && styles.botonDisabled]}
+            onPress={handleSubmit(onSubmit, onError)}
+            disabled={isSubmitting}
+          >
+            <Text style={styles.botonTexto}>
+              {isSubmitting ? "Iniciando..." : "Iniciar Sesión"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    padding: spacing.lg,
+  },
+  header: {
+    marginBottom: spacing.xl,
+    alignItems: "center",
+  },
+  titulo: {
+    ...typography.h2,
+    fontSize: 24,
+    fontWeight: "700",
+    color: colors.textPrimary,
+    marginBottom: 6,
+  },
+  subtitulo: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    textAlign: "center",
+  },
+  formulario: {
+    gap: spacing.sm,
+  },
+  passwordWrapper: {
+    position: "relative",
+  },
+  toggleBtn: {
+    position: "absolute",
+    right: 12,
+    top: 36,
+    padding: 6,
+    zIndex: 2,
+  },
+  toggleTexto: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: colors.primary,
+  },
+  boton: {
+    backgroundColor: colors.primary,
+    paddingVertical: 14,
+    borderRadius: radius.md || 8,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  botonDisabled: {
+    opacity: 0.6,
+  },
+  botonTexto: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+});
+</file>
+
+<file path="src/screens/NotesScreen.js">
+// import React, { useState } from "react";
+// import { View, Text, ScrollView, StyleSheet } from "react-native";
+// import { Ionicons } from "@expo/vector-icons";
+// import { colors, palette, spacing, fontSize } from "../theme";
+// import { ScreenLayout } from "../components/templates/ScreenLayout.js";
+// import { AppHeader } from "../components/templates/AppHeader.js";
+// import { Banner } from "../components/organisms/Banner.js";
+// import { SearchInput } from "../components/molecules/SearchInput.js";
+// import { Chips } from "../components/molecules/Chips.js";
+// import { Button } from "../components/atoms/Button.js";
+// import { StudyNoteCard } from "../components/organisms/StudyNoteCard.js";
+// import { SprintStudySection } from "../components/organisms/SprintStudySection.js";
+
+// const FILTER_TAGS = [
+//   { id: "todas", label: "Todas (14)" },
+//   { id: "calc", label: "Cálculo II (5)", color: colors.primary },
+//   { id: "algo", label: "Algoritmos (4)", color: palette.secondary[500] },
+//   { id: "fisi", label: "Física (3)", color: palette.tertiary[600] },
+// ];
+
+// export default function NotesScreen({ navigation }) {
+//   const [selectedTag, setSelectedTag] = useState("todas");
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [sprintItems, setSprintItems] = useState([
+//     {
+//       id: "1",
+//       title: "Derivadas Parciales y Regla de la Ca...",
+//       subject: "Cálculo II",
+//       recommendedTime: "25 min",
+//       selected: true,
+//     },
+//     {
+//       id: "2",
+//       title: "Leyes de Termodinámica y Entropía",
+//       subject: "Física",
+//       recommendedTime: "40 min",
+//       selected: true,
+//     },
+//     {
+//       id: "3",
+//       title: "Árboles Binarios y Grafos",
+//       subject: "Algoritmos",
+//       recommendedTime: "30 min",
+//       selected: false,
+//     },
+//   ]);
+
+//   const toggleSprintItem = (id) => {
+//     setSprintItems((prev) =>
+//       prev.map((item) =>
+//         item.id === id ? { ...item, selected: !item.selected } : item,
+//       ),
+//     );
+//   };
+
+//   return (
+//     <ScreenLayout
+//       header={
+//         <AppHeader
+//           currentScreenTitle="Apuntes"
+//           streakDays={5}
+//           onAvatarPress={() => {}}
+//         />
+//       }
+//     >
+//       {/* Banner Sincronización Inteligente */}
+//       <Banner
+//         title="Sincronización Inteligente"
+//         description="Tienes 3 apuntes clave para tu bloque libre de hoy a las 11:30 AM."
+//         actionLabel="Iniciar repaso rápido"
+//         onActionPress={() => navigation.navigate("Enfoque")}
+//         badgeText="ACTIVO"
+//       />
+
+//       {/* Buscador de apuntes */}
+//       <SearchInput
+//         value={searchQuery}
+//         onChangeText={setSearchQuery}
+//         onFilterPress={() => {}}
+//         style={styles.searchSpacing}
+//       />
+
+//       {/* Acciones de Digitalización */}
+//       <View style={styles.sectionHeader}>
+//         <Text style={styles.sectionTitle}>Subir o Digitalizar</Text>
+//         <Text style={styles.sectionActionText}>OCR Automático</Text>
+//       </View>
+
+//       <Button
+//         title="Escanear con Cámara Inteligente"
+//         variant="primary"
+//         size="md"
+//         icon={<Ionicons name="scan-outline" size={20} color={palette.white} />}
+//         onPress={() => {}}
+//       />
+
+//       <View style={styles.uploadRow}>
+//         <Button
+//           title="Subir PDF"
+//           variant="secondary"
+//           size="sm"
+//           icon={
+//             <Ionicons
+//               name="document-text-outline"
+//               size={16}
+//               color={colors.primary}
+//             />
+//           }
+//           onPress={() => {}}
+//           style={styles.uploadHalfButton}
+//         />
+//         <Button
+//           title="Nota de Voz"
+//           variant="secondary"
+//           size="sm"
+//           icon={
+//             <Ionicons name="mic-outline" size={16} color={colors.primary} />
+//           }
+//           onPress={() => {}}
+//           style={styles.uploadHalfButton}
+//         />
+//       </View>
+
+//       {/* Filtros horizontales por materia */}
+//       <View style={styles.filterHeader}>
+//         <Text style={styles.filterTitle}>FILTRAR POR MATERIA</Text>
+//         <Text style={styles.filterCount}>14 documentos</Text>
+//       </View>
+
+//       <ScrollView
+//         horizontal
+//         showsHorizontalScrollIndicator={false}
+//         contentContainerStyle={styles.chipsContainer}
+//       >
+//         {FILTER_TAGS.map((tag) => (
+//           <Chips
+//             key={tag.id}
+//             label={tag.label}
+//             selected={selectedTag === tag.id}
+//             onPress={() => setSelectedTag(tag.id)}
+//             icon={
+//               tag.color ? (
+//                 <View
+//                   style={[styles.chipDot, { backgroundColor: tag.color }]}
+//                 />
+//               ) : null
+//             }
+//           />
+//         ))}
+//       </ScrollView>
+
+//       {/* Tarjetas de apuntes principales */}
+//       <View style={styles.notesList}>
+//         <StudyNoteCard
+//           category="Cálculo II"
+//           categoryVariant="primary"
+//           fileInfo="PDF · 4 págs"
+//           title="Derivadas Parciales y Regla de la Cadena"
+//           description="Teoremas de Schwarz, matriz Jacobiana y ejercicios resueltos de optimización..."
+//           summaryBadge="Resumen AI Generado"
+//           lastReviewText="Último repaso: hace 2 días"
+//           subInfo="12 tarjetas de memoria listas"
+//           accentColor={colors.primary}
+//           onStudyPress={() => navigation.navigate("Enfoque")}
+//         />
+
+//         <StudyNoteCard
+//           category="Algoritmos"
+//           categoryVariant="success"
+//           fileInfo="Fotos de pizarra (3)"
+//           title="Árboles Binarios y Grafos"
+//           description="Recorridos DFS y BFS, balanceo AVL y complejidad temporal Big-O..."
+//           summaryBadge="Autoevaluación Lista (8 preguntas)"
+//           lastReviewText="Subido ayer · OCR completado"
+//           subInfo="Alta relevancia para parcial"
+//           accentColor={palette.secondary[600]}
+//           onStudyPress={() => navigation.navigate("Enfoque")}
+//         />
+
+//         <StudyNoteCard
+//           category="Física General"
+//           categoryVariant="warning"
+//           fileInfo="Examen este Viernes"
+//           title="Leyes de Termodinámica y Entropía"
+//           description="Ciclo de Carnot, primer y segundo principio, trabajo isotérmico y fórmulas de gases ideales."
+//           summaryBadge="Notas de Clase + Audio"
+//           lastReviewText="Prioridad alta · 7 conceptos críticos"
+//           subInfo="Falta repasar fórmulas de Carnot"
+//           accentColor={palette.tertiary[600]}
+//           onStudyPress={() => navigation.navigate("Enfoque")}
+//         />
+//       </View>
+
+//       {/* Sección Sprint de Estudio Hoy */}
+//       <SprintStudySection
+//         items={sprintItems}
+//         onToggleItem={toggleSprintItem}
+//         onStartFocus={() => navigation.navigate("Enfoque")}
+//         totalDurationMinutes={65}
+//         style={styles.sprintSpacing}
+//       />
+//     </ScreenLayout>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   searchSpacing: {
+//     marginVertical: spacing.md ?? 16,
+//   },
+//   sectionHeader: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     marginBottom: spacing.xs ?? 8,
+//   },
+//   sectionTitle: {
+//     fontSize: fontSize.md ?? 16,
+//     fontWeight: "700",
+//     color: colors.text,
+//   },
+//   sectionActionText: {
+//     fontSize: fontSize.xs ?? 12,
+//     fontWeight: "600",
+//     color: colors.textSecondary,
+//   },
+//   uploadRow: {
+//     flexDirection: "row",
+//     gap: spacing.sm ?? 10,
+//     marginTop: spacing.xs ?? 8,
+//   },
+//   uploadHalfButton: {
+//     flex: 1,
+//   },
+//   filterHeader: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     marginTop: spacing.lg ?? 20,
+//     marginBottom: spacing.xs ?? 8,
+//   },
+//   filterTitle: {
+//     fontSize: fontSize.xs ?? 11,
+//     fontWeight: "700",
+//     letterSpacing: 0.8,
+//     color: colors.textSecondary,
+//   },
+//   filterCount: {
+//     fontSize: fontSize.xs ?? 12,
+//     fontWeight: "600",
+//     color: colors.primary,
+//   },
+//   chipsContainer: {
+//     gap: 8,
+//     paddingVertical: 4,
+//   },
+//   chipDot: {
+//     width: 6,
+//     height: 6,
+//     borderRadius: 3,
+//   },
+//   notesList: {
+//     marginTop: spacing.md ?? 16,
+//     gap: spacing.md ?? 16,
+//   },
+//   sprintSpacing: {
+//     marginTop: spacing.lg ?? 24,
+//     marginBottom: spacing.xl ?? 32,
+//   },
+// });
+
+// codigo para el paso 4 del lab3
+
+import React from "react";
+import Placeholder from "./Placeholder";
+
+export default function NotesScreen() {
+  return (
+    <Placeholder
+      title="Mis Apuntes & Materiales"
+      description="Listado de apuntes, resúmenes IA por materia y preparación de sesiones de estudio."
+      links={[{ label: "Subir o Escanear Apunte (Modal)", to: "SubirApunte" }]}
+    />
+  );
+}
+</file>
+
+<file path="src/screens/ProfileMenuModal.js">
+import React from "react";
+import Placeholder from "./Placeholder";
+
+export default function ProfileMenuModal() {
+  return (
+    <Placeholder
+      title="Cuenta y Opciones"
+      description="Selecciona una opción para administrar tu perfil o las preferencias de la aplicación."
+      links={[
+        { label: "👤 Ver Detalles de Perfil", to: "Perfil" },
+        { label: " Contacto y Feedback", to: "Contacto" },
+        { label: "⚙️ Configuración y Ajustes", to: "Settings" },
+        { label: "Cancelar / Volver" },
+      ]}
+    />
+  );
+}
+</file>
+
+<file path="src/screens/ProfileScreen.js">
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { colors, palette, spacing, typography } from "../theme";
+import { ScreenLayout } from "../components/templates/ScreenLayout.js";
+import { AppHeader } from "../components/templates/AppHeader.js";
+import { Card } from "../components/molecules/Card.js";
+import { Badge } from "../components/atoms/Badge.js";
+import { Button } from "../components/atoms/Button.js";
+import { ProgressBar } from "../components/atoms/ProgressBar.js";
+import { useNavigation } from "@react-navigation/native";
+
+// --- IMPORTACIONES LAB-04 (Redux y Sesión) ---
+import { useSelector } from "react-redux";
+import {
+  selectPendingBlocksCount,
+  selectCompletedBlocksCount,
+} from "../store/scheduleSlice.js";
+import { useSesion } from "../context/SesionContext.js";
+
+const SUBJECTS = [
+  { id: "calc", name: "Cálculo II", notes: 5, color: colors.primary },
+  { id: "algo", name: "Algoritmos", notes: 4, color: palette.secondary[500] },
+  {
+    id: "fisi",
+    name: "Física General",
+    notes: 3,
+    color: palette.tertiary[600],
+  },
+];
+
+export default function ProfileScreen({}) {
+  const navigation = useNavigation();
+
+  // --- LÓGICA LAB-04 ---
+  const pendientes = useSelector(selectPendingBlocksCount);
+  const completados = useSelector(selectCompletedBlocksCount);
+  const { usuario, cerrarSesion } = useSesion();
+
+  // Reemplazamos los STATS fijos por los datos dinámicos derivados de Redux
+  const STATS = [
+    {
+      id: "pending",
+      label: "Pendientes",
+      value: pendientes.toString(),
+      icon: "time-outline",
+      color: palette.tertiary[600],
+    },
+    {
+      id: "completed",
+      label: "Completados",
+      value: completados.toString(),
+      icon: "checkmark-circle-outline",
+      color: palette.secondary[600],
+    },
+    {
+      id: "total",
+      label: "Total Bloques",
+      value: (pendientes + completados).toString(),
+      icon: "document-text-outline",
+      color: colors.primary,
+    },
+  ];
+
+  // Actualizamos el correo dinámicamente con el usuario del Login
+  const ACCOUNT_INFO = [
+    {
+      id: "mail",
+      icon: "mail-outline",
+      label: "Correo",
+      value: usuario?.correo || "sofia.mendoza@correo.edu.pe",
+    },
+    {
+      id: "code",
+      icon: "id-card-outline",
+      label: "Código de estudiante",
+      value: "20220000",
+    },
+    {
+      id: "sync",
+      icon: "sync-outline",
+      label: "Último horario importado",
+      value: "Hoy, 8:00 AM",
+    },
+  ];
+
+  return (
+    <ScreenLayout
+      header={
+        <AppHeader
+          currentScreenTitle="Perfil"
+          streakDays={5}
+          onAvatarPress={() => {}}
+        />
+      }
+    >
+      {/* Tarjeta principal del estudiante */}
+      <Card variant="elevated" style={styles.profileCard}>
+        <View style={styles.avatar}>
+          {/* Mostramos las iniciales basadas en el nombre del usuario o 'SM' por defecto */}
+          <Text style={styles.avatarText}>
+            {usuario?.nombre
+              ? usuario.nombre.substring(0, 2).toUpperCase()
+              : "SM"}
+          </Text>
+        </View>
+        <Text style={styles.name}>{usuario?.nombre || "Sofía Mendoza"}</Text>
+        <Text style={styles.career}>Ingeniería de Software · Ciclo 6</Text>
+        <View style={styles.profileBadges}>
+          <Badge label="Semestre 2025-1" variant="primary" size="sm" />
+          <Badge label="Racha activa" variant="success" size="sm" />
+        </View>
+      </Card>
+
+      {/* Estadísticas rápidas (Ahora usan selectores de Redux) */}
+      <View style={styles.statsRow}>
+        {STATS.map((stat) => (
+          <Card key={stat.id} variant="elevated" style={styles.statCard}>
+            <Ionicons name={stat.icon} size={20} color={stat.color} />
+            <Text style={styles.statValue}>{stat.value}</Text>
+            <Text style={styles.statLabel}>{stat.label}</Text>
+          </Card>
+        ))}
+      </View>
+
+      {/* Progreso del semestre */}
+      <Card variant="elevated" style={styles.sectionCard}>
+        <View style={styles.rowBetween}>
+          <Text style={styles.cardLabel}>PROGRESO DEL SEMESTRE</Text>
+          <Text style={styles.percentText}>50%</Text>
+        </View>
+        <ProgressBar
+          progress={0.5}
+          color={colors.primary}
+          height={8}
+          style={{ marginVertical: spacing.sm }}
+        />
+        <Text style={styles.cardNote}>
+          Semana 8 de 16. Quedan 8 semanas para cerrar el ciclo.
+        </Text>
+      </Card>
+
+      {/* Materias del semestre */}
+      <Card variant="outlined" style={styles.sectionCard}>
+        <Text style={styles.cardLabel}>MATERIAS DEL SEMESTRE</Text>
+        {SUBJECTS.map((subject, index) => (
+          <View
+            key={subject.id}
+            style={[
+              styles.subjectRow,
+              index < SUBJECTS.length - 1 && styles.rowDivider,
+            ]}
+          >
+            <View
+              style={[styles.subjectDot, { backgroundColor: subject.color }]}
+            />
+            <Text style={styles.subjectName}>{subject.name}</Text>
+            <Badge
+              label={`${subject.notes} apuntes`}
+              variant="neutral"
+              size="sm"
+            />
+          </View>
+        ))}
+      </Card>
+
+      {/* Datos de la cuenta */}
+      <Card variant="outlined" style={styles.sectionCard}>
+        <Text style={styles.cardLabel}>DATOS DE LA CUENTA</Text>
+        {ACCOUNT_INFO.map((info, index) => (
+          <View
+            key={info.id}
+            style={[
+              styles.infoRow,
+              index < ACCOUNT_INFO.length - 1 && styles.rowDivider,
+            ]}
+          >
+            <Ionicons name={info.icon} size={18} color={colors.primary} />
+            <View style={styles.infoTextCol}>
+              <Text style={styles.infoLabel}>{info.label}</Text>
+              <Text style={styles.infoValue}>{info.value}</Text>
+            </View>
+          </View>
+        ))}
+      </Card>
+
+      {/* Acciones */}
+      <View style={{ gap: spacing.sm, marginBottom: spacing.xl }}>
+        <Button
+          title="Menú de Ajustes"
+          variant="primary"
+          size="md"
+          icon={
+            <Ionicons name="settings-outline" size={18} color={palette.white} />
+          }
+          onPress={() => navigation.navigate("ProfileMenu")}
+        />
+
+        {/* Botón de Cerrar Sesión requerido por el LAB-04 */}
+        <Button
+          title="Cerrar sesión"
+          variant="outlined"
+          size="md"
+          icon={
+            <Ionicons name="log-out-outline" size={18} color={colors.primary} />
+          }
+          onPress={cerrarSesion}
+        />
+      </View>
+    </ScreenLayout>
+  );
+}
+
+const styles = StyleSheet.create({
+  backRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 2,
+    marginBottom: spacing.sm,
+  },
+  backText: {
+    ...typography.label,
+    color: colors.primary,
+  },
+  profileCard: {
+    alignItems: "center",
+    padding: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  avatar: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: colors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarText: {
+    ...typography.title,
+    color: colors.textInverted,
+  },
+  name: {
+    ...typography.title,
+    color: colors.text,
+    marginTop: spacing.sm,
+  },
+  career: {
+    ...typography.bodySmall,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  profileBadges: {
+    flexDirection: "row",
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+  },
+  statsRow: {
+    flexDirection: "row",
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  statCard: {
+    flex: 1,
+    alignItems: "center",
+    padding: spacing.sm,
+    gap: 4,
+  },
+  statValue: {
+    ...typography.subtitle,
+    color: colors.text,
+  },
+  statLabel: {
+    ...typography.micro,
+    color: colors.textSecondary,
+  },
+  sectionCard: {
+    padding: spacing.md,
+    marginBottom: spacing.md,
+  },
+  rowBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  cardLabel: {
+    ...typography.cardLabel,
+    color: colors.textSecondary,
+  },
+  percentText: {
+    ...typography.cardLabel,
+    color: palette.secondary[700],
+  },
+  cardNote: {
+    ...typography.caption,
+    color: colors.textSecondary,
+  },
+  subjectRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+  },
+  subjectDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  subjectName: {
+    ...typography.label,
+    flex: 1,
+    color: colors.text,
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+  },
+  infoTextCol: {
+    flex: 1,
+  },
+  infoLabel: {
+    ...typography.caption,
+    color: colors.textSecondary,
+  },
+  infoValue: {
+    ...typography.label,
+    color: colors.text,
+    marginTop: 2,
+  },
+  rowDivider: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.divider,
+  },
+  settingsBtn: {
+    marginTop: spacing.sm,
+    marginBottom: spacing.xl,
+  },
+});
+</file>
+
+<file path="src/store/persistencia.js">
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const STORAGE_KEY = "stuhbit/v1";
+
+export async function cargarBloques() {
+  try {
+    const json = await AsyncStorage.getItem(STORAGE_KEY);
+    return json ? JSON.parse(json) : null;
+  } catch (error) {
+    console.warn("Error al leer AsyncStorage", error);
+    return null;
+  }
+}
+
+export function suscribirPersistencia(store) {
+  let ultimoEstado = store.getState().schedule.items;
+  store.subscribe(() => {
+    const estadoActual = store.getState().schedule.items;
+    if (estadoActual !== ultimoEstado) {
+      ultimoEstado = estadoActual;
+
+      console.log(
+        "ESTADO ACTUAL DEL STORE:",
+        JSON.stringify(store.getState(), null, 2),
+      );
+
+      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(estadoActual)).catch(
+        (e) => console.warn("Error al guardar en AsyncStorage", e),
+      );
+    }
+  });
+}
+</file>
+
+<file path="src/store/scheduleSlice.js">
+import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { title } from "node:process";
+
+// 3 datos iniciales requeridos (reemplazan los datos fijos del LAB-03)
+const initialState = {
+  items: [
+    {
+      id: "b1",
+      title: "Sistemas Móviles - LAB 04",
+      course: "IF-1103",
+      startTime: "08:00",
+      endTime: "10:00",
+      day: "Sábado",
+      status: "pendiente", // "pendiente" | "completado"
+      notes: "Implementar Redux Toolkit y AsyncStorage",
+      createdAt: "2026-10-24T08:00:00.000Z",
+    },
+    {
+      id: "b2",
+      title: "Repaso de Algoritmos",
+      course: "IF-0801",
+      startTime: "10:30",
+      endTime: "12:00",
+      day: "Sábado",
+      status: "completado",
+      notes: "Estudiar grafos y árboles binarios",
+      createdAt: "2026-10-24T10:30:00.000Z",
+    },
+    {
+      id: "b3",
+      title: "Lectura de Ingeniería de Software",
+      course: "IF-0902",
+      startTime: "14:00",
+      endTime: "16:00",
+      day: "Domingo",
+      status: "pendiente",
+      notes: "Capítulo 4: Patrones de arquitectura",
+      createdAt: "2026-10-25T14:00:00.000Z",
+    },
+  ],
+};
+
+const scheduleSlice = createSlice({
+  name: "schedule",
+  initialState,
+  reducers: {
+    // 1. Reducer CREAR con prepare (genera id único y timestamp serializable)
+    // src/store/scheduleSlice.js
+    addBlock: {
+      reducer(state, action) {
+        state.items.unshift(action.payload);
+      },
+      prepare(datos = {}) {
+        return {
+          payload: {
+            id: nanoid(),
+            title: datos.titulo || datos.title,
+            course: datos.curso || datos.course,
+            type: datos.tipo || datos.type || "clase",
+            day: datos.dia || datos.day || "Lunes",
+            startTime: datos.horaInicio || datos.startTime || "08:00",
+            endTime: datos.horaFin || datos.endTime || "10:00",
+            status: "pendiente",
+            notes: datos.notes || "",
+            createdAt: new Date().toISOString(),
+          },
+        };
+      },
+    },
+
+    // 2. Reducer ACTUALIZAR (modifica campos o el estado)
+    updateBlock(state, action) {
+      const { id, ...changes } = action.payload;
+      const block = state.items.find((item) => item.id === id);
+      if (block) {
+        Object.assign(block, changes);
+      }
+    },
+
+    // 3. Reducer ELIMINAR
+    deleteBlock(state, action) {
+      state.items = state.items.filter((item) => item.id !== action.payload);
+    },
+
+    // Reducer auxiliar para la hidratación desde AsyncStorage (Punto 6)
+    hydrateBlocks(state, action) {
+      if (Array.isArray(action.payload)) {
+        state.items = action.payload;
+      }
+    },
+  },
+});
+
+// Exportación de acciones
+export const { addBlock, updateBlock, deleteBlock, hydrateBlocks } =
+  scheduleSlice.actions;
+
+// --- SELECTORES ---
+
+// Selector de todos los bloques
+export const selectAllBlocks = (state) => state.schedule.items;
+
+// Selector por id
+export const selectBlockById = (id) => (state) =>
+  state.schedule.items.find((item) => item.id === id);
+
+// Selector derivado 1: Conteo de bloques pendientes
+export const selectPendingBlocksCount = (state) =>
+  state.schedule.items.filter((item) => item.status === "pendiente").length;
+
+// Selector derivado 2: Conteo de bloques completados
+export const selectCompletedBlocksCount = (state) =>
+  state.schedule.items.filter((item) => item.status === "completado").length;
+
+export default scheduleSlice.reducer;
+</file>
+
+<file path="src/theme/radius.js">
+export const radius = {
+  none: 0,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  xxl: 24,
+  pill: 999,
+  circle: 9999,
+};
+</file>
+
+<file path="src/theme/spacing.js">
+export const spacing = {
+  none: 0,
+  xxs: 2,
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 20,
+  xl: 24,
+  xxl: 28,
+  xxxl: 32,
+  huge: 48,
+};
+</file>
+
+<file path="src/theme/typography.js">
+export const fontFamily = {
+  regular: "PlusJakartaSans-Regular",
+  medium: "PlusJakartaSans-Medium",
+  semiBold: "PlusJakartaSans-SemiBold",
+  bold: "PlusJakartaSans-Bold",
+  extraBold: "PlusJakartaSans-ExtraBold",
+};
+
+export const fontWeight = {
+  regular: "400",
+  medium: "500",
+  semiBold: "600",
+  bold: "700",
+  extraBold: "800",
+};
+
+export const fontSize = {
+  xxs: 10,
+  xs: 12,
+  sm: 14,
+  md: 16,
+  lg: 18,
+  xl: 20,
+  xxl: 24,
+  display: 32,
+  timer: 48,
+};
+
+export const lineHeight = {
+  xxs: 14,
+  xs: 16,
+  sm: 20,
+  md: 24,
+  lg: 28,
+  xl: 30,
+  xxl: 32,
+  display: 40,
+  timer: 56,
+};
+
+export const typography = {
+  // Número principal del temporizador de enfoque
+  timer: {
+    fontFamily: fontFamily.extraBold,
+    fontWeight: fontWeight.extraBold,
+    fontSize: fontSize.timer,
+    lineHeight: lineHeight.timer,
+    letterSpacing: -0.5,
+  },
+
+  // Headline especificado en Stitch
+  headline: {
+    fontFamily: fontFamily.extraBold,
+    fontWeight: fontWeight.extraBold,
+    fontSize: fontSize.display,
+    lineHeight: lineHeight.display,
+    letterSpacing: -0.3,
+  },
+
+  // Título de sección
+  title: {
+    fontFamily: fontFamily.bold,
+    fontWeight: fontWeight.bold,
+    fontSize: fontSize.xxl,
+    lineHeight: lineHeight.xxl,
+  },
+
+  // Título de cards
+  subtitle: {
+    fontFamily: fontFamily.bold,
+    fontWeight: fontWeight.bold,
+    fontSize: fontSize.lg,
+    lineHeight: lineHeight.lg,
+  },
+
+  // Texto base
+  body: {
+    fontFamily: fontFamily.regular,
+    fontWeight: fontWeight.regular,
+    fontSize: fontSize.md,
+    lineHeight: lineHeight.md,
+  },
+
+  // Texto secundario
+  bodySmall: {
+    fontFamily: fontFamily.regular,
+    fontWeight: fontWeight.regular,
+    fontSize: fontSize.sm,
+    lineHeight: lineHeight.sm,
+  },
+
+  // Headers de tarjeta
+  cardLabel: {
+    fontFamily: fontFamily.bold,
+    fontWeight: fontWeight.bold,
+    fontSize: fontSize.xs,
+    lineHeight: lineHeight.xs,
+    letterSpacing: 0.5,
+  },
+
+  // Badges y botones
+  label: {
+    fontFamily: fontFamily.semiBold,
+    fontWeight: fontWeight.semiBold,
+    fontSize: fontSize.sm,
+    lineHeight: lineHeight.sm,
+  },
+
+  // Fechas y metadatos pequeños
+  caption: {
+    fontFamily: fontFamily.medium,
+    fontWeight: fontWeight.medium,
+    fontSize: fontSize.xs,
+    lineHeight: lineHeight.xs,
+  },
+
+  // Micro-etiquetas
+  micro: {
+    fontFamily: fontFamily.semiBold,
+    fontWeight: fontWeight.semiBold,
+    fontSize: fontSize.xxs,
+    lineHeight: lineHeight.xxs,
+  },
+};
+</file>
+
+<file path="app.json">
+{
+  "expo": {
+    "name": "Stuhbit-nuevo",
+    "slug": "Stuhbit-nuevo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-status-bar"
+    ]
+  }
+}
+</file>
+
+<file path="src/screens/BlockDetailScreen.js">
+import React, { useEffect } from "react";
+import { View, Text, Button, StyleSheet, Pressable, Alert } from "react-native";
+import { useRoute, useNavigation } from "@react-navigation/native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectBlockById,
+  updateBlock,
+  deleteBlock,
+} from "../store/scheduleSlice.js";
+
+export default function BlockDetailScreen() {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const id = route.params?.id ?? "Sin ID";
+
+  // Buscar el bloque real en Redux
+  const block = useSelector(selectBlockById(id));
+  const dispatch = useDispatch();
+
+  // Mantenemos tu Requisito del LAB-03 intacto
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          onPress={() => {
+            console.log("[Header Action] Compartiendo datos del bloque #${id}");
+            Alert.alert(
+              "Acción de Header",
+              "Se ha compartido el reporte del bloque #${id}",
+            );
+          }}
+          hitSlop={12}
+          style={{ marginRight: 8 }}
+        >
+          <Ionicons name="share-outline" size={24} color="#0F172A" />
+        </Pressable>
+      ),
+    });
+  }, [navigation, id]);
+
+  // Si el bloque fue eliminado, mostramos un mensaje en lugar de crashear
+  if (!block) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.emptyText}>
+          Este bloque ya no existe o fue eliminado.
+        </Text>
+      </View>
+    );
+  }
+
+  // Renderizamos los datos reales de Redux en lugar del Placeholder
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{block.title}</Text>
+      <Text style={styles.text}>Curso: {block.course}</Text>
+      <Text style={styles.text}>
+        Horario: {block.startTime} - {block.endTime} ({block.day})
+      </Text>
+      <Text style={styles.text}>
+        Estado: <Text style={{ fontWeight: "bold" }}>{block.status}</Text>
+      </Text>
+
+      {block.notes ? (
+        <Text style={styles.notes}>Notas: {block.notes}</Text>
+      ) : null}
+
+      <View style={styles.actions}>
+        <Button
+          title="Marcar como Completado"
+          color="#10B981" // Color verde
+          onPress={() => dispatch(updateBlock({ id, status: "completado" }))}
+        />
+        <View style={{ height: 16 }} />
+        <Button
+          title="Eliminar Bloque"
+          color="#EF4444" // Color rojo
+          onPress={() => {
+            dispatch(deleteBlock(id));
+            navigation.goBack(); // Regresa al cronograma tras eliminar
+          }}
+        />
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 24, backgroundColor: "#fff" },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 16,
+    color: "#0F172A",
+  },
+  text: { fontSize: 16, marginBottom: 8, color: "#333" },
+  notes: {
+    marginTop: 12,
+    padding: 12,
+    backgroundColor: "#F1F5F9",
+    fontStyle: "italic",
+    color: "#475569",
+    borderRadius: 8,
+  },
+  actions: { marginTop: 32 },
+  emptyText: {
+    fontSize: 16,
+    color: "#64748B",
+    textAlign: "center",
+    marginTop: 40,
+  },
+});
+</file>
+
+<file path="src/screens/ContactoScreen.js">
+/// src/screens/ContactoScreen.js
+import React, { useRef } from "react";
+import {
+  View,
+  Text,
+  Switch,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigation } from "@react-navigation/native";
+import {
+  contactoSchema,
+  contactoVacio,
+  TIPOS_MENSAJE,
+} from "../schemas/contactoSchema.js";
+import { useSesion } from "../context/SesionContext.js";
+import FormField from "../components/FormField.js";
+import { colors, spacing, typography, radius } from "../theme";
+
+export default function ContactoScreen() {
+  const navigation = useNavigation();
+  const { usuario } = useSesion();
+
+  const correoRef = useRef(null);
+  const celularRef = useRef(null);
+  const mensajeRef = useRef(null);
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm({
+    resolver: zodResolver(contactoSchema),
+    defaultValues: {
+      ...contactoVacio,
+      nombre: usuario?.nombre || "",
+      correo: usuario?.correo || "",
+    },
+    mode: "onBlur",
+    reValidateMode: "onChange",
+  });
+
+  const onSubmit = async (datos) => {
+    // Simulación de envío requerida por la rúbrica
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    console.log("Feedback enviado de forma exitosa:", datos);
+
+    Alert.alert(
+      "¡Mensaje enviado!",
+      `Gracias ${datos.nombre}. Nos pondremos en contacto al correo ${datos.correo}.`,
+      [
+        {
+          text: "Aceptar",
+          onPress: () => {
+            reset();
+            navigation.goBack();
+          },
+        },
+      ],
+    );
+  };
+
+  const onError = (errores) => {
+    console.log("❌ Errores en Contacto:", errores);
+  };
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={styles.titulo}>Contacto y Feedback</Text>
+        <Text style={styles.subtitulo}>
+          Envíanos tus reportes, consultas o sugerencias sobre la app.
+        </Text>
+
+        <FormField
+          control={control}
+          name="nombre"
+          label="Nombre completo"
+          placeholder="Ej. Francisco Requena"
+          placeholderTextColor="rgba(148, 163, 184, 0.45)"
+          autoCapitalize="words"
+          returnKeyType="next"
+          onSubmitEditing={() => correoRef.current?.focus()}
+        />
+
+        <FormField
+          ref={correoRef}
+          control={control}
+          name="correo"
+          label="Correo electrónico"
+          placeholder="tu_correo@urp.edu.pe"
+          placeholderTextColor="rgba(148, 163, 184, 0.45)"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+          returnKeyType="next"
+          onSubmitEditing={() => celularRef.current?.focus()}
+        />
+
+        <FormField
+          ref={celularRef}
+          control={control}
+          name="celular"
+          label="Número celular"
+          placeholder="987654321"
+          placeholderTextColor="rgba(148, 163, 184, 0.45)"
+          keyboardType="number-pad"
+          maxLength={9}
+          returnKeyType="next"
+          onSubmitEditing={() => mensajeRef.current?.focus()}
+        />
+
+        {/* Tipo de mensaje (Enum) */}
+        <Controller
+          control={control}
+          name="tipo"
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
+            <View style={styles.section}>
+              <Text style={styles.label}>Tipo de mensaje</Text>
+              <View style={styles.rowChips}>
+                {TIPOS_MENSAJE.map((opcion) => {
+                  const activo = value === opcion;
+                  return (
+                    <TouchableOpacity
+                      key={opcion}
+                      style={[styles.chip, activo && styles.chipActivo]}
+                      onPress={() => onChange(opcion)}
+                    >
+                      <Text
+                        style={[
+                          styles.chipTexto,
+                          activo && styles.chipTextoActivo,
+                        ]}
+                      >
+                        {opcion.charAt(0).toUpperCase() + opcion.slice(1)}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+              {error ? (
+                <Text style={styles.error} accessibilityRole="alert">
+                  {error.message}
+                </Text>
+              ) : null}
+            </View>
+          )}
+        />
+
+        {/* Calificación (Number 1-5) */}
+        <Controller
+          control={control}
+          name="calificacion"
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
+            <View style={styles.section}>
+              <Text style={styles.label}>¿Cómo calificas la app?</Text>
+              <View style={styles.rowStars}>
+                {[1, 2, 3, 4, 5].map((estrella) => (
+                  <TouchableOpacity
+                    key={estrella}
+                    onPress={() => onChange(estrella)}
+                    style={styles.starBoton}
+                  >
+                    <Text style={styles.starIcono}>
+                      {estrella <= value ? "★" : "☆"}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              {error ? (
+                <Text style={styles.error} accessibilityRole="alert">
+                  {error.message}
+                </Text>
+              ) : null}
+            </View>
+          )}
+        />
+
+        <FormField
+          ref={mensajeRef}
+          control={control}
+          name="mensaje"
+          label="Mensaje o detalle"
+          placeholder="Escribe tu mensaje aquí..."
+          placeholderTextColor="rgba(148, 163, 184, 0.45)"
+          multiline
+          numberOfLines={4}
+          maxLength={500}
+          returnKeyType="done"
+          blurOnSubmit={true} // Crucial para cerrar el teclado correctamente en inputs multilinea
+        />
+
+        {/* Switch Términos */}
+        <Controller
+          control={control}
+          name="aceptaTerminos"
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
+            <View style={styles.section}>
+              <View style={styles.switchRow}>
+                <Switch
+                  value={value}
+                  onValueChange={onChange}
+                  trackColor={{ true: colors.primary, false: colors.border }}
+                  thumbColor={value ? colors.surface : "#f4f3f4"}
+                />
+                <Text style={styles.switchText}>
+                  Acepto el uso de mis datos para recibir una respuesta
+                </Text>
+              </View>
+              {error ? (
+                <Text style={styles.error} accessibilityRole="alert">
+                  {error.message}
+                </Text>
+              ) : null}
+            </View>
+          )}
+        />
+
+        <TouchableOpacity
+          style={[styles.boton, isSubmitting && styles.botonDisabled]}
+          onPress={handleSubmit(onSubmit, onError)}
+          disabled={isSubmitting}
+        >
+          <Text style={styles.botonTexto}>
+            {isSubmitting ? "Enviando..." : "Enviar Feedback"}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  scrollContent: {
+    padding: spacing.md,
+    gap: spacing.md, // Se amplió el gap para una mejor experiencia visual en móviles
+  },
+  titulo: {
+    ...typography.h2,
+    fontSize: 22,
+    fontWeight: "700",
+    color: colors.textPrimary,
+  },
+  subtitulo: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    marginBottom: 6,
+  },
+  section: {
+    gap: spacing.xs || 6,
+  },
+  label: {
+    ...typography.caption,
+    fontWeight: "600",
+    color: colors.textSecondary,
+  },
+  rowChips: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  chip: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  chipActivo: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  chipTexto: {
+    fontSize: 13,
+    color: colors.textSecondary,
+  },
+  chipTextoActivo: {
+    color: "#FFFFFF",
+    fontWeight: "600",
+  },
+  rowStars: {
+    flexDirection: "row",
+    gap: 4,
+  },
+  starBoton: {
+    padding: 2,
+  },
+  starIcono: {
+    fontSize: 28,
+    color: "#F59E0B",
+  },
+  switchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 4,
+  },
+  switchText: {
+    flex: 1,
+    fontSize: 13,
+    color: colors.textSecondary,
+  },
+  error: {
+    ...typography.caption,
+    color: colors.danger,
+    fontSize: 12,
+    marginTop: 2,
+  },
+  boton: {
+    backgroundColor: colors.primary,
+    paddingVertical: 14,
+    borderRadius: radius.md || 8,
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  botonDisabled: {
+    opacity: 0.6,
+  },
+  botonTexto: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+});
+</file>
+
+<file path="src/screens/FocusScreen.js">
+// import React, { useState } from "react";
+// import { View, Text, StyleSheet, Pressable } from "react-native";
+// import { Ionicons } from "@expo/vector-icons";
+// import { colors, palette, spacing, fontSize, radius } from "../theme";
+// import { ScreenLayout } from "../components/templates/ScreenLayout";
+// import { AppHeader } from "../components/templates/AppHeader";
+// import { SegmentedControl } from "../components/molecules/SegmentedControl";
+// import { Button } from "../components/atoms/Button";
+// import { Switch } from "../components/atoms/Switch";
+// import { ProgressBar } from "../components/atoms/ProgressBar";
+// import { Badge } from "../components/atoms/Badge";
+
+// export default function FocusScreen() {
+//   const [durationIndex, setDurationIndex] = useState(2);
+//   const [selectedSound, setSelectedSound] = useState("rain");
+//   const [dndEnabled, setDndEnabled] = useState(true);
+
+//   return (
+//     <ScreenLayout
+//       header={
+//         <AppHeader
+//           currentScreenTitle="Enfoque"
+//           streakDays={5}
+//           onAvatarPress={() => {}}
+//         />
+//       }
+//     >
+//       {/* Header contextual */}
+//       <View style={styles.focusHeader}>
+//         <Badge label="⚡ Ventana libre detectada" variant="primary" size="sm" />
+//         <Badge label="⏱ Hasta 16:30" variant="neutral" size="sm" />
+//       </View>
+
+//       <Text style={styles.mainTitle}>
+//         Sesión de Estudio en tu Ventana Libre (1h 30m)
+//       </Text>
+//       <Text style={styles.mainSubtitle}>
+//         Aprovecha el intervalo óptimo para avanzar tu preparación sin
+//         interrupciones.
+//       </Text>
+
+//       {/* Selector de bloques de duración */}
+//       <Text style={styles.fieldLabel}>DURACIÓN SELECCIONADA</Text>
+//       <SegmentedControl
+//         options={["45 min (Rápido)", "60 min (Estándar)", "90 min (Óptimo)"]}
+//         selectedIndex={durationIndex}
+//         onChange={setDurationIndex}
+//         style={{ marginBottom: 16 }}
+//       />
+
+//       {/* Card 1: Temporizador Circular Centrado en caja blanca */}
+//       <View style={styles.timerCardBox}>
+//         <Badge
+//           label="• Concentración máxima activa"
+//           variant="success"
+//           size="sm"
+//           style={styles.activePill}
+//         />
+
+//         <View style={styles.circleOuter}>
+//           <View style={styles.circleInner}>
+//             <Text style={styles.timerCountdown}>01:15:00</Text>
+//             <View style={styles.transcurredRow}>
+//               <Ionicons
+//                 name="time-outline"
+//                 size={14}
+//                 color={colors.textSecondary}
+//               />
+//               <Text style={styles.transcurredText}>15m transcurridos</Text>
+//             </View>
+//           </View>
+//         </View>
+
+//         <Badge
+//           label="• Cálculo II · Derivadas Parciales"
+//           variant="primary"
+//           size="sm"
+//           style={{ marginTop: 14 }}
+//         />
+//         <Text style={styles.timerNote}>
+//           Bloque de práctica guiada y problemas pares
+//         </Text>
+//       </View>
+
+//       {/* Card 2: Ver Apuntes vinculados */}
+//       <View style={styles.linkedNotesCardBox}>
+//         <View style={styles.linkedLeft}>
+//           <View style={styles.iconDocBox}>
+//             <Ionicons
+//               name="document-text-outline"
+//               size={20}
+//               color={colors.primary}
+//             />
+//           </View>
+//           <View style={{ flex: 1 }}>
+//             <Text style={styles.linkedTitle}>Ver Apuntes vinculados</Text>
+//             <Text numberOfLines={1} style={styles.linkedSub}>
+//               PDF 4 págs · Teorema de Schwarz & Regla...
+//             </Text>
+//           </View>
+//         </View>
+//         <Ionicons name="eye-outline" size={20} color={colors.textSecondary} />
+//       </View>
+
+//       {/* Fondo sonoro ambiental */}
+//       <Text style={[styles.fieldLabel, { marginTop: 10 }]}>FONDO SONORO</Text>
+//       <View style={styles.soundGroupRow}>
+//         {[
+//           { id: "silent", label: "Silencio", icon: "volume-mute-outline" },
+//           { id: "rain", label: "Lluvia suave", icon: "rainy-outline" },
+//           { id: "noise", label: "Ruido blanco", icon: "radio-outline" },
+//         ].map((snd) => {
+//           const isSelected = selectedSound === snd.id;
+//           return (
+//             <Pressable
+//               key={snd.id}
+//               onPress={() => setSelectedSound(snd.id)}
+//               style={[styles.soundTile, isSelected && styles.soundTileActive]}
+//             >
+//               <Ionicons
+//                 name={snd.icon}
+//                 size={22}
+//                 color={isSelected ? "#FFFFFF" : colors.text}
+//               />
+//               <Text
+//                 style={[
+//                   styles.soundTileLabel,
+//                   isSelected && styles.soundTileLabelActive,
+//                 ]}
+//               >
+//                 {snd.label}
+//               </Text>
+//             </Pressable>
+//           );
+//         })}
+//       </View>
+
+//       {/* Card 3: Modo no molestar (Row con Switch en caja blanca) */}
+//       <View style={styles.switchRowBox}>
+//         <View style={styles.switchTextCol}>
+//           <Text style={styles.switchTitle}>Modo no molestar</Text>
+//           <Text style={styles.switchSub}>
+//             Bloquear notificaciones y alertas
+//           </Text>
+//         </View>
+//         <Switch value={dndEnabled} onValueChange={setDndEnabled} />
+//       </View>
+
+//       {/* Botonera de control (Pausar y Completar) */}
+//       <View style={styles.controlsRow}>
+//         <Button
+//           title="Pausar"
+//           variant="outline"
+//           size="md"
+//           icon={
+//             <Ionicons
+//               name="pause-circle-outline"
+//               size={20}
+//               color={colors.primary}
+//             />
+//           }
+//           onPress={() => {}}
+//           style={{ flex: 1 }}
+//         />
+//         <Button
+//           title="Completar"
+//           variant="success"
+//           size="md"
+//           icon={
+//             <Ionicons
+//               name="checkmark-circle-outline"
+//               size={20}
+//               color="#FFFFFF"
+//             />
+//           }
+//           onPress={() => {}}
+//           style={{ flex: 1 }}
+//         />
+//       </View>
+
+//       {/* Card 4: Meta de Estudio de hoy con recuadro blanco y barra */}
+//       <View style={styles.metaCardBox}>
+//         <View style={styles.metaCardTop}>
+//           <Text style={styles.metaTitle}>Meta de estudio de hoy</Text>
+//           <Badge label="+120 Pts" variant="success" size="sm" />
+//         </View>
+//         <View style={styles.metaProgressLabels}>
+//           <Text style={styles.metaSub}>Progreso actual: 80%</Text>
+//           <Text style={styles.metaSub}>Llegarás al 100%</Text>
+//         </View>
+//         <ProgressBar
+//           progress={0.8}
+//           color={palette.secondary[600]}
+//           height={7}
+//           style={{ marginVertical: 8 }}
+//         />
+//         <Text style={styles.metaTip}>
+//           Al completar esta sesión alcanzarás el{" "}
+//           <Text style={styles.boldText}>100% de tu meta de estudio de hoy</Text>{" "}
+//           y extenderás tu racha a{" "}
+//           <Text style={styles.boldText}>6 días consecutivos</Text>.
+//         </Text>
+//       </View>
+//     </ScreenLayout>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   focusHeader: {
+//     flexDirection: "row",
+//     gap: 8,
+//     marginBottom: 8,
+//   },
+//   mainTitle: {
+//     fontSize: 18,
+//     fontWeight: "800",
+//     color: colors.text,
+//     lineHeight: 24,
+//   },
+//   mainSubtitle: {
+//     fontSize: 13,
+//     color: colors.textSecondary,
+//     marginTop: 4,
+//     marginBottom: 16,
+//     lineHeight: 18,
+//   },
+//   fieldLabel: {
+//     fontSize: 11,
+//     fontWeight: "700",
+//     letterSpacing: 0.6,
+//     color: colors.textSecondary,
+//     marginBottom: 6,
+//   },
+//   timerCardBox: {
+//     backgroundColor: palette.white,
+//     borderRadius: 16,
+//     borderWidth: 1,
+//     borderColor: palette.neutral[200],
+//     alignItems: "center",
+//     padding: 20,
+//     marginBottom: 16,
+//     shadowColor: palette.black,
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.05,
+//     shadowRadius: 5,
+//     elevation: 2,
+//     width: "100%",
+//   },
+//   activePill: {
+//     marginBottom: 14,
+//   },
+//   circleOuter: {
+//     width: 200,
+//     height: 200,
+//     borderRadius: 100,
+//     borderWidth: 10,
+//     borderColor: palette.primary,
+//     borderTopColor: colors.primary,
+//     borderRightColor: colors.primary,
+//     alignItems: "center",
+//     justifyContent: "center",
+//     alignSelf: "center",
+//   },
+//   circleInner: {
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+//   timerCountdown: {
+//     fontSize: 32,
+//     fontWeight: "800",
+//     color: colors.text,
+//     letterSpacing: -1,
+//   },
+//   transcurredRow: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     gap: 4,
+//     marginTop: 4,
+//   },
+//   transcurredText: {
+//     fontSize: 12,
+//     color: colors.textSecondary,
+//   },
+//   timerNote: {
+//     fontSize: 12,
+//     color: colors.textSecondary,
+//     marginTop: 4,
+//     textAlign: "center",
+//   },
+//   linkedNotesCardBox: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     backgroundColor: palette.white,
+//     borderRadius: 14,
+//     borderWidth: 1,
+//     borderColor: palette.neutral[200],
+//     padding: 12,
+//     marginBottom: 16,
+//     shadowColor: palette.black,
+//     shadowOffset: { width: 0, height: 1 },
+//     shadowOpacity: 0.04,
+//     shadowRadius: 3,
+//     elevation: 1,
+//   },
+//   linkedLeft: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     gap: 10,
+//     flex: 1,
+//   },
+//   iconDocBox: {
+//     width: 36,
+//     height: 36,
+//     borderRadius: 8,
+//     backgroundColor: palette.primary[50],
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+//   linkedTitle: {
+//     fontSize: 13,
+//     fontWeight: "700",
+//     color: colors.text,
+//   },
+//   linkedSub: {
+//     fontSize: 11,
+//     color: colors.textSecondary,
+//     marginTop: 2,
+//   },
+//   soundGroupRow: {
+//     flexDirection: "row",
+//     gap: 8,
+//     marginBottom: 16,
+//   },
+//   soundTile: {
+//     flex: 1,
+//     paddingVertical: 14,
+//     borderRadius: 12,
+//     borderWidth: 1,
+//     borderColor: palette.neutral[200],
+//     backgroundColor: palette.white,
+//     alignItems: "center",
+//     justifyContent: "center",
+//     gap: 6,
+//   },
+//   soundTileActive: {
+//     backgroundColor: colors.primary,
+//     borderColor: colors.primary,
+//   },
+//   soundTileLabel: {
+//     fontSize: 12,
+//     fontWeight: "600",
+//     color: colors.text,
+//   },
+//   soundTileLabelActive: {
+//     color: palette.white,
+//   },
+//   switchRowBox: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     backgroundColor: palette.white,
+//     borderRadius: 14,
+//     borderWidth: 1,
+//     borderColor: palette.neutral[200],
+//     padding: 14,
+//     marginBottom: 16,
+//   },
+//   switchTextCol: {
+//     flex: 1,
+//   },
+//   switchTitle: {
+//     fontSize: 14,
+//     fontWeight: "700",
+//     color: colors.text,
+//   },
+//   switchSub: {
+//     fontSize: 11,
+//     color: colors.textSecondary,
+//     marginTop: 2,
+//   },
+//   controlsRow: {
+//     flexDirection: "row",
+//     gap: 10,
+//     marginBottom: 16,
+//   },
+//   metaCardBox: {
+//     backgroundColor: palette.white,
+//     borderRadius: 16,
+//     borderWidth: 1,
+//     borderColor: palette.neutral[200],
+//     padding: 16,
+//     marginBottom: 32,
+//     shadowColor: palette.black,
+//     shadowOffset: { width: 0, height: 1 },
+//     shadowOpacity: 0.05,
+//     shadowRadius: 4,
+//     elevation: 2,
+//   },
+//   metaCardTop: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//   },
+//   metaTitle: {
+//     fontSize: 14,
+//     fontWeight: "700",
+//     color: colors.text,
+//   },
+//   metaProgressLabels: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     marginTop: 10,
+//   },
+//   metaSub: {
+//     fontSize: 11,
+//     color: colors.textSecondary,
+//   },
+//   metaTip: {
+//     fontSize: 12,
+//     color: colors.textSecondary,
+//     lineHeight: 18,
+//   },
+//   boldText: {
+//     fontWeight: "700",
+//     color: colors.text,
+//   },
+// });
+
+import React from "react";
+import Placeholder from "./Placeholder";
+
+export default function FocusScreen() {
+  return (
+    <Placeholder
+      title="Modo Enfoque"
+      description="Temporizador estilo Pomodoro con selector de intervalos y fondos sonoros."
+      links={[{ label: "Ir a Cronograma", to: "CronogramaTab" }]}
+    />
+  );
+}
+</file>
+
+<file path="src/screens/CalendarScreen.js">
+// import React, { useState } from "react";
+// import { View, Text, StyleSheet } from "react-native";
+// import { Ionicons } from "@expo/vector-icons";
+// import { colors, palette, spacing, fontSize, radius } from "../theme";
+// import { ScreenLayout } from "../components/templates/ScreenLayout";
+// import { AppHeader } from "../components/templates/AppHeader";
+// import { SegmentedControl } from "../components/molecules/SegmentedControl";
+// import { Banner } from "../components/organisms/Banner";
+// import { Button } from "../components/atoms/Button";
+// import { Badge } from "../components/atoms/Badge";
+
+// const WEEK_DAYS = [
+//   { day: "L", date: "14", dots: ["#10B981"] },
+//   { day: "M", date: "15", dots: ["#4F46E5", "#F59E0B"] },
+//   {
+//     day: "X",
+//     date: "16",
+//     dots: ["#FFFFFF", "#FFFFFF", "#FFFFFF"],
+//     active: true,
+//   },
+//   { day: "J", date: "17", dots: ["#10B981"] },
+//   { day: "V", date: "18", dots: ["#EF4444"] },
+//   { day: "S", date: "19", dots: ["#10B981"] },
+//   { day: "D", date: "20", dots: [] },
+// ];
+
+// export default function CalendarScreen({ navigation }) {
+//   const [calendarView, setCalendarView] = useState(0);
+
+//   return (
+//     <ScreenLayout
+//       header={
+//         <AppHeader
+//           currentScreenTitle="Calendario"
+//           streakDays={5}
+//           onAvatarPress={() => {}}
+//         />
+//       }
+//     >
+//       {/* Selector superior de semestre y botón importar */}
+//       <View style={styles.topSelectorRow}>
+//         <View>
+//           <Text style={styles.semesterLabel}>SEMESTRE 2025-1</Text>
+//           <View style={styles.monthDropdown}>
+//             <Text style={styles.monthTitle}>Octubre 2025</Text>
+//             <Ionicons name="chevron-down" size={18} color={colors.primary} />
+//           </View>
+//         </View>
+
+//         <Button
+//           title="Importar"
+//           variant="primary"
+//           size="sm"
+//           icon={
+//             <Ionicons name="cloud-upload-outline" size={16} color="#FFFFFF" />
+//           }
+//           onPress={() => {}}
+//           fullWidth={false}
+//           style={styles.importBtn}
+//         />
+//       </View>
+
+//       {/* Segmented Control */}
+//       <SegmentedControl
+//         options={["Semana", "Mes", "Oficial"]}
+//         selectedIndex={calendarView}
+//         onChange={setCalendarView}
+//         style={styles.segmentedSpacing}
+//       />
+
+//       {/* Card 1: Tira semanal de días */}
+//       <View style={styles.whiteCard}>
+//         <View style={styles.weekStripHeader}>
+//           <Text style={styles.weekStripText}>Semana 8 • 14 al 20 Octubre</Text>
+//           <Text style={styles.todayHighlight}>Hoy: Mié 16</Text>
+//         </View>
+//         <View style={styles.daysRow}>
+//           {WEEK_DAYS.map((item, idx) => (
+//             <View
+//               key={idx}
+//               style={[styles.dayCell, item.active && styles.dayCellActive]}
+//             >
+//               <Text
+//                 style={[styles.dayLetter, item.active && styles.dayTextActive]}
+//               >
+//                 {item.day}
+//               </Text>
+//               <Text
+//                 style={[styles.dayDate, item.active && styles.dayTextActive]}
+//               >
+//                 {item.date}
+//               </Text>
+//               <View style={styles.dotsContainer}>
+//                 {item.dots.map((dotColor, dIdx) => (
+//                   <View
+//                     key={dIdx}
+//                     style={[styles.dot, { backgroundColor: dotColor }]}
+//                   />
+//                 ))}
+//               </View>
+//             </View>
+//           ))}
+//         </View>
+//       </View>
+
+//       {/* Card 2: Balance Semanal de horas */}
+//       <View style={[styles.whiteCard, { marginVertical: 12 }]}>
+//         <View style={styles.balanceHeader}>
+//           <Text style={styles.balanceTitle}>BALANCE SEMANAL</Text>
+//           <Text style={styles.balanceStatus}>📈 Óptimo</Text>
+//         </View>
+
+//         <View style={styles.multiProgressBar}>
+//           <View
+//             style={[
+//               styles.progressSection,
+//               { flex: 18, backgroundColor: colors.primary },
+//             ]}
+//           />
+//           <View
+//             style={[
+//               styles.progressSection,
+//               { flex: 8, backgroundColor: palette.secondary[500] },
+//             ]}
+//           />
+//           <View
+//             style={[
+//               styles.progressSection,
+//               { flex: 6, backgroundColor: palette.tertiary[700] },
+//             ]}
+//           />
+//         </View>
+
+//         <View style={styles.balanceLegendsRow}>
+//           <View style={styles.legendItem}>
+//             <View
+//               style={[styles.legendDot, { backgroundColor: colors.primary }]}
+//             />
+//             <Text style={styles.legendText}>
+//               Clases <Text style={styles.boldText}>18 hrs</Text>
+//             </Text>
+//           </View>
+//           <View style={styles.legendItem}>
+//             <View
+//               style={[
+//                 styles.legendDot,
+//                 { backgroundColor: palette.secondary[500] },
+//               ]}
+//             />
+//             <Text style={styles.legendText}>
+//               Libres <Text style={styles.boldText}>8 hrs</Text>
+//             </Text>
+//           </View>
+//           <View style={styles.legendItem}>
+//             <View
+//               style={[
+//                 styles.legendDot,
+//                 { backgroundColor: palette.tertiary[700] },
+//               ]}
+//             />
+//             <Text style={styles.legendText}>
+//               Planificadas <Text style={styles.boldText}>6 hrs</Text>
+//             </Text>
+//           </View>
+//         </View>
+//       </View>
+
+//       {/* Banner Patrón Inteligente */}
+//       <Banner
+//         title="Patrón Inteligente"
+//         description="Los martes y jueves entre 2:00 PM y 4:00 PM tienes tu mayor ventana de productividad y retención."
+//         badgeText="IA Estudy"
+//         style={{ marginBottom: 16 }}
+//       />
+
+//       {/* Encabezado del día Miércoles 16 */}
+//       <View style={styles.dayAgendaHeader}>
+//         <Text style={styles.agendaTitle}>Miércoles, 16 de Octubre</Text>
+//         <Badge label="5 eventos" variant="primary" size="sm" />
+//       </View>
+
+//       <View style={styles.cardBox}>
+//         <View style={styles.eventTop}>
+//           <Badge label="Clase Regular" variant="primary" size="sm" />
+//           <Text style={styles.durationText}>⏱ 2h</Text>
+//         </View>
+//         <Text style={styles.eventTitle}>Cálculo Multivariable</Text>
+//         <Text style={styles.eventSubtitle}>
+//           👤 Dr. Ricardo Mendez · 🏛 Edificio B · Aula 304
+//         </Text>
+//       </View>
+
+//       {/* 7. CARD: Ventana Libre Detectada */}
+//       <View style={[styles.cardBox, styles.detectedCard]}>
+//         <View style={styles.eventTop}>
+//           <Badge label="Ventana Libre Detectada" variant="success" size="sm" />
+//           <Text style={styles.durationText}>1h 30m</Text>
+//         </View>
+//         <Text style={styles.eventTitle}>Repaso para Parcial de Cálculo</Text>
+//         <Text style={styles.eventSubtitle}>
+//           Aprovecha este hueco libre antes de tu siguiente materia para resolver
+//           4 ejercicios clave.
+//         </Text>
+//         <Button
+//           title="Iniciar Pomodoro"
+//           variant="success"
+//           size="sm"
+//           icon={<Ionicons name="play" size={14} color="#FFFFFF" />}
+//           onPress={() => navigation.navigate("Enfoque")}
+//           fullWidth={false}
+//           style={styles.pomodoroBtn}
+//         />
+//       </View>
+
+//       <Button
+//         title="Agendar Bloque de Estudio Personalizado"
+//         variant="primary"
+//         size="md"
+//         icon={<Ionicons name="alarm-outline" size={18} color="#FFFFFF" />}
+//         onPress={() => {}}
+//         style={{ marginVertical: 20 }}
+//       />
+//     </ScreenLayout>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   topSelectorRow: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     marginBottom: 10,
+//   },
+//   semesterLabel: {
+//     fontSize: 10,
+//     fontWeight: "700",
+//     color: colors.textSecondary,
+//   },
+//   monthDropdown: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     gap: 4,
+//   },
+//   monthTitle: {
+//     fontSize: 18,
+//     fontWeight: "800",
+//     color: colors.text,
+//   },
+//   importBtn: {
+//     paddingHorizontal: 14,
+//   },
+//   segmentedSpacing: {
+//     marginVertical: 12,
+//   },
+//   whiteCard: {
+//     backgroundColor: palette.white,
+//     borderRadius: 16,
+//     borderWidth: 1,
+//     borderColor: palette.neutral[200],
+//     padding: 14,
+//     marginBottom: 10,
+//     shadowColor: palette.black,
+//     shadowOffset: { width: 0, height: 1 },
+//     shadowOpacity: 0.05,
+//     shadowRadius: 4,
+//     elevation: 2,
+//     width: "100%",
+//   },
+//   cardBox: {
+//     backgroundColor: palette.white,
+//     borderRadius: 16,
+//     borderWidth: 1.5,
+//     borderColor: palette.primary[100],
+//     borderStyle: "solid",
+//     padding: 16,
+//     marginBottom: 14,
+//     width: "100%",
+//     shadowColor: palette.black,
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.08,
+//     shadowRadius: 4,
+//     elevation: 3,
+//   },
+//   detectedCard: {
+//     backgroundColor: palette.success,
+//     borderColor: colors.success,
+//     borderWidth: 1.5,
+//     borderStyle: "solid",
+//   },
+//   weekStripHeader: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     marginBottom: 10,
+//   },
+//   weekStripText: {
+//     fontSize: 11,
+//     color: colors.textSecondary,
+//   },
+//   todayHighlight: {
+//     fontSize: 11,
+//     fontWeight: "700",
+//     color: colors.primary,
+//   },
+//   daysRow: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//   },
+//   dayCell: {
+//     width: 42,
+//     paddingVertical: 8,
+//     alignItems: "center",
+//     borderRadius: 10,
+//   },
+//   dayCellActive: {
+//     backgroundColor: colors.primary,
+//   },
+//   dayLetter: {
+//     fontSize: 11,
+//     color: colors.textSecondary,
+//     fontWeight: "600",
+//   },
+//   dayDate: {
+//     fontSize: 14,
+//     fontWeight: "800",
+//     color: colors.text,
+//     marginTop: 2,
+//   },
+//   dayTextActive: {
+//     color: colors.white,
+//   },
+//   dotsContainer: {
+//     flexDirection: "row",
+//     gap: 2,
+//     marginTop: 4,
+//     height: 4,
+//   },
+//   dot: {
+//     width: 4,
+//     height: 4,
+//     borderRadius: 2,
+//   },
+//   balanceHeader: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     marginBottom: 8,
+//   },
+//   balanceTitle: {
+//     fontSize: 11,
+//     fontWeight: "700",
+//     color: colors.textSecondary,
+//   },
+//   balanceStatus: {
+//     fontSize: 11,
+//     fontWeight: "700",
+//     color: palette.secondary[700],
+//   },
+//   multiProgressBar: {
+//     flexDirection: "row",
+//     height: 8,
+//     borderRadius: 4,
+//     overflow: "hidden",
+//     backgroundColor: colors.neutral[200],
+//   },
+//   progressSection: {
+//     height: "100%",
+//   },
+//   balanceLegendsRow: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     marginTop: 10,
+//   },
+//   legendItem: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     gap: 4,
+//   },
+//   legendDot: {
+//     width: 6,
+//     height: 6,
+//     borderRadius: 3,
+//   },
+//   legendText: {
+//     fontSize: 11,
+//     color: colors.textSecondary,
+//   },
+//   boldText: {
+//     fontWeight: "700",
+//     color: colors.text,
+//   },
+//   dayAgendaHeader: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     marginVertical: 12,
+//   },
+//   agendaTitle: {
+//     fontSize: 15,
+//     fontWeight: "700",
+//     color: colors.text,
+//   },
+//   eventTop: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     marginBottom: 4,
+//   },
+//   durationText: {
+//     fontSize: 11,
+//     color: colors.textSecondary,
+//     fontWeight: "600",
+//   },
+//   eventTitle: {
+//     fontSize: 14,
+//     fontWeight: "700",
+//     color: colors.text,
+//   },
+//   eventSubtitle: {
+//     fontSize: 12,
+//     color: colors.textSecondary,
+//     marginTop: 4,
+//     lineHeight: 16,
+//   },
+//   pomodoroBtn: {
+//     alignSelf: "flex-start",
+//     marginTop: 10,
+//   },
+// });
+
+//codigo de prueba para el paso 4 del lab3
+import React from "react";
+import Placeholder from "./Placeholder";
+
+export default function CalendarScreen() {
+  return (
+    <Placeholder
+      title="Calendario Semanal"
+      description="Vista semanal y mensual con balance de horas y actividades académicas."
+      links={[
+        { label: "Programar Nuevo Bloque (Modal)", to: "AgendarBloque" },
+        {
+          label: "Ver Bloque #101 en Detalle",
+          to: "DetalleBloque",
+          params: { id: 101 },
+        },
+      ]}
+    />
+  );
+}
+</file>
+
+<file path="src/screens/ScheduleBlockModal.js">
+import React, { useState, useRef } from "react";
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
+import { useDispatch } from "react-redux";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigation } from "@react-navigation/native";
+import { addBlock } from "../store/scheduleSlice.js";
+import {
+  blockSchema,
+  blockVacio,
+  TIPOS_BLOQUE,
+  DIAS_SEMANA,
+} from "../schemas/blockSchema.js";
+import FormField from "../components/FormField.js";
+import { colors, spacing, typography, radius, palette } from "../theme";
+
+export default function ScheduleBlockModal() {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const courseRef = useRef(null);
+  const startRef = useRef(null);
+  const endRef = useRef(null);
+  const onError = (errores) => {
+    console.log("❌ Errores de validación de Zod:", errores);
+  };
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm({
+    resolver: zodResolver(blockSchema),
+    defaultValues: blockVacio,
+    mode: "onBlur",
+    reValidateMode: "onChange",
+  });
+
+  const onSubmit = (datos) => {
+    dispatch(addBlock(datos)); // datos ya viene validado y con trim()
+    reset();
+    navigation.goBack();
+  };
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS == "ios" ? padding : undefined}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <FormField
+          control={control}
+          name="titulo"
+          label="Titulo del bloque"
+          placeholder="Ej. Repaso de algoritmo"
+          returnKeyType="next"
+          onSubmitEditing={() => courseRef.current?.focus()}
+        />
+
+        <FormField
+          ref={courseRef}
+          control={control}
+          name="curso"
+          label="Curso o Asignatura"
+          placeholder="Ej. Sistemas Moviles"
+          returnKeyType="next"
+          onSubmitEditing={() => startRef.current?.focus()}
+        />
+
+        <Controller
+          control={control}
+          name="dia"
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
+            <View style={styles.section}>
+              <Text style={styles.label}>Día</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={styles.chipRow}>
+                  {DIAS_SEMANA.map((dia) => (
+                    <TouchableOpacity
+                      key={dia}
+                      style={[styles.chip, value === dia && styles.chipActivo]}
+                      onPress={() => onChange(dia)}
+                    >
+                      <Text
+                        style={[
+                          styles.chipTexto,
+                          value === dia && styles.chipTextoActivo,
+                        ]}
+                      >
+                        {dia}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </ScrollView>
+              {error && <Text style={styles.error}>{error.message}</Text>}
+            </View>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="tipo"
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
+            <View style={styles.section}>
+              <Text style={styles.label}>Tipo de Bloque</Text>
+              <View style={styles.chipRow}>
+                {TIPOS_BLOQUE.map((t) => (
+                  <TouchableOpacity
+                    key={t}
+                    style={[styles.chip, value === t && styles.chipActivo]}
+                    onPress={() => onChange(t)}
+                  >
+                    <Text
+                      style={[
+                        styles.chipTexto,
+                        value === t && styles.chipTextoActivo,
+                      ]}
+                    >
+                      {t.charAt(0).toUpperCase() + t.slice(1)}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              {error ? <Text style={styles.error}>{error.message}</Text> : null}
+            </View>
+          )}
+        />
+
+        <View style={styles.horasRow}>
+          <View style={styles.horaCol}>
+            <FormField
+              ref={startRef}
+              control={control}
+              name="horaInicio"
+              label="Hora Inicio"
+              placeholder="08:00"
+              keyboardType="numbers-and-punctuation"
+              maxLength={5}
+              returnKeyType="next"
+              onSubmitEditing={() => endRef.current?.focus()}
+            />
+          </View>
+          <View style={styles.horaCol}>
+            <FormField
+              ref={endRef}
+              control={control}
+              name="horaFin"
+              label="Hora Fin"
+              placeholder="10:00"
+              keyboardType="numbers-and-punctuation"
+              maxLength={5}
+              returnKeyType="done"
+              onSubmitEditing={handleSubmit(onSubmit)}
+            />
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={[styles.boton, isSubmitting && styles.botonDisabled]}
+          onPress={handleSubmit(onSubmit, onError)}
+          disabled={isSubmitting}
+        >
+          <Text style={styles.botonTexto}>
+            {isSubmitting ? "Guardando..." : "Guardar Bloque"}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  scrollContent: {
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
+  section: {
+    gap: 6,
+  },
+  label: {
+    ...typography.caption,
+    fontWeight: "600",
+    color: colors.textSecondary,
+  },
+  chipRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  chip: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  chipActivo: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  chipTexto: {
+    fontSize: 13,
+    color: colors.textSecondary,
+  },
+  chipTextoActivo: {
+    color: palette.white,
+    fontWeight: "600",
+  },
+  horasRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  horaCol: {
+    flex: 1,
+  },
+  error: {
+    color: colors.danger,
+    fontSize: 12,
+  },
+  boton: {
+    backgroundColor: colors.primary,
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 12,
+  },
+  botonDisabled: {
+    opacity: 0.6,
+  },
+  botonTexto: {
+    color: palette.white,
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+});
+</file>
+
+<file path="src/screens/ScheduleScreen.js">
+// import React from "react";
+// import { View, Text, StyleSheet } from "react-native";
+// import { Ionicons } from "@expo/vector-icons";
+// import { colors, palette, spacing, fontSize, radius } from "../theme";
+// import { ScreenLayout } from "../components/templates/ScreenLayout";
+// import { AppHeader } from "../components/templates/AppHeader";
+// import { Banner } from "../components/organisms/Banner";
+// import { ProgressBar } from "../components/atoms/ProgressBar";
+// import { TimelineItem } from "../components/organisms/TimelineItem";
+
+// export default function ScheduleScreen({ navigation }) {
+//   return (
+//     <ScreenLayout
+//       header={
+//         <AppHeader
+//           currentScreenTitle="Cronograma"
+//           streakDays={5}
+//           onAvatarPress={() => {}}
+//         />
+//       }
+//     >
+//       {/* Saludo inicial */}
+//       <View style={styles.greetingHeader}>
+//         <View>
+//           <Text style={styles.greetingTitle}>¡Hola, Sofía! 👋</Text>
+//           <Text style={styles.greetingSubtitle}>
+//             Hoy tienes <Text style={styles.boldText}>2 bloques libres</Text>{" "}
+//             ideales para estudiar y adelantar tareas.
+//           </Text>
+//         </View>
+//         <View style={styles.weekTag}>
+//           <Text style={styles.weekTagText}>• Semana 6</Text>
+//         </View>
+//       </View>
+
+//       {/* Hueco libre detectado */}
+//       <Banner
+//         title="Hueco Libre Detectado"
+//         description="11:30 AM - 1:00 PM (1h 30m libre) · Espacio óptimo entre Cálculo II y Física I."
+//         actionLabel="Iniciar sesión recomendada"
+//         onActionPress={() => navigation.navigate("Enfoque")}
+//         badgeText="En 45 min"
+//         style={styles.bannerSpacing}
+//       />
+
+//       {/* Métricas: Meta diaria y Racha activa */}
+//       <View style={styles.metricsRow}>
+//         <View style={styles.whiteCardBox}>
+//           <View style={styles.metricCardTop}>
+//             <Text style={styles.metricLabel}>META DIARIA</Text>
+//             <Text style={styles.metricPercent}>85%</Text>
+//           </View>
+//           <View style={styles.metricValueRow}>
+//             <Ionicons
+//               name="checkmark-circle-outline"
+//               size={22}
+//               color={palette.secondary[600]}
+//             />
+//             <View>
+//               <Text style={styles.metricMainValue}>1h 45m</Text>
+//               <Text style={styles.metricSubValue}>de 2h objetivo</Text>
+//             </View>
+//           </View>
+//           <ProgressBar
+//             progress={0.85}
+//             color={palette.secondary[600]}
+//             height={6}
+//             style={{ marginTop: 8 }}
+//           />
+//         </View>
+
+//         <View style={styles.whiteCardBox}>
+//           <View style={styles.metricCardTop}>
+//             <Text style={styles.metricLabel}>RACHA ACTIVA</Text>
+//             <Ionicons name="flame" size={16} color={palette.tertiary[600]} />
+//           </View>
+//           <Text style={styles.metricMainValue}>5 días seguidos</Text>
+//           <Text style={styles.metricSubValue}>¡Nuevo récord personal! 🔥</Text>
+//           <View style={styles.streakDotsRow}>
+//             {["L", "M", "X", "J", "V", "S", "D"].map((d, i) => (
+//               <View
+//                 key={d}
+//                 style={[
+//                   styles.streakDot,
+//                   i < 5 ? styles.streakDotActive : styles.streakDotInactive,
+//                 ]}
+//               >
+//                 <Text
+//                   style={[
+//                     styles.streakDotText,
+//                     i < 5 && styles.streakDotTextActive,
+//                   ]}
+//                 >
+//                   {d}
+//                 </Text>
+//               </View>
+//             ))}
+//           </View>
+//         </View>
+//       </View>
+
+//       {/* Encabezado del Cronograma */}
+//       <View style={styles.scheduleTitleRow}>
+//         <Text style={styles.sectionTitle}>Cronograma de Hoy</Text>
+//         <Text style={styles.weekLink}>Ver semana</Text>
+//       </View>
+
+//       {/* Línea de tiempo */}
+//       <View style={styles.timelineList}>
+//         <TimelineItem
+//           timeRange="08:00 - 10:00"
+//           title="Cálculo Diferencial"
+//           location="Aula B-204"
+//           status="finalizado"
+//           badgeLabel="Finalizado"
+//           badgeVariant="success"
+//         />
+
+//         <TimelineItem
+//           timeRange="10:00 - 11:30"
+//           title="Algoritmos y Estructuras"
+//           location="Laboratorio 3 · Edificio Norte"
+//           status="en_curso"
+//           badgeLabel="En curso"
+//           badgeVariant="primary"
+//         />
+
+//         <TimelineItem
+//           timeRange="11:30 - 13:00 (1h 30m)"
+//           title="Recomendación: Repaso Cálculo Diferencial"
+//           location="Basado en tu examen del lunes. Tienes 4 ejercicios pendientes del tema 3."
+//           status="sugerida"
+//           badgeLabel="Ventana sugerida"
+//           badgeVariant="warning"
+//           actionLabel="Aceptar bloque"
+//           onActionPress={() => navigation.navigate("Enfoque")}
+//           secondaryActionLabel="Posponer"
+//           onSecondaryActionPress={() => {}}
+//         />
+
+//         <TimelineItem
+//           timeRange="14:00 - 16:00"
+//           title="Física Aplicada"
+//           location="Aula Magna"
+//           status="programada"
+//           badgeLabel="2h 00m"
+//           badgeVariant="neutral"
+//           nodeIcon="book-outline"
+//         />
+
+//         <TimelineItem
+//           timeRange="16:30 - 17:30"
+//           title="Revisar apuntes de Algoritmos"
+//           location="1h libre · Biblioteca Central"
+//           status="programada"
+//           badgeLabel="Programada"
+//           badgeVariant="success"
+//           isLast={true}
+//         />
+//       </View>
+
+//       {/* Acciones Rápidas con tarjetas delimitadas */}
+//       <Text style={[styles.sectionTitle, { marginTop: 16 }]}>
+//         Acciones Rápidas
+//       </Text>
+//       <View style={styles.quickActionsRow}>
+//         <View style={styles.quickActionBox}>
+//           <View style={styles.iconSquare}>
+//             <Ionicons
+//               name="calendar-outline"
+//               size={20}
+//               color={colors.primary}
+//             />
+//           </View>
+//           <Text style={styles.quickActionTitle}>Subir horario</Text>
+//           <Text style={styles.quickActionSub}>PDF o foto de matrícula</Text>
+//         </View>
+
+//         <View style={styles.quickActionBox}>
+//           <View style={styles.iconSquare}>
+//             <Ionicons name="create-outline" size={20} color={colors.primary} />
+//           </View>
+//           <Text style={styles.quickActionTitle}>Apunte rápido</Text>
+//           <Text style={styles.quickActionSub}>Nota o audio a texto</Text>
+//         </View>
+//       </View>
+//     </ScreenLayout>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   greetingHeader: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "flex-start",
+//     marginBottom: 8,
+//   },
+//   greetingTitle: {
+//     fontSize: fontSize.xl ?? 20,
+//     fontWeight: "800",
+//     color: colors.text,
+//   },
+//   greetingSubtitle: {
+//     fontSize: 13,
+//     color: colors.textSecondary,
+//     marginTop: 4,
+//     maxWidth: 240,
+//     lineHeight: 18,
+//   },
+//   boldText: {
+//     fontWeight: "700",
+//     color: colors.primary,
+//   },
+//   weekTag: {
+//     backgroundColor: palette.primary[50],
+//     paddingHorizontal: 10,
+//     paddingVertical: 4,
+//     borderRadius: 9999,
+//   },
+//   weekTagText: {
+//     fontSize: 11,
+//     fontWeight: "700",
+//     color: colors.primary,
+//   },
+//   bannerSpacing: {
+//     marginVertical: 12,
+//   },
+//   metricsRow: {
+//     flexDirection: "row",
+//     gap: 12,
+//     marginBottom: 16,
+//   },
+//   whiteCardBox: {
+//     flex: 1,
+//     backgroundColor: palette.white,
+//     borderRadius: 14,
+//     borderWidth: 1,
+//     borderColor: palette.neutral[200],
+//     padding: 12,
+//     shadowColor: palette.black,
+//     shadowOffset: { width: 0, height: 1 },
+//     shadowOpacity: 0.05,
+//     shadowRadius: 4,
+//     elevation: 2,
+//   },
+//   metricCardTop: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     marginBottom: 6,
+//   },
+//   metricLabel: {
+//     fontSize: 10,
+//     fontWeight: "700",
+//     letterSpacing: 0.5,
+//     color: colors.textSecondary,
+//   },
+//   metricPercent: {
+//     fontSize: 11,
+//     fontWeight: "700",
+//     color: palette.secondary[700],
+//   },
+//   metricValueRow: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     gap: 8,
+//   },
+//   metricMainValue: {
+//     fontSize: 14,
+//     fontWeight: "700",
+//     color: colors.text,
+//   },
+//   metricSubValue: {
+//     fontSize: 10,
+//     color: colors.textSecondary,
+//   },
+//   streakDotsRow: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     marginTop: 8,
+//   },
+//   streakDot: {
+//     width: 20,
+//     height: 20,
+//     borderRadius: 10,
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+//   streakDotActive: {
+//     backgroundColor: palette.secondary[600],
+//   },
+//   streakDotInactive: {
+//     backgroundColor: palette.neutral[100],
+//   },
+//   streakDotText: {
+//     fontSize: 9,
+//     fontWeight: "700",
+//     color: palette.neutral[500],
+//   },
+//   streakDotTextActive: {
+//     color: palette.white,
+//   },
+//   scheduleTitleRow: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     marginVertical: 10,
+//   },
+//   sectionTitle: {
+//     fontSize: 16,
+//     fontWeight: "700",
+//     color: colors.text,
+//   },
+//   weekLink: {
+//     fontSize: 12,
+//     fontWeight: "600",
+//     color: colors.primary,
+//   },
+//   timelineList: {
+//     marginTop: 4,
+//   },
+//   quickActionsRow: {
+//     flexDirection: "row",
+//     gap: 12,
+//     marginTop: 10,
+//     marginBottom: 32,
+//   },
+//   quickActionBox: {
+//     flex: 1,
+//     backgroundColor: palette.white,
+//     borderRadius: 14,
+//     borderWidth: 1,
+//     borderColor: palette.neutral[200],
+//     padding: 14,
+//     gap: 4,
+//     shadowColor: palette.black,
+//     shadowOffset: { width: 0, height: 1 },
+//     shadowOpacity: 0.05,
+//     shadowRadius: 3,
+//     elevation: 2,
+//   },
+//   iconSquare: {
+//     width: 34,
+//     height: 34,
+//     borderRadius: 8,
+//     backgroundColor: palette.primary[50],
+//     alignItems: "center",
+//     justifyContent: "center",
+//     marginBottom: 4,
+//   },
+//   quickActionTitle: {
+//     fontSize: 14,
+//     fontWeight: "700",
+//     color: colors.text,
+//   },
+//   quickActionSub: {
+//     fontSize: 11,
+//     color: colors.textSecondary,
+//     lineHeight: 15,
+//   },
+// });
+
+//codigo de prueba para el paso 4 del lab3
+import React from "react";
+import {
+  View,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { useSelector } from "react-redux";
+import { selectAllBlocks } from "../store/scheduleSlice.js";
+import { useNavigation } from "@react-navigation/native";
+
+export default function ScheduleScreen() {
+  const blocks = useSelector(selectAllBlocks);
+  const navigation = useNavigation();
+
+  console.log("📦 Bloques en ScheduleScreen:", blocks);
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={blocks}
+        keyExtractor={(item) => item.id}
+        ListEmptyComponent={
+          <Text style={styles.empty}>No hay bloques agendados</Text>
+        }
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() =>
+              navigation.navigate("DetalleBloque", { id: item.id })
+            }
+          >
+            <Text style={styles.title}>{item.title}</Text>
+            <Text>
+              {item.course} | {item.startTime} - {item.endTime}
+            </Text>
+            <Text>Estado: {item.status}</Text>
+          </TouchableOpacity>
+        )}
+      />
+
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate("AgendarBloque")}
+      >
+        <Text style={styles.fabText}>+ Agregar</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16 },
+  card: {
+    backgroundColor: "#fff",
+    padding: 16,
+    marginBottom: 12,
+    borderRadius: 8,
+    elevation: 2,
+  },
+  title: { fontSize: 16, fontWeight: "bold", marginBottom: 4 },
+  empty: { textAlign: "center", marginTop: 24, fontSize: 16, color: "#666" },
+  fab: {
+    position: "absolute",
+    bottom: 24,
+    right: 24,
+    backgroundColor: "#4F46E5",
+    padding: 16,
+    borderRadius: 50,
+  },
+  fabText: { color: "#fff", fontWeight: "bold" },
+});
+</file>
+
+<file path="package.json">
+{
+  "name": "stuhbit-nuevo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@expo/metro-runtime": "~58.0.17",
+    "@expo/vector-icons": "^15.0.2",
+    "@hookform/resolvers": "^7.0.3",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-navigation/bottom-tabs": "^7.21.0",
+    "@react-navigation/elements": "^2.9.45",
+    "@react-navigation/native": "^7.5.1",
+    "@react-navigation/native-stack": "^7.21.0",
+    "@reduxjs/toolkit": "^2.13.0",
+    "expo": "~58.0.23",
+    "expo-status-bar": "~58.0.4",
+    "fbjs": "^3.0.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-hook-form": "^7.91.0",
+    "react-native": "0.88.1",
+    "react-native-safe-area-context": "~5.11.1",
+    "react-native-screens": "~4.30.1",
+    "react-native-web": "^0.21.4",
+    "react-redux": "^9.3.1",
+    "zod": "^4.6.7"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "private": true,
+  "devDependencies": {
+    "@expo/ngrok": "npm:expo-cloudflared@^4.2.2"
+  }
+}
+</file>
+
+<file path="App.js">
+import React, { useEffect } from "react";
+import { createStaticNavigation } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
+// Redux & Store
+import { Provider } from "react-redux";
+import { store } from "./src/store/index.js";
+import { hydrateBlocks } from "./src/store/scheduleSlice.js";
+import {
+  cargarBloques,
+  suscribirPersistencia,
+} from "./src/store/persistencia.js";
+
+// Context de Sesión
+import { SesionProvider, useSesion } from "./src/context/SesionContext.js";
+
+// Pantallas principales de maquetas
+import ScheduleScreen from "./src/screens/ScheduleScreen.js"; // Cronograma
+import CalendarScreen from "./src/screens/CalendarScreen.js"; // Calendario
+import NotesScreen from "./src/screens/NotesScreen.js"; // Apuntes
+import FocusScreen from "./src/screens/FocusScreen.js"; // Enfoque
+import SettingsScreen from "./src/screens/SettingsScreen.js"; // Ajustes
+import BlockDetailScreen from "./src/screens/BlockDetailScreen.js"; // Detalle de Bloque
+import UploadNoteModal from "./src/screens/UploadNoteModal.js"; // Modal de Subida de Apunte
+import ScheduleBlockModal from "./src/screens/ScheduleBlockModal.js"; // Modal de Agendar Bloque
+import ProfileMenuModal from "./src/screens/ProfileMenuModal.js"; // Modal de Perfil
+import ProfileScreen from "./src/screens/ProfileScreen.js"; // Pantalla de Perfil
+import LoginScreen from "./src/screens/LoginScreen.js"; // Pantalla de Login (Agregada para LAB-04)
+
+import { colors } from "./src/theme/colors.js";
+import { Avatar } from "./src/components/atoms/Avatar.js";
+
+import ContactoScreen from "./src/screens/ContactoScreen.js";
+
+const primaryColor = colors.primary;
+
+// Hooks auxiliares para la navegación condicional (Punto 5 del LAB-04)
+const useEstaLogueado = () => useSesion().estaLogueado;
+const useNoEstaLogueado = () => !useSesion().estaLogueado;
+
+// Sub-stack de Cronograma
+const CronogramaStack = createNativeStackNavigator({
+  screens: {
+    Cronograma: {
+      screen: ScheduleScreen,
+      options: ({ navigation }) => ({
+        title: "Cronograma",
+        headerRight: () => (
+          <Avatar
+            name="Sofía M."
+            size={32}
+            onPress={() => navigation.navigate("ProfileMenu")}
+            style={{ marginRight: 16 }}
+          />
+        ),
+      }),
+    },
+  },
+});
+
+// Navegación por Tabs principales
+const MainTabs = createBottomTabNavigator({
+  screenOptions: {
+    headerShown: false,
+    tabBarActiveTintColor: primaryColor || "#4F46E5",
+    tabBarInactiveTintColor: "#94A3B8",
+  },
+  screens: {
+    CronogramaTab: {
+      screen: CronogramaStack,
+      options: {
+        title: "Cronograma",
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="time-outline" color={color} size={size} />
+        ),
+      },
+    },
+    CalendarioTab: {
+      screen: CalendarScreen,
+      options: ({ navigation }) => ({
+        title: "Calendario",
+        headerShown: true,
+        headerRight: () => (
+          <Avatar
+            name="Sofía M."
+            size={32}
+            onPress={() => navigation.navigate("ProfileMenu")}
+            style={{ marginRight: 16 }}
+          />
+        ),
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="calendar-outline" color={color} size={size} />
+        ),
+      }),
+    },
+    ApuntesTab: {
+      screen: NotesScreen,
+      options: ({ navigation }) => ({
+        title: "Apuntes",
+        headerShown: true,
+        headerRight: () => (
+          <Avatar
+            name="Sofía M."
+            size={32}
+            onPress={() => navigation.navigate("ProfileMenu")}
+            style={{ marginRight: 16 }}
+          />
+        ),
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="folder-outline" color={color} size={size} />
+        ),
+      }),
+    },
+    EnfoqueTab: {
+      screen: FocusScreen,
+      options: ({ navigation }) => ({
+        title: "Enfoque",
+        headerShown: true,
+        headerRight: () => (
+          <Avatar
+            name="Sofía M."
+            size={32}
+            onPress={() => navigation.navigate("ProfileMenu")}
+            style={{ marginRight: 16 }}
+          />
+        ),
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="timer-outline" color={color} size={size} />
+        ),
+      }),
+    },
+  },
+});
+
+// RootStack con navegación condicional de Login (Punto 5 del LAB-04)
+const RootStack = createNativeStackNavigator({
+  screens: {
+    Main: {
+      if: useEstaLogueado,
+      screen: MainTabs,
+      options: { headerShown: false },
+    },
+    Login: {
+      if: useNoEstaLogueado,
+      screen: LoginScreen,
+      options: { headerShown: false },
+    },
+    SubirApunte: {
+      if: useEstaLogueado,
+      screen: UploadNoteModal,
+      options: {
+        presentation: "modal",
+        title: "Subir Apunte",
+      },
+    },
+    AgendarBloque: {
+      if: useEstaLogueado,
+      screen: ScheduleBlockModal,
+      options: {
+        presentation: "modal",
+        title: "Agendar Bloque",
+      },
+    },
+    DetalleBloque: {
+      if: useEstaLogueado,
+      screen: BlockDetailScreen,
+      options: ({ route }) => ({
+        title: `Detalle del Bloque #${route.params?.id ?? ""}`,
+      }),
+    },
+    ProfileMenu: {
+      if: useEstaLogueado,
+      screen: ProfileMenuModal,
+      options: {
+        presentation: "modal",
+        title: "Mi Cuenta",
+      },
+    },
+    Settings: {
+      if: useEstaLogueado,
+      screen: SettingsScreen,
+      options: {
+        title: "Configuración y Ajustes",
+      },
+    },
+    Perfil: {
+      if: useEstaLogueado,
+      screen: ProfileScreen,
+      options: {
+        headerShown: false,
+        title: "Perfil",
+      },
+    },
+    Contacto: {
+      if: useEstaLogueado,
+      screen: ContactoScreen,
+      options: {
+        title: "Contacto y Feedback",
+      },
+    },
+  },
+});
+
+const Navigation = createStaticNavigation(RootStack);
+
+// Activa el listener para persistir cambios automáticamente en AsyncStorage
+suscribirPersistencia(store);
+
+export default function App() {
+  // Carga inicial de datos desde AsyncStorage al arrancar la aplicación
+  useEffect(() => {
+    cargarBloques().then((items) => {
+      if (items) {
+        store.dispatch(hydrateBlocks(items));
+      }
+    });
+  }, []);
+
+  return (
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <SesionProvider>
+          <StatusBar style="dark" />
+          <Navigation />
+        </SesionProvider>
+      </Provider>
+    </SafeAreaProvider>
+  );
+}
+</file>
+
+</files>

@@ -30,6 +30,7 @@ import ScheduleBlockModal from "./src/screens/ScheduleBlockModal.js"; // Modal d
 import ProfileMenuModal from "./src/screens/ProfileMenuModal.js"; // Modal de Perfil
 import ProfileScreen from "./src/screens/ProfileScreen.js"; // Pantalla de Perfil
 import LoginScreen from "./src/screens/LoginScreen.js"; // Pantalla de Login (Agregada para LAB-04)
+import FocusSuccessScreen from "./src/screens/FocusSuccessScreen.js";
 
 import { colors } from "./src/theme/colors.js";
 import { Avatar } from "./src/components/atoms/Avatar.js";
@@ -42,31 +43,63 @@ const primaryColor = colors.primary;
 const useEstaLogueado = () => useSesion().estaLogueado;
 const useNoEstaLogueado = () => !useSesion().estaLogueado;
 
-// Sub-stack de Cronograma
+// 1. Stack de Cronograma (Lista -> Detalle)
 const CronogramaStack = createNativeStackNavigator({
+  screenOptions: { headerShown: false },
   screens: {
     Cronograma: {
       screen: ScheduleScreen,
-      options: ({ navigation }) => ({
-        title: "Cronograma",
-        headerRight: () => (
-          <Avatar
-            name="Sofía M."
-            size={32}
-            onPress={() => navigation.navigate("ProfileMenu")}
-            style={{ marginRight: 16 }}
-          />
-        ),
+    },
+    DetalleBloque: {
+      screen: BlockDetailScreen,
+      options: ({ route }) => ({
+        headerShown: true, // Header nativo con botón "Atrás" automático
+        title: `Detalle del Bloque #${route.params?.id ?? ""}`,
       }),
     },
   },
 });
 
-// Navegación por Tabs principales
+// 2. Stack de Apuntes (Lista -> Detalle de Apunte)
+const ApuntesStack = createNativeStackNavigator({
+  screenOptions: { headerShown: false },
+  screens: {
+    Apuntes: {
+      screen: NotesScreen,
+    },
+    // Aquí puedes agregar pantallas secundarias de apuntes:
+    // DetalleApunte: { screen: DetalleApunteScreen, options: { headerShown: true, title: "Visor de Apunte" } }
+  },
+});
+
+// 3. Stack de Calendario
+const CalendarioStack = createNativeStackNavigator({
+  screenOptions: { headerShown: false },
+  screens: {
+    Calendario: {
+      screen: CalendarScreen,
+    },
+  },
+});
+
+const FocusStack = createNativeStackNavigator({
+  screenOptions: { headerShown: false },
+  screens: {
+    Enfoque: {
+      screen: FocusScreen,
+    },
+    FocusSuccess: {
+      screen: FocusSuccessScreen,
+      options: { headerShown: true, title: "Comprobante de Enfoque" },
+    },
+  },
+});
+
+// 4. Tabs Principales
 const MainTabs = createBottomTabNavigator({
   screenOptions: {
     headerShown: false,
-    tabBarActiveTintColor: primaryColor || "#4F46E5",
+    tabBarActiveTintColor: colors.primary,
     tabBarInactiveTintColor: "#94A3B8",
   },
   screens: {
@@ -80,63 +113,36 @@ const MainTabs = createBottomTabNavigator({
       },
     },
     CalendarioTab: {
-      screen: CalendarScreen,
-      options: ({ navigation }) => ({
+      screen: CalendarioStack,
+      options: {
         title: "Calendario",
-        headerShown: true,
-        headerRight: () => (
-          <Avatar
-            name="Sofía M."
-            size={32}
-            onPress={() => navigation.navigate("ProfileMenu")}
-            style={{ marginRight: 16 }}
-          />
-        ),
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="calendar-outline" color={color} size={size} />
         ),
-      }),
+      },
     },
     ApuntesTab: {
-      screen: NotesScreen,
-      options: ({ navigation }) => ({
+      screen: ApuntesStack,
+      options: {
         title: "Apuntes",
-        headerShown: true,
-        headerRight: () => (
-          <Avatar
-            name="Sofía M."
-            size={32}
-            onPress={() => navigation.navigate("ProfileMenu")}
-            style={{ marginRight: 16 }}
-          />
-        ),
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="folder-outline" color={color} size={size} />
         ),
-      }),
+      },
     },
     EnfoqueTab: {
-      screen: FocusScreen,
-      options: ({ navigation }) => ({
+      screen: FocusStack, // Puede ir directo si no tiene pantallas hijas
+      options: {
         title: "Enfoque",
-        headerShown: true,
-        headerRight: () => (
-          <Avatar
-            name="Sofía M."
-            size={32}
-            onPress={() => navigation.navigate("ProfileMenu")}
-            style={{ marginRight: 16 }}
-          />
-        ),
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="timer-outline" color={color} size={size} />
         ),
-      }),
+      },
     },
   },
 });
 
-// RootStack con navegación condicional de Login (Punto 5 del LAB-04)
+// 5. RootStack (Solo Autenticación, Modales flotantes y Pantallas independientes)
 const RootStack = createNativeStackNavigator({
   screens: {
     Main: {
@@ -149,58 +155,42 @@ const RootStack = createNativeStackNavigator({
       screen: LoginScreen,
       options: { headerShown: false },
     },
+    // Modales flotantes
     SubirApunte: {
       if: useEstaLogueado,
       screen: UploadNoteModal,
-      options: {
-        presentation: "modal",
-        title: "Subir Apunte",
-      },
+      options: { presentation: "modal", title: "Subir Apunte" },
     },
     AgendarBloque: {
       if: useEstaLogueado,
       screen: ScheduleBlockModal,
       options: {
-        presentation: "modal",
+        presentation: "transparentModal",
+        animation: "slide_from_bottom",
+        headerShown: false,
         title: "Agendar Bloque",
       },
-    },
-    DetalleBloque: {
-      if: useEstaLogueado,
-      screen: BlockDetailScreen,
-      options: ({ route }) => ({
-        title: `Detalle del Bloque #${route.params?.id ?? ""}`,
-      }),
     },
     ProfileMenu: {
       if: useEstaLogueado,
       screen: ProfileMenuModal,
-      options: {
-        presentation: "modal",
-        title: "Mi Cuenta",
-      },
+      options: { presentation: "modal", title: "Mi Cuenta" },
     },
+    // Pantallas globales de configuración y feedback
     Settings: {
       if: useEstaLogueado,
       screen: SettingsScreen,
-      options: {
-        title: "Configuración y Ajustes",
-      },
+      options: { title: "Configuración y Ajustes" },
     },
     Perfil: {
       if: useEstaLogueado,
       screen: ProfileScreen,
-      options: {
-        headerShown: false,
-        title: "Perfil",
-      },
+      options: { headerShown: false, title: "Perfil" },
     },
     Contacto: {
       if: useEstaLogueado,
       screen: ContactoScreen,
-      options: {
-        title: "Contacto y Feedback",
-      },
+      options: { title: "Contacto y Feedback" },
     },
   },
 });

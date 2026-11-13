@@ -1,436 +1,263 @@
-// import React from "react";
-// import { View, Text, StyleSheet } from "react-native";
-// import { Ionicons } from "@expo/vector-icons";
-// import { colors, palette, spacing, fontSize, radius } from "../theme";
-// import { ScreenLayout } from "../components/templates/ScreenLayout";
-// import { AppHeader } from "../components/templates/AppHeader";
-// import { Banner } from "../components/organisms/Banner";
-// import { ProgressBar } from "../components/atoms/ProgressBar";
-// import { TimelineItem } from "../components/organisms/TimelineItem";
-
-// export default function ScheduleScreen({ navigation }) {
-//   return (
-//     <ScreenLayout
-//       header={
-//         <AppHeader
-//           currentScreenTitle="Cronograma"
-//           streakDays={5}
-//           onAvatarPress={() => {}}
-//         />
-//       }
-//     >
-//       {/* Saludo inicial */}
-//       <View style={styles.greetingHeader}>
-//         <View>
-//           <Text style={styles.greetingTitle}>¡Hola, Sofía! 👋</Text>
-//           <Text style={styles.greetingSubtitle}>
-//             Hoy tienes <Text style={styles.boldText}>2 bloques libres</Text>{" "}
-//             ideales para estudiar y adelantar tareas.
-//           </Text>
-//         </View>
-//         <View style={styles.weekTag}>
-//           <Text style={styles.weekTagText}>• Semana 6</Text>
-//         </View>
-//       </View>
-
-//       {/* Hueco libre detectado */}
-//       <Banner
-//         title="Hueco Libre Detectado"
-//         description="11:30 AM - 1:00 PM (1h 30m libre) · Espacio óptimo entre Cálculo II y Física I."
-//         actionLabel="Iniciar sesión recomendada"
-//         onActionPress={() => navigation.navigate("Enfoque")}
-//         badgeText="En 45 min"
-//         style={styles.bannerSpacing}
-//       />
-
-//       {/* Métricas: Meta diaria y Racha activa */}
-//       <View style={styles.metricsRow}>
-//         <View style={styles.whiteCardBox}>
-//           <View style={styles.metricCardTop}>
-//             <Text style={styles.metricLabel}>META DIARIA</Text>
-//             <Text style={styles.metricPercent}>85%</Text>
-//           </View>
-//           <View style={styles.metricValueRow}>
-//             <Ionicons
-//               name="checkmark-circle-outline"
-//               size={22}
-//               color={palette.secondary[600]}
-//             />
-//             <View>
-//               <Text style={styles.metricMainValue}>1h 45m</Text>
-//               <Text style={styles.metricSubValue}>de 2h objetivo</Text>
-//             </View>
-//           </View>
-//           <ProgressBar
-//             progress={0.85}
-//             color={palette.secondary[600]}
-//             height={6}
-//             style={{ marginTop: 8 }}
-//           />
-//         </View>
-
-//         <View style={styles.whiteCardBox}>
-//           <View style={styles.metricCardTop}>
-//             <Text style={styles.metricLabel}>RACHA ACTIVA</Text>
-//             <Ionicons name="flame" size={16} color={palette.tertiary[600]} />
-//           </View>
-//           <Text style={styles.metricMainValue}>5 días seguidos</Text>
-//           <Text style={styles.metricSubValue}>¡Nuevo récord personal! 🔥</Text>
-//           <View style={styles.streakDotsRow}>
-//             {["L", "M", "X", "J", "V", "S", "D"].map((d, i) => (
-//               <View
-//                 key={d}
-//                 style={[
-//                   styles.streakDot,
-//                   i < 5 ? styles.streakDotActive : styles.streakDotInactive,
-//                 ]}
-//               >
-//                 <Text
-//                   style={[
-//                     styles.streakDotText,
-//                     i < 5 && styles.streakDotTextActive,
-//                   ]}
-//                 >
-//                   {d}
-//                 </Text>
-//               </View>
-//             ))}
-//           </View>
-//         </View>
-//       </View>
-
-//       {/* Encabezado del Cronograma */}
-//       <View style={styles.scheduleTitleRow}>
-//         <Text style={styles.sectionTitle}>Cronograma de Hoy</Text>
-//         <Text style={styles.weekLink}>Ver semana</Text>
-//       </View>
-
-//       {/* Línea de tiempo */}
-//       <View style={styles.timelineList}>
-//         <TimelineItem
-//           timeRange="08:00 - 10:00"
-//           title="Cálculo Diferencial"
-//           location="Aula B-204"
-//           status="finalizado"
-//           badgeLabel="Finalizado"
-//           badgeVariant="success"
-//         />
-
-//         <TimelineItem
-//           timeRange="10:00 - 11:30"
-//           title="Algoritmos y Estructuras"
-//           location="Laboratorio 3 · Edificio Norte"
-//           status="en_curso"
-//           badgeLabel="En curso"
-//           badgeVariant="primary"
-//         />
-
-//         <TimelineItem
-//           timeRange="11:30 - 13:00 (1h 30m)"
-//           title="Recomendación: Repaso Cálculo Diferencial"
-//           location="Basado en tu examen del lunes. Tienes 4 ejercicios pendientes del tema 3."
-//           status="sugerida"
-//           badgeLabel="Ventana sugerida"
-//           badgeVariant="warning"
-//           actionLabel="Aceptar bloque"
-//           onActionPress={() => navigation.navigate("Enfoque")}
-//           secondaryActionLabel="Posponer"
-//           onSecondaryActionPress={() => {}}
-//         />
-
-//         <TimelineItem
-//           timeRange="14:00 - 16:00"
-//           title="Física Aplicada"
-//           location="Aula Magna"
-//           status="programada"
-//           badgeLabel="2h 00m"
-//           badgeVariant="neutral"
-//           nodeIcon="book-outline"
-//         />
-
-//         <TimelineItem
-//           timeRange="16:30 - 17:30"
-//           title="Revisar apuntes de Algoritmos"
-//           location="1h libre · Biblioteca Central"
-//           status="programada"
-//           badgeLabel="Programada"
-//           badgeVariant="success"
-//           isLast={true}
-//         />
-//       </View>
-
-//       {/* Acciones Rápidas con tarjetas delimitadas */}
-//       <Text style={[styles.sectionTitle, { marginTop: 16 }]}>
-//         Acciones Rápidas
-//       </Text>
-//       <View style={styles.quickActionsRow}>
-//         <View style={styles.quickActionBox}>
-//           <View style={styles.iconSquare}>
-//             <Ionicons
-//               name="calendar-outline"
-//               size={20}
-//               color={colors.primary}
-//             />
-//           </View>
-//           <Text style={styles.quickActionTitle}>Subir horario</Text>
-//           <Text style={styles.quickActionSub}>PDF o foto de matrícula</Text>
-//         </View>
-
-//         <View style={styles.quickActionBox}>
-//           <View style={styles.iconSquare}>
-//             <Ionicons name="create-outline" size={20} color={colors.primary} />
-//           </View>
-//           <Text style={styles.quickActionTitle}>Apunte rápido</Text>
-//           <Text style={styles.quickActionSub}>Nota o audio a texto</Text>
-//         </View>
-//       </View>
-//     </ScreenLayout>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   greetingHeader: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "flex-start",
-//     marginBottom: 8,
-//   },
-//   greetingTitle: {
-//     fontSize: fontSize.xl ?? 20,
-//     fontWeight: "800",
-//     color: colors.text,
-//   },
-//   greetingSubtitle: {
-//     fontSize: 13,
-//     color: colors.textSecondary,
-//     marginTop: 4,
-//     maxWidth: 240,
-//     lineHeight: 18,
-//   },
-//   boldText: {
-//     fontWeight: "700",
-//     color: colors.primary,
-//   },
-//   weekTag: {
-//     backgroundColor: palette.primary[50],
-//     paddingHorizontal: 10,
-//     paddingVertical: 4,
-//     borderRadius: 9999,
-//   },
-//   weekTagText: {
-//     fontSize: 11,
-//     fontWeight: "700",
-//     color: colors.primary,
-//   },
-//   bannerSpacing: {
-//     marginVertical: 12,
-//   },
-//   metricsRow: {
-//     flexDirection: "row",
-//     gap: 12,
-//     marginBottom: 16,
-//   },
-//   whiteCardBox: {
-//     flex: 1,
-//     backgroundColor: palette.white,
-//     borderRadius: 14,
-//     borderWidth: 1,
-//     borderColor: palette.neutral[200],
-//     padding: 12,
-//     shadowColor: palette.black,
-//     shadowOffset: { width: 0, height: 1 },
-//     shadowOpacity: 0.05,
-//     shadowRadius: 4,
-//     elevation: 2,
-//   },
-//   metricCardTop: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "center",
-//     marginBottom: 6,
-//   },
-//   metricLabel: {
-//     fontSize: 10,
-//     fontWeight: "700",
-//     letterSpacing: 0.5,
-//     color: colors.textSecondary,
-//   },
-//   metricPercent: {
-//     fontSize: 11,
-//     fontWeight: "700",
-//     color: palette.secondary[700],
-//   },
-//   metricValueRow: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     gap: 8,
-//   },
-//   metricMainValue: {
-//     fontSize: 14,
-//     fontWeight: "700",
-//     color: colors.text,
-//   },
-//   metricSubValue: {
-//     fontSize: 10,
-//     color: colors.textSecondary,
-//   },
-//   streakDotsRow: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     marginTop: 8,
-//   },
-//   streakDot: {
-//     width: 20,
-//     height: 20,
-//     borderRadius: 10,
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-//   streakDotActive: {
-//     backgroundColor: palette.secondary[600],
-//   },
-//   streakDotInactive: {
-//     backgroundColor: palette.neutral[100],
-//   },
-//   streakDotText: {
-//     fontSize: 9,
-//     fontWeight: "700",
-//     color: palette.neutral[500],
-//   },
-//   streakDotTextActive: {
-//     color: palette.white,
-//   },
-//   scheduleTitleRow: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "center",
-//     marginVertical: 10,
-//   },
-//   sectionTitle: {
-//     fontSize: 16,
-//     fontWeight: "700",
-//     color: colors.text,
-//   },
-//   weekLink: {
-//     fontSize: 12,
-//     fontWeight: "600",
-//     color: colors.primary,
-//   },
-//   timelineList: {
-//     marginTop: 4,
-//   },
-//   quickActionsRow: {
-//     flexDirection: "row",
-//     gap: 12,
-//     marginTop: 10,
-//     marginBottom: 32,
-//   },
-//   quickActionBox: {
-//     flex: 1,
-//     backgroundColor: palette.white,
-//     borderRadius: 14,
-//     borderWidth: 1,
-//     borderColor: palette.neutral[200],
-//     padding: 14,
-//     gap: 4,
-//     shadowColor: palette.black,
-//     shadowOffset: { width: 0, height: 1 },
-//     shadowOpacity: 0.05,
-//     shadowRadius: 3,
-//     elevation: 2,
-//   },
-//   iconSquare: {
-//     width: 34,
-//     height: 34,
-//     borderRadius: 8,
-//     backgroundColor: palette.primary[50],
-//     alignItems: "center",
-//     justifyContent: "center",
-//     marginBottom: 4,
-//   },
-//   quickActionTitle: {
-//     fontSize: 14,
-//     fontWeight: "700",
-//     color: colors.text,
-//   },
-//   quickActionSub: {
-//     fontSize: 11,
-//     color: colors.textSecondary,
-//     lineHeight: 15,
-//   },
-// });
-
-//codigo de prueba para el paso 4 del lab3
-import React from "react";
-import {
-  View,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
-import { useSelector } from "react-redux";
-import { selectAllBlocks } from "../store/scheduleSlice.js";
+// src/screens/ScheduleScreen.js
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-export default function ScheduleScreen() {
-  const blocks = useSelector(selectAllBlocks);
-  const navigation = useNavigation();
+// Redux & Context
+import {
+  selectAllBlocks,
+  updateBlock,
+  selectCompletedBlocksCount,
+} from "../store/scheduleSlice.js";
+import { useSesion } from "../context/SesionContext.js";
 
-  console.log("📦 Bloques en ScheduleScreen:", blocks);
+// Design System & Templates
+import { colors, palette, spacing, fontSize, radius } from "../theme";
+import { ScreenLayout } from "../components/templates/ScreenLayout.js";
+import { AppHeader } from "../components/templates/AppHeader.js";
+
+// Moléculas & Organismos
+import { WeekDaySelector } from "../components/molecules/WeekDaySelector.js";
+import { ScheduleMetricsCard } from "../components/molecules/ScheduleMetricsCard.js";
+import { TimelineItem } from "../components/organisms/TimelineItem.js";
+
+const DAYS_DATA = [
+  { day: "L", date: "09", hasBlocks: false },
+  { day: "M", date: "10", hasBlocks: true },
+  { day: "X", date: "11", hasBlocks: true },
+  { day: "J", date: "12", hasBlocks: true },
+  { day: "V", date: "13", hasBlocks: false },
+  { day: "S", date: "14", hasBlocks: true },
+  { day: "D", date: "15", hasBlocks: false },
+];
+
+export default function ScheduleScreen() {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { usuario } = useSesion();
+
+  const blocks = useSelector(selectAllBlocks);
+  const completedCount = useSelector(selectCompletedBlocksCount);
+  const totalCount = blocks.length;
+
+  const [selectedDay, setSelectedDay] = useState("J");
+
+  const handleToggleBlock = (item) => {
+    const nextStatus =
+      item.status === "completado" ? "pendiente" : "completado";
+    dispatch(updateBlock({ id: item.id, status: nextStatus }));
+  };
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={blocks}
-        keyExtractor={(item) => item.id}
-        ListEmptyComponent={
-          <Text style={styles.empty}>No hay bloques agendados</Text>
+    <View style={styles.rootWrapper}>
+      <ScreenLayout
+        scrollable={true}
+        header={
+          <AppHeader
+            appName="Stuhbit"
+            currentScreenTitle="Cronograma"
+            userName={usuario?.nombre || "Mateo"}
+            streakDays={5}
+            onAvatarPress={() => navigation.navigate("ProfileMenu")}
+          />
         }
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() =>
-              navigation.navigate("DetalleBloque", { id: item.id })
-            }
-          >
-            <Text style={styles.title}>{item.title}</Text>
-            <Text>
-              {item.course} | {item.startTime} - {item.endTime}
-            </Text>
-            <Text>Estado: {item.status}</Text>
-          </TouchableOpacity>
-        )}
-      />
-
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => navigation.navigate("AgendarBloque")}
       >
-        <Text style={styles.fabText}>+ Agregar</Text>
-      </TouchableOpacity>
+        {/* 1. Saludo Inicial contextual */}
+        <View style={styles.greetingHeader}>
+          <Text style={styles.dateSubtitle}>JUEVES, 12 DE NOV</Text>
+          <Text style={styles.greetingTitle}>
+            ¡Hola, {usuario?.nombre || "Mateo"}! 👋
+          </Text>
+        </View>
+
+        {/* 2. Selector de Días de la Semana */}
+        <WeekDaySelector
+          days={DAYS_DATA}
+          selectedDay={selectedDay}
+          onSelectDay={setSelectedDay}
+          style={styles.sectionSpacing}
+        />
+
+        {/* 3. Tarjeta de Métricas Rápidas */}
+        <ScheduleMetricsCard
+          completedBlocks={completedCount}
+          totalBlocks={totalCount}
+          focusedTime="3h 15m"
+          focusedPercentage={`${Math.round((completedCount / (totalCount || 1)) * 100)}%`}
+          style={styles.sectionSpacing}
+        />
+
+        {/* 4. Encabezado de la Sección de Cronograma */}
+        <View style={styles.sectionHeaderRow}>
+          <View style={styles.sectionTitleGroup}>
+            <Text style={styles.sectionTitle}>Línea de Estudio y Clases</Text>
+            <View style={styles.countBadge}>
+              <Text style={styles.countBadgeText}>{totalCount} sesiones</Text>
+            </View>
+          </View>
+          <Pressable style={styles.filterButton}>
+            <Ionicons
+              name="filter-outline"
+              size={14}
+              color={palette.neutral[600]}
+            />
+            <Text style={styles.filterButtonText}>Filtrar</Text>
+          </Pressable>
+        </View>
+
+        {/* 5. Lista de Bloques en la Línea de Tiempo */}
+        <View style={styles.timelineContainer}>
+          {blocks.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Ionicons
+                name="calendar-outline"
+                size={40}
+                color={palette.neutral[400]}
+              />
+              <Text style={styles.emptyText}>
+                No hay bloques programados para este día.
+              </Text>
+            </View>
+          ) : (
+            blocks.map((item, index) => (
+              <TimelineItem
+                key={item.id}
+                timeRange={`${item.startTime} - ${item.endTime}`}
+                title={item.title}
+                course={item.course}
+                location={item.notes || "Campus / Virtual"}
+                status={item.status}
+                priority={item.type === "examen" ? "Prioridad Alta" : undefined}
+                isLast={index === blocks.length - 1}
+                onPress={() =>
+                  navigation.navigate("DetalleBloque", { id: item.id })
+                }
+                onToggleComplete={() => handleToggleBlock(item)}
+                onOpenPomodoro={() =>
+                  navigation.navigate("EnfoqueTab", { id: item.id })
+                }
+              />
+            ))
+          )}
+        </View>
+      </ScreenLayout>
+
+      {/* 6. Botón Flotante (FAB) para Agregar Bloque */}
+      <Pressable
+        style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
+        onPress={() => navigation.navigate("AgendarBloque")}
+        accessibilityRole="button"
+        accessibilityLabel="Añadir Bloque de Estudio"
+      >
+        <Ionicons name="add" size={20} color={palette.white} />
+        <Text style={styles.fabText}>Añadir Bloque</Text>
+      </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  card: {
-    backgroundColor: "#fff",
-    padding: 16,
-    marginBottom: 12,
-    borderRadius: 8,
-    elevation: 2,
+  rootWrapper: {
+    flex: 1,
+    position: "relative",
   },
-  title: { fontSize: 16, fontWeight: "bold", marginBottom: 4 },
-  empty: { textAlign: "center", marginTop: 24, fontSize: 16, color: "#666" },
+  greetingHeader: {
+    marginBottom: spacing.xs ?? 6,
+  },
+  dateSubtitle: {
+    fontSize: fontSize.xxs ?? 11,
+    fontWeight: "700",
+    color: colors.textSecondary,
+    letterSpacing: 0.8,
+  },
+  greetingTitle: {
+    fontSize: fontSize.xl ?? 22,
+    fontWeight: "800",
+    color: colors.text,
+    marginTop: 2,
+  },
+  sectionSpacing: {
+    marginVertical: spacing.xs ?? 6,
+  },
+  sectionHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: spacing.sm ?? 12,
+    marginBottom: spacing.xs ?? 8,
+  },
+  sectionTitleGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  sectionTitle: {
+    fontSize: fontSize.sm ?? 14,
+    fontWeight: "700",
+    color: colors.text,
+  },
+  countBadge: {
+    backgroundColor: palette.primary[50],
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: radius.full || 9999,
+  },
+  countBadgeText: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: colors.primary,
+  },
+  filterButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  filterButtonText: {
+    fontSize: fontSize.xs ?? 12,
+    color: palette.neutral[600],
+    fontWeight: "600",
+  },
+  timelineContainer: {
+    marginTop: spacing.xs ?? 6,
+    paddingBottom: 80, // Margen para que el FAB no tape el último item
+  },
+  emptyContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 40,
+    gap: 8,
+  },
+  emptyText: {
+    fontSize: fontSize.sm ?? 14,
+    color: colors.textSecondary,
+  },
   fab: {
     position: "absolute",
     bottom: 24,
-    right: 24,
-    backgroundColor: "#4F46E5",
-    padding: 16,
-    borderRadius: 50,
+    right: 16,
+    backgroundColor: colors.primary,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: radius.full || 9999,
+    gap: 6,
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
+    zIndex: 99,
   },
-  fabText: { color: "#fff", fontWeight: "bold" },
+  fabPressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.97 }],
+  },
+  fabText: {
+    color: palette.white,
+    fontWeight: "700",
+    fontSize: fontSize.sm ?? 14,
+  },
 });

@@ -1,284 +1,390 @@
-// import React, { useState } from "react";
-// import { View, Text, ScrollView, StyleSheet } from "react-native";
-// import { Ionicons } from "@expo/vector-icons";
-// import { colors, palette, spacing, fontSize } from "../theme";
-// import { ScreenLayout } from "../components/templates/ScreenLayout.js";
-// import { AppHeader } from "../components/templates/AppHeader.js";
-// import { Banner } from "../components/organisms/Banner.js";
-// import { SearchInput } from "../components/molecules/SearchInput.js";
-// import { Chips } from "../components/molecules/Chips.js";
-// import { Button } from "../components/atoms/Button.js";
-// import { StudyNoteCard } from "../components/organisms/StudyNoteCard.js";
-// import { SprintStudySection } from "../components/organisms/SprintStudySection.js";
+import React, { useState } from "react";
+import { View, Text, ScrollView, StyleSheet, Pressable } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
-// const FILTER_TAGS = [
-//   { id: "todas", label: "Todas (14)" },
-//   { id: "calc", label: "Cálculo II (5)", color: colors.primary },
-//   { id: "algo", label: "Algoritmos (4)", color: palette.secondary[500] },
-//   { id: "fisi", label: "Física (3)", color: palette.tertiary[600] },
-// ];
+import { colors, palette, spacing, fontSize, radius } from "../theme";
+import { ScreenLayout } from "../components/templates/ScreenLayout";
+import { AppHeader } from "../components/templates/AppHeader";
+import { SearchInput } from "../components/molecules/SearchInput";
+import { Chips } from "../components/molecules/Chips";
+import { RecentNoteCard } from "../components/molecules/RecentNoteCard";
+import { NoteListItem } from "../components/organisms/NoteListItem";
+import { useSesion } from "../context/SesionContext";
 
-// export default function NotesScreen({ navigation }) {
-//   const [selectedTag, setSelectedTag] = useState("todas");
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [sprintItems, setSprintItems] = useState([
-//     {
-//       id: "1",
-//       title: "Derivadas Parciales y Regla de la Ca...",
-//       subject: "Cálculo II",
-//       recommendedTime: "25 min",
-//       selected: true,
-//     },
-//     {
-//       id: "2",
-//       title: "Leyes de Termodinámica y Entropía",
-//       subject: "Física",
-//       recommendedTime: "40 min",
-//       selected: true,
-//     },
-//     {
-//       id: "3",
-//       title: "Árboles Binarios y Grafos",
-//       subject: "Algoritmos",
-//       recommendedTime: "30 min",
-//       selected: false,
-//     },
-//   ]);
+const FILTER_SUBJECTS = [
+  { id: "all", label: "Todos" },
+  { id: "moviles", label: "Sistemas Móviles", color: colors.primary },
+  { id: "db", label: "Base de Datos", color: palette.secondary[500] },
+  { id: "redes", label: "Redes", color: palette.tertiary[600] },
+];
 
-//   const toggleSprintItem = (id) => {
-//     setSprintItems((prev) =>
-//       prev.map((item) =>
-//         item.id === id ? { ...item, selected: !item.selected } : item,
-//       ),
-//     );
-//   };
+const RECENT_NOTES = [
+  {
+    id: "r1",
+    type: "pdf",
+    course: "Sistemas Móviles",
+    title: "Arquitectura BCE & Stat...",
+    meta: "8 páginas · 2.4 MB",
+    duration: "20m",
+  },
+  {
+    id: "r2",
+    type: "ocr",
+    course: "Base de Datos",
+    title: "Normalización (1FN...",
+    meta: "Texto extraído 95%",
+    duration: "15m",
+  },
+  {
+    id: "r3",
+    type: "markdown",
+    course: "Redes",
+    title: "Direccionamiento IPv6",
+    meta: "Markdown · 3 temas",
+    duration: "30m",
+  },
+];
 
-//   return (
-//     <ScreenLayout
-//       header={
-//         <AppHeader
-//           currentScreenTitle="Apuntes"
-//           streakDays={5}
-//           onAvatarPress={() => {}}
-//         />
-//       }
-//     >
-//       {/* Banner Sincronización Inteligente */}
-//       <Banner
-//         title="Sincronización Inteligente"
-//         description="Tienes 3 apuntes clave para tu bloque libre de hoy a las 11:30 AM."
-//         actionLabel="Iniciar repaso rápido"
-//         onActionPress={() => navigation.navigate("Enfoque")}
-//         badgeText="ACTIVO"
-//       />
-
-//       {/* Buscador de apuntes */}
-//       <SearchInput
-//         value={searchQuery}
-//         onChangeText={setSearchQuery}
-//         onFilterPress={() => {}}
-//         style={styles.searchSpacing}
-//       />
-
-//       {/* Acciones de Digitalización */}
-//       <View style={styles.sectionHeader}>
-//         <Text style={styles.sectionTitle}>Subir o Digitalizar</Text>
-//         <Text style={styles.sectionActionText}>OCR Automático</Text>
-//       </View>
-
-//       <Button
-//         title="Escanear con Cámara Inteligente"
-//         variant="primary"
-//         size="md"
-//         icon={<Ionicons name="scan-outline" size={20} color={palette.white} />}
-//         onPress={() => {}}
-//       />
-
-//       <View style={styles.uploadRow}>
-//         <Button
-//           title="Subir PDF"
-//           variant="secondary"
-//           size="sm"
-//           icon={
-//             <Ionicons
-//               name="document-text-outline"
-//               size={16}
-//               color={colors.primary}
-//             />
-//           }
-//           onPress={() => {}}
-//           style={styles.uploadHalfButton}
-//         />
-//         <Button
-//           title="Nota de Voz"
-//           variant="secondary"
-//           size="sm"
-//           icon={
-//             <Ionicons name="mic-outline" size={16} color={colors.primary} />
-//           }
-//           onPress={() => {}}
-//           style={styles.uploadHalfButton}
-//         />
-//       </View>
-
-//       {/* Filtros horizontales por materia */}
-//       <View style={styles.filterHeader}>
-//         <Text style={styles.filterTitle}>FILTRAR POR MATERIA</Text>
-//         <Text style={styles.filterCount}>14 documentos</Text>
-//       </View>
-
-//       <ScrollView
-//         horizontal
-//         showsHorizontalScrollIndicator={false}
-//         contentContainerStyle={styles.chipsContainer}
-//       >
-//         {FILTER_TAGS.map((tag) => (
-//           <Chips
-//             key={tag.id}
-//             label={tag.label}
-//             selected={selectedTag === tag.id}
-//             onPress={() => setSelectedTag(tag.id)}
-//             icon={
-//               tag.color ? (
-//                 <View
-//                   style={[styles.chipDot, { backgroundColor: tag.color }]}
-//                 />
-//               ) : null
-//             }
-//           />
-//         ))}
-//       </ScrollView>
-
-//       {/* Tarjetas de apuntes principales */}
-//       <View style={styles.notesList}>
-//         <StudyNoteCard
-//           category="Cálculo II"
-//           categoryVariant="primary"
-//           fileInfo="PDF · 4 págs"
-//           title="Derivadas Parciales y Regla de la Cadena"
-//           description="Teoremas de Schwarz, matriz Jacobiana y ejercicios resueltos de optimización..."
-//           summaryBadge="Resumen AI Generado"
-//           lastReviewText="Último repaso: hace 2 días"
-//           subInfo="12 tarjetas de memoria listas"
-//           accentColor={colors.primary}
-//           onStudyPress={() => navigation.navigate("Enfoque")}
-//         />
-
-//         <StudyNoteCard
-//           category="Algoritmos"
-//           categoryVariant="success"
-//           fileInfo="Fotos de pizarra (3)"
-//           title="Árboles Binarios y Grafos"
-//           description="Recorridos DFS y BFS, balanceo AVL y complejidad temporal Big-O..."
-//           summaryBadge="Autoevaluación Lista (8 preguntas)"
-//           lastReviewText="Subido ayer · OCR completado"
-//           subInfo="Alta relevancia para parcial"
-//           accentColor={palette.secondary[600]}
-//           onStudyPress={() => navigation.navigate("Enfoque")}
-//         />
-
-//         <StudyNoteCard
-//           category="Física General"
-//           categoryVariant="warning"
-//           fileInfo="Examen este Viernes"
-//           title="Leyes de Termodinámica y Entropía"
-//           description="Ciclo de Carnot, primer y segundo principio, trabajo isotérmico y fórmulas de gases ideales."
-//           summaryBadge="Notas de Clase + Audio"
-//           lastReviewText="Prioridad alta · 7 conceptos críticos"
-//           subInfo="Falta repasar fórmulas de Carnot"
-//           accentColor={palette.tertiary[600]}
-//           onStudyPress={() => navigation.navigate("Enfoque")}
-//         />
-//       </View>
-
-//       {/* Sección Sprint de Estudio Hoy */}
-//       <SprintStudySection
-//         items={sprintItems}
-//         onToggleItem={toggleSprintItem}
-//         onStartFocus={() => navigation.navigate("Enfoque")}
-//         totalDurationMinutes={65}
-//         style={styles.sprintSpacing}
-//       />
-//     </ScreenLayout>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   searchSpacing: {
-//     marginVertical: spacing.md ?? 16,
-//   },
-//   sectionHeader: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "center",
-//     marginBottom: spacing.xs ?? 8,
-//   },
-//   sectionTitle: {
-//     fontSize: fontSize.md ?? 16,
-//     fontWeight: "700",
-//     color: colors.text,
-//   },
-//   sectionActionText: {
-//     fontSize: fontSize.xs ?? 12,
-//     fontWeight: "600",
-//     color: colors.textSecondary,
-//   },
-//   uploadRow: {
-//     flexDirection: "row",
-//     gap: spacing.sm ?? 10,
-//     marginTop: spacing.xs ?? 8,
-//   },
-//   uploadHalfButton: {
-//     flex: 1,
-//   },
-//   filterHeader: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "center",
-//     marginTop: spacing.lg ?? 20,
-//     marginBottom: spacing.xs ?? 8,
-//   },
-//   filterTitle: {
-//     fontSize: fontSize.xs ?? 11,
-//     fontWeight: "700",
-//     letterSpacing: 0.8,
-//     color: colors.textSecondary,
-//   },
-//   filterCount: {
-//     fontSize: fontSize.xs ?? 12,
-//     fontWeight: "600",
-//     color: colors.primary,
-//   },
-//   chipsContainer: {
-//     gap: 8,
-//     paddingVertical: 4,
-//   },
-//   chipDot: {
-//     width: 6,
-//     height: 6,
-//     borderRadius: 3,
-//   },
-//   notesList: {
-//     marginTop: spacing.md ?? 16,
-//     gap: spacing.md ?? 16,
-//   },
-//   sprintSpacing: {
-//     marginTop: spacing.lg ?? 24,
-//     marginBottom: spacing.xl ?? 32,
-//   },
-// });
-
-// codigo para el paso 4 del lab3
-
-import React from "react";
-import Placeholder from "./Placeholder";
+const ALL_NOTES = [
+  {
+    id: "n1",
+    type: "pdf",
+    course: "Sistemas Móviles",
+    subjectId: "moviles",
+    title: "Arquitectura BCE y State Machines",
+    lastModified: "Modificado hoy 11:45",
+    syncStatus: "Sincronizado en la nube",
+    tags: ["#ExamenParcial", "#UML", "#Patrones"],
+  },
+  {
+    id: "n2",
+    type: "ocr",
+    course: "Base de Datos",
+    subjectId: "db",
+    title: "Normalización Formas Normales (1FN - BCNF)",
+    lastModified: "Modificado hace 2 días",
+    syncStatus: "4 imágenes transcritas",
+    tags: ["#Teoria", "#SQL", "#Claves"],
+  },
+  {
+    id: "n3",
+    type: "markdown",
+    course: "Redes de Computadoras",
+    subjectId: "redes",
+    title: "Protocolos de Enlace y Direccionamiento IPv6",
+    lastModified: "Modificado 10 Nov",
+    syncStatus: "Laboratorio presencial",
+    tags: ["#Laboratorio", "#CiscoPacketTracer"],
+  },
+  {
+    id: "n4",
+    type: "ia",
+    course: "Sistemas Operativos",
+    subjectId: "all",
+    title: "Guía de Síntesis: Concurrencia y Sockets",
+    lastModified: "Modificado 8 Nov",
+    syncStatus: "18 Tarjetas nemotécnicas",
+    tags: ["#FlashcardsListas", "#Resumen"],
+  },
+];
 
 export default function NotesScreen() {
+  const navigation = useNavigation();
+  const { usuario } = useSesion();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("all");
+
+  const filteredNotes = ALL_NOTES.filter((note) => {
+    const matchesSubject =
+      selectedSubject === "all" || note.subjectId === selectedSubject;
+    const matchesQuery =
+      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      note.course.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesSubject && matchesQuery;
+  });
+
   return (
-    <Placeholder
-      title="Mis Apuntes & Materiales"
-      description="Listado de apuntes, resúmenes IA por materia y preparación de sesiones de estudio."
-      links={[{ label: "Subir o Escanear Apunte (Modal)", to: "SubirApunte" }]}
-    />
+    <View style={styles.rootWrapper}>
+      <ScreenLayout
+        scrollable={true}
+        header={
+          <AppHeader
+            appName="Stuhbit"
+            currentScreenTitle="Apuntes"
+            userName={usuario?.nombre || "Mateo"}
+            streakDays={5}
+            onAvatarPress={() => navigation.navigate("ProfileMenu")}
+          />
+        }
+      >
+        {/* Cabecera contextual */}
+        <View style={styles.titleSection}>
+          <View>
+            <Text style={styles.title}>Mis Apuntes</Text>
+            <View style={styles.syncRow}>
+              <View style={styles.syncDot} />
+              <Text style={styles.syncText}>12 documentos sincronizados</Text>
+            </View>
+          </View>
+
+          <View style={styles.headerIconsRow}>
+            <Pressable style={styles.iconCircleBtn}>
+              <Ionicons
+                name="options-outline"
+                size={18}
+                color={palette.neutral[700]}
+              />
+            </Pressable>
+            <Pressable
+              style={styles.iconCircleBtn}
+              onPress={() => navigation.navigate("SubirApunte")}
+            >
+              <Ionicons
+                name="scan-outline"
+                size={18}
+                color={palette.neutral[700]}
+              />
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Buscador */}
+        <SearchInput
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholder="Buscar por tema, curso o etiqueta..."
+          style={styles.searchSpacing}
+        />
+
+        {/* Filtros horizontales por materia */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipsContainer}
+        >
+          {FILTER_SUBJECTS.map((sub) => (
+            <Chips
+              key={sub.id}
+              label={sub.label}
+              selected={selectedSubject === sub.id}
+              onPress={() => setSelectedSubject(sub.id)}
+              icon={
+                sub.color ? (
+                  <View
+                    style={[styles.chipDot, { backgroundColor: sub.color }]}
+                  />
+                ) : null
+              }
+            />
+          ))}
+        </ScrollView>
+
+        {/* Sección: Recientes */}
+        <View style={styles.sectionHeaderRow}>
+          <Text style={styles.sectionTitle}>Recientes</Text>
+          <Pressable>
+            <Text style={styles.sectionLink}>Ver todos (6)</Text>
+          </Pressable>
+        </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.recentCardsScroll}
+        >
+          {RECENT_NOTES.map((note) => (
+            <RecentNoteCard
+              key={note.id}
+              type={note.type}
+              course={note.course}
+              title={note.title}
+              meta={note.meta}
+              duration={note.duration}
+              onPress={() => {}}
+            />
+          ))}
+        </ScrollView>
+
+        {/* Sección: Todos los Apuntes */}
+        <View style={[styles.sectionHeaderRow, { marginTop: spacing.lg }]}>
+          <Text style={styles.sectionTitle}>Todos los Apuntes</Text>
+          <View style={styles.orderDropdown}>
+            <Text style={styles.orderLabel}>Orden:</Text>
+            <Text style={styles.orderValue}>Recientes</Text>
+            <Ionicons name="chevron-down" size={14} color={colors.primary} />
+          </View>
+        </View>
+
+        <View style={styles.notesListContainer}>
+          {filteredNotes.length === 0 ? (
+            <Text style={styles.emptyText}>
+              No se encontraron apuntes con ese filtro.
+            </Text>
+          ) : (
+            filteredNotes.map((note) => (
+              <NoteListItem
+                key={note.id}
+                type={note.type}
+                course={note.course}
+                title={note.title}
+                lastModified={note.lastModified}
+                syncStatus={note.syncStatus}
+                tags={note.tags}
+                onPress={() => {}}
+                onMenuPress={() => {}}
+              />
+            ))
+          )}
+        </View>
+      </ScreenLayout>
+
+      {/* Botón Flotante (FAB) para Nuevo Apunte */}
+      <Pressable
+        style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
+        onPress={() => navigation.navigate("SubirApunte")}
+        accessibilityRole="button"
+        accessibilityLabel="Nuevo Apunte"
+      >
+        <Ionicons name="add" size={20} color={palette.white} />
+        <Text style={styles.fabText}>Nuevo Apunte</Text>
+      </Pressable>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  rootWrapper: {
+    flex: 1,
+    position: "relative",
+  },
+  titleSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: spacing.xs || 4,
+    marginBottom: spacing.xs || 8,
+  },
+  title: {
+    fontSize: fontSize.xl || 22,
+    fontWeight: "800",
+    color: colors.text,
+  },
+  syncRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 2,
+  },
+  syncDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: palette.secondary[500],
+  },
+  syncText: {
+    fontSize: 11,
+    color: colors.textSecondary,
+    fontWeight: "500",
+  },
+  headerIconsRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  iconCircleBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: palette.white,
+    borderWidth: 1,
+    borderColor: palette.neutral[200],
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  searchSpacing: {
+    marginVertical: spacing.xs || 8,
+  },
+  chipsContainer: {
+    gap: 8,
+    paddingVertical: spacing.xs || 4,
+    marginBottom: spacing.sm || 10,
+  },
+  chipDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  sectionHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: spacing.xs || 8,
+    marginBottom: spacing.sm || 10,
+  },
+  sectionTitle: {
+    fontSize: fontSize.sm || 15,
+    fontWeight: "700",
+    color: colors.text,
+  },
+  sectionLink: {
+    fontSize: fontSize.xs || 12,
+    color: colors.primary,
+    fontWeight: "600",
+  },
+  orderDropdown: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  orderLabel: {
+    fontSize: fontSize.xs || 12,
+    color: colors.textSecondary,
+  },
+  orderValue: {
+    fontSize: fontSize.xs || 12,
+    color: colors.primary,
+    fontWeight: "700",
+  },
+  recentCardsScroll: {
+    gap: 12,
+    paddingBottom: 4,
+  },
+  notesListContainer: {
+    marginTop: spacing.xs || 4,
+    paddingBottom: 80,
+  },
+  emptyText: {
+    fontSize: fontSize.sm || 14,
+    color: colors.textSecondary,
+    textAlign: "center",
+    marginTop: 20,
+  },
+  fab: {
+    position: "absolute",
+    bottom: 24,
+    right: 16,
+    backgroundColor: colors.primary,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: radius.full || 9999,
+    gap: 6,
+    shadowColor: palette.black,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
+    zIndex: 99,
+  },
+  fabPressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.97 }],
+  },
+  fabText: {
+    color: palette.white,
+    fontWeight: "700",
+    fontSize: fontSize.sm || 14,
+  },
+});
